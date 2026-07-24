@@ -2722,7 +2722,7 @@ function paintTablePage(table, allRows){
     if(isPascaHarvest){
       drawLineMulti('chart_month_'+table, PHASING_CHART_MONTHS, monthCompareSeries, ['#D9A94A','#5FAE7D'], true, undefined, true);
     } else {
-      drawBar('chart_month_'+table, monthAgg, MONTHS);
+      drawBar('chart_month_'+table, monthAgg, MONTHS, { hideYAxis:true });
     }
     if(!hasLandPrepFields && !isPascaHarvest){
       drawDonut('chart_zona_'+table, zonaAgg);
