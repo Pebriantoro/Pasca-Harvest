@@ -272,7 +272,7 @@ renderDashboard = async function () {
         </div>
         <div class="card-body"><div class="chart-box"><canvas id="chart_dash_tch_trend"></canvas></div></div>
       </div>`;
-    drawLineMulti('chart_dash_tch_trend', categories, seriesMap, CHART_PALETTE, true, 5);
+    drawLineMulti('chart_dash_tch_trend', categories, seriesMap, CHART_PALETTE, true, 5, true);
   } catch (err) {
     console.error('Gagal muat trend TCH:', err);
   }

@@ -3087,7 +3087,7 @@ function drawStackedBar(canvasId, categories, seriesMap, stacked, colors){
   });
   }catch(e){ console.error("Chart render gagal:", "drawStackedBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
-function drawLineMulti(canvasId, categories, seriesMap, colors, showLabels, lineWidth){
+function drawLineMulti(canvasId, categories, seriesMap, colors, showLabels, lineWidth, hideYAxis){
   try{
   destroyChart(canvasId);
   const ctx = document.getElementById(canvasId); if(!ctx) return;
@@ -3107,7 +3107,7 @@ function drawLineMulti(canvasId, categories, seriesMap, colors, showLabels, line
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22, bottom:14 } },
       plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, font:{size:11} } },
         datalabels: showLabels ? { ...DL_STYLE, offset:4, formatter:dlValue } : { display:false } },
-      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
+      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ display: hideYAxis ? false : true, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawLineMulti", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
@@ -3334,7 +3334,7 @@ async function renderDashboard(){
   drawStatusRings(tableKeys, stackedData);
   drawPie('chart_dash_pie', luasPerCategory);
   drawBar('chart_dash_zona', zonaCombined, undefined, { hideYAxis:true });
-  drawLineMulti('chart_dash_tch', TCH_MONTHS.map(m=>m.label), tchSeries, ['#D9A441','#4C9F70'], true, 5);
+  drawLineMulti('chart_dash_tch', TCH_MONTHS.map(m=>m.label), tchSeries, ['#D9A441','#4C9F70'], true, 5, true);
 }
 
 /* ---------------------------------------------------------------------
