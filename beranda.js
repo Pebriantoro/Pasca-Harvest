@@ -38,7 +38,7 @@ async function berandaFetchFeed(){
     staff_name: r.staff_name, zona: r.zona,
     icon: '📋', sourceLabel: 'Rencana Kerja Harian',
     body: `Rencana kerja <b>${esc(r.aktivitas || '-')}</b> di petak <b>${esc(r.petak || '-')}</b>${r.jumlah_tk ? ` · ${esc(String(r.jumlah_tk))} TK` : ''}${r.kontraktor ? ` · ${esc(r.kontraktor)}` : ''}`,
-    statusHtml: typeof rkhBadge === 'function' ? rkhBadge(r.status) : esc(r.status || ''),
+    statusHtml: berandaRelabelBadge(typeof rkhBadge === 'function' ? rkhBadge(r.status) : esc(r.status || '')),
     onClick: `navigate('rkh')`,
   }));
   praSpaRows.forEach(r => items.push({
@@ -46,7 +46,7 @@ async function berandaFetchFeed(){
     staff_name: r.staff_name, zona: r.zona,
     icon: '🔍', sourceLabel: 'Pengecekan Pra SPA',
     body: `Pengecekan <b>${esc(r.kegiatan || '-')}</b> di petak <b>${esc(r.no_petak || '-')}</b>${r.resume ? ` — Kelulusan ${r.resume.persen.toFixed(1)}%` : ''}`,
-    statusHtml: typeof praSpaBadge === 'function' ? praSpaBadge(r.status) : esc(r.status || ''),
+    statusHtml: berandaRelabelBadge(typeof praSpaBadge === 'function' ? praSpaBadge(r.status) : esc(r.status || '')),
     onClick: `navigate('pra_spa')`,
   }));
   qcpRows.forEach(r => items.push({
@@ -54,7 +54,7 @@ async function berandaFetchFeed(){
     staff_name: r.staff_name, zona: r.zona,
     icon: '✅', sourceLabel: 'QC By Proses',
     body: `QC <b>${esc(r.kegiatan || '-')}</b> di petak <b>${esc(r.petak || '-')}</b> — Nilai ${r.average_nilai ?? '-'} (${esc(r.kategori || '-')})`,
-    statusHtml: typeof qcpBadge === 'function' ? qcpBadge(r.status) : esc(r.status || ''),
+    statusHtml: berandaRelabelBadge(typeof qcpBadge === 'function' ? qcpBadge(r.status) : esc(r.status || '')),
     onClick: `navigate('qc_by_proses')`,
   }));
 
@@ -81,6 +81,15 @@ function berandaFilterBarHTML(items){
   </div>`;
 }
 
+function berandaRelabelBadge(html){
+  if(!html) return html;
+  return html
+    .replace(/Menunggu Verifikasi Supervisor/gi, 'Waiting Approval 1st')
+    .replace(/Menunggu Approval Superintendent/gi, 'Waiting Approval 2nd')
+    .replace(/Disetujui/gi, 'Approved')
+    .replace(/Ditolak/gi, 'Reject');
+}
+
 function berandaCardHTML(item){
   return `
     <div class="card card-hoverable" style="margin-bottom:12px; cursor:pointer; padding:16px;" onclick="${item.onClick}">
@@ -94,7 +103,7 @@ function berandaCardHTML(item){
                 ${item.icon} ${esc(item.sourceLabel)} ${item.zona ? '· Zona '+esc(item.zona) : ''} · ${esc(typeof timeAgo === 'function' ? timeAgo(item.created_at) : fmtTanggalRKH(item.tanggal))}
               </div>
             </div>
-            <div>${item.statusHtml}</div>
+            <div style="margin-right:6%;">${item.statusHtml}</div>
           </div>
           <div style="font-size:13px; color:var(--text-muted); margin-top:10px; line-height:1.5;">${item.body}</div>
         </div>
