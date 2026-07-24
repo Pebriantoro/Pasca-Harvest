@@ -2973,7 +2973,7 @@ function drawGroupedBar(canvasId, categories, seriesMap, colors){
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } },
       plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, font:{size:11} } },
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
-      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}, precision:0}, grid:{color:CHART_GRID} } } }
+      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}, precision:0}, grid:{display:false} } } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawGroupedBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
@@ -2991,7 +2991,7 @@ function drawStatusBar(canvasId, dataMap){
         legend:{ display:true, position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, font:{size:11},
           generateLabels: chart => labels.map((l,i)=>({ text:l, fillStyle:colors[i], strokeStyle:colors[i], fontColor:CHART_TEXT })) } },
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
-      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{color:CHART_GRID} } } }
+      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawStatusBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
@@ -3026,7 +3026,7 @@ function drawBar(canvasId, dataMap, orderKeys){
     data:{ labels, datasets:[{ data:values, backgroundColor: labels.map((l,i)=>CHART_PALETTE[i % CHART_PALETTE.length]), borderRadius:7, maxBarThickness:34 }] },
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } }, plugins:{legend:{display:false},
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
-      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{color:CHART_GRID} } } }
+      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
@@ -3040,7 +3040,7 @@ function drawHBar(canvasId, dataMap){
     data:{ labels, datasets:[{ data:values, backgroundColor: labels.map((l,i)=>CHART_PALETTE[i % CHART_PALETTE.length]), borderRadius:7, maxBarThickness:18 }] },
     options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, layout:{ padding:{ right:34 } }, plugins:{legend:{display:false},
         datalabels:{ ...DL_STYLE, anchor:'end', align:'right', offset:4, formatter:dlValue } },
-      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{color:CHART_GRID} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
+      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawHBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
@@ -3056,7 +3056,7 @@ function drawStackedBar(canvasId, categories, seriesMap, stacked, colors){
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } },
       plugins:{ legend:{ position:'bottom', labels:{color:CHART_TEXT, boxWidth:11, font:{size:11}} },
         datalabels:{ ...DL_STYLE, anchor:'center', align:'center', formatter:dlValue } },
-      scales:{ x:{ stacked, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ stacked, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{color:CHART_GRID} } } }
+      scales:{ x:{ stacked, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ stacked, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawStackedBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
@@ -3079,7 +3079,7 @@ function drawLineMulti(canvasId, categories, seriesMap, colors, showLabels){
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22, bottom:14 } },
       plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, font:{size:11} } },
         datalabels: showLabels ? { ...DL_STYLE, offset:4, formatter:dlValue } : { display:false } },
-      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{color:CHART_GRID} } } }
+      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawLineMulti", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }

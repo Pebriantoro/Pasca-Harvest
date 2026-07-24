@@ -1464,13 +1464,7 @@ body::before{
   background-blend-mode: soft-light, normal, normal;
 }
 
-/* Chart box sendiri dikasih watermark garis grafik halus di pojok,
-   biar area chart juga kerasa ada "gambar", tanpa nabrak data canvas
-   (opacity rendah, di belakang canvas Chart.js yang transparan bg-nya) */
-.chart-box, .chart-box-sm{
-  background:
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='140' viewBox='0 0 220 140'><polyline points='0,120 30,95 60,110 90,65 120,85 150,40 180,60 220,15' fill='none' stroke='white' stroke-width='3' opacity='0.18'/></svg>") right bottom / 200px 130px no-repeat;
-}
+/* Watermark garis grafik di chart-box DIHAPUS atas permintaan user. */
 
 /* =====================================================================
    REDESIGN LAYER — glow monokrom, animasi, toast 4-varian, KPI tematik
