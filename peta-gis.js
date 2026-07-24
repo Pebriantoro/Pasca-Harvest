@@ -262,19 +262,17 @@ renderDashboard = async function () {
   try {
     const pascaRows = await ensureData('pasca_harvest');
     const { categories, seriesMap } = petaBuildTchTrendByZona(pascaRows);
-    const holder = document.getElementById('pageContent');
-    if (!holder || !categories.length) return;
-    holder.insertAdjacentHTML('beforeend', `
-      <div class="chart-grid">
-        <div class="card" style="grid-column:1 / -1;">
-          <div class="card-header">
-            <span class="card-title">Trend TCH per Zona per Bulan</span>
-            <span style="font-size:11px; color:var(--text-faint);">rata-rata TCH Nett BAPP, dari bulan tebang</span>
-          </div>
-          <div class="card-body"><div class="chart-box"><canvas id="chart_dash_tch_trend"></canvas></div></div>
+    const slot = document.getElementById('dashTchTrendZonaSlot');
+    if (!slot || !categories.length) return;
+    slot.innerHTML = `
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Trend TCH per Zona per Bulan</span>
+          <span style="font-size:11px; color:var(--text-faint);">rata-rata TCH Nett BAPP, dari bulan tebang</span>
         </div>
-      </div>`);
-    drawLineMulti('chart_dash_tch_trend', categories, seriesMap, CHART_PALETTE, true);
+        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_tch_trend"></canvas></div></div>
+      </div>`;
+    drawLineMulti('chart_dash_tch_trend', categories, seriesMap, CHART_PALETTE, true, 5);
   } catch (err) {
     console.error('Gagal muat trend TCH:', err);
   }

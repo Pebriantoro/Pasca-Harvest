@@ -3087,7 +3087,7 @@ function drawStackedBar(canvasId, categories, seriesMap, stacked, colors){
   });
   }catch(e){ console.error("Chart render gagal:", "drawStackedBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
-function drawLineMulti(canvasId, categories, seriesMap, colors, showLabels){
+function drawLineMulti(canvasId, categories, seriesMap, colors, showLabels, lineWidth){
   try{
   destroyChart(canvasId);
   const ctx = document.getElementById(canvasId); if(!ctx) return;
@@ -3098,6 +3098,7 @@ function drawLineMulti(canvasId, categories, seriesMap, colors, showLabels){
       label:s, data:seriesMap[s],
       borderColor: colors ? colors[i % colors.length] : CHART_PALETTE[i % CHART_PALETTE.length],
       backgroundColor: colors ? colors[i % colors.length] : CHART_PALETTE[i % CHART_PALETTE.length],
+      borderWidth: lineWidth || 3,
       tension:0.3, spanGaps:true, fill:false, pointRadius:3, pointHoverRadius:5,
       // Data ganjil (index 0, dst) label di atas titik, data genap di bawah,
       // supaya angka 2 garis yang berdekatan tidak saling tumpuk.
@@ -3245,6 +3246,17 @@ async function renderDashboard(){
       ${kpiCard('Total Staff', staffSet.size, 'staff unik ditugaskan', 'var(--accent-red)', 'staff')}
     </div>
 
+    <div class="chart-grid" id="dashTopTchGrid">
+      <div id="dashTchTrendZonaSlot"></div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Komparasi Estimasi TCH 2026 vs TCH Nett 2026</span>
+          <span style="font-size:11px; color:var(--text-faint);">April – Oktober 2026</span>
+        </div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_tch"></canvas></div></div>
+      </div>
+    </div>
+
     <div class="chart-grid">
       <div class="card">
         <div class="card-header"><span class="card-title">Status Progress per Modul</span></div>
@@ -3301,21 +3313,12 @@ async function renderDashboard(){
       </div>
     </div>
 
-    <div class="chart-grid">
-      <div class="card" style="grid-column:1 / -1;">
-        <div class="card-header">
-          <span class="card-title">Komparasi Estimasi TCH 2026 vs TCH Nett 2026</span>
-          <span style="font-size:11px; color:var(--text-faint);">April – Oktober 2026</span>
-        </div>
-        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_tch"></canvas></div></div>
-      </div>
-    </div>
   `;
 
   drawStatusRings(tableKeys, stackedData);
   drawPie('chart_dash_pie', luasPerCategory);
   drawBar('chart_dash_zona', zonaCombined, undefined, { hideYAxis:true });
-  drawLineMulti('chart_dash_tch', TCH_MONTHS.map(m=>m.label), tchSeries, ['#D9A441','#4C9F70'], true);
+  drawLineMulti('chart_dash_tch', TCH_MONTHS.map(m=>m.label), tchSeries, ['#D9A441','#4C9F70'], true, 5);
 }
 
 /* ---------------------------------------------------------------------
