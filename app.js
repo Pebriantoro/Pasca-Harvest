@@ -6881,9 +6881,9 @@ function paintProduktivitasKontraktor(allRows){
   `;
 
   drawDonut('chart_pk_kethasil', ketHasilAgg);
-  drawHBar('chart_pk_jumlahwo', jumlahWOByKontraktor);
-  drawHBar('chart_pk_luasbapp', luasByKontraktor);
-  drawHBar('chart_pk_kegiatan', kegiatanAgg);
+  drawHBar('chart_pk_jumlahwo', jumlahWOByKontraktor, { hideXAxis:true });
+  drawHBar('chart_pk_luasbapp', luasByKontraktor, { hideXAxis:true });
+  drawBar('chart_pk_kegiatan', kegiatanAgg, undefined, { hideYAxis:true });
 
   try{
     $('#searchInput_pk')?.addEventListener('input', debounce(function(){
