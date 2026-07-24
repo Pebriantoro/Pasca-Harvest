@@ -193,7 +193,7 @@ function puFilterBarHTML(rows, rerenderFn){
    4. HALAMAN UTAMA
    --------------------------------------------------------------------- */
 async function renderPosisiUnit(){
-  $('#pageEyebrow').textContent = 'MENU DATA';
+  $('#pageEyebrow').textContent = '';
   $('#pageTitle').textContent = 'Data Posisi Unit';
   const role = currentProfile?.role;
   if(role === 'viewer'){

@@ -7876,7 +7876,7 @@ async function ensureMaintenanceData(){
 }
 
 async function renderMaintenance(){
-  $('#pageEyebrow').textContent = 'MENU DATA';
+  $('#pageEyebrow').textContent = '';
   $('#pageTitle').textContent = 'Maintenance';
   $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
   const rows = await ensureMaintenanceData();
@@ -8492,7 +8492,7 @@ async function ensurePcRpcData(){
 }
 
 async function renderPcRpc(){
-  $('#pageEyebrow').textContent = 'MENU DATA';
+  $('#pageEyebrow').textContent = '';
   $('#pageTitle').textContent = 'PC & RPC Eks Non RKT';
   $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
   const rows = await ensurePcRpcData();

@@ -395,7 +395,7 @@ function petaToggleStatusFilter(key) {
 }
 
 async function renderPeta() {
-  $('#pageEyebrow').textContent = 'MENU DATA';
+  $('#pageEyebrow').textContent = '';
   $('#pageTitle').textContent = 'Peta';
   $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
   await paintPeta();
