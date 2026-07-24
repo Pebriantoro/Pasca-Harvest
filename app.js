@@ -2868,6 +2868,11 @@ function drawDonut(canvasId, dataMap, semantic, customColors){
     options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, usePointStyle:true, pointStyle:'circle', font:{size:11} } }, datalabels: dlPercentPlugin() }, cutout:'62%',
       animation:{ animateRotate:true, animateScale:true } }
   });
+  // Paksa resize sekali di frame berikutnya: memperbaiki kasus canvas
+  // tampil kosong (tanpa error) karena ukuran container belum settle
+  // saat Chart.js pertama kali membaca dimensinya (mis. langsung setelah
+  // innerHTML diganti / CSS grid belum selesai layout).
+  requestAnimationFrame(()=>{ try{ chartInstances[canvasId] && chartInstances[canvasId].resize(); }catch(_e){} });
   }catch(e){ console.error("Chart render gagal:", "drawDonut", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
 // Bar horizontal tunggal bertumpuk (gaya "Monitoring Replanting/Blanking" di
@@ -2911,6 +2916,11 @@ function drawStatusProgressBar(canvasId, dataMap){
       }
     }
   });
+  // Paksa resize sekali di frame berikutnya: memperbaiki kasus canvas
+  // tampil kosong (tanpa error) karena ukuran container belum settle
+  // saat Chart.js pertama kali membaca dimensinya (mis. langsung setelah
+  // innerHTML diganti / CSS grid belum selesai layout).
+  requestAnimationFrame(()=>{ try{ chartInstances[canvasId] && chartInstances[canvasId].resize(); }catch(_e){} });
   }catch(e){ console.error("Chart render gagal:", "drawStatusProgressBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
 // Bar horizontal tunggal bertumpuk untuk kategori bebas (bukan status
@@ -2948,6 +2958,11 @@ function drawCategoryProgressBar(canvasId, dataMap, orderKeys){
       }
     }
   });
+  // Paksa resize sekali di frame berikutnya: memperbaiki kasus canvas
+  // tampil kosong (tanpa error) karena ukuran container belum settle
+  // saat Chart.js pertama kali membaca dimensinya (mis. langsung setelah
+  // innerHTML diganti / CSS grid belum selesai layout).
+  requestAnimationFrame(()=>{ try{ chartInstances[canvasId] && chartInstances[canvasId].resize(); }catch(_e){} });
   }catch(e){ console.error("Chart render gagal:", "drawCategoryProgressBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
 function drawGroupedBar(canvasId, categories, seriesMap, colors){
@@ -2963,6 +2978,11 @@ function drawGroupedBar(canvasId, categories, seriesMap, colors){
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
       scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}, precision:0}, grid:{color:CHART_GRID} } } }
   });
+  // Paksa resize sekali di frame berikutnya: memperbaiki kasus canvas
+  // tampil kosong (tanpa error) karena ukuran container belum settle
+  // saat Chart.js pertama kali membaca dimensinya (mis. langsung setelah
+  // innerHTML diganti / CSS grid belum selesai layout).
+  requestAnimationFrame(()=>{ try{ chartInstances[canvasId] && chartInstances[canvasId].resize(); }catch(_e){} });
   }catch(e){ console.error("Chart render gagal:", "drawGroupedBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
 // Bar chart sederhana per status (Done/Progress/Not Yet) dengan warna semantik tetap
@@ -2981,14 +3001,31 @@ function drawStatusBar(canvasId, dataMap){
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
       scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{color:CHART_GRID} } } }
   });
+  // Paksa resize sekali di frame berikutnya: memperbaiki kasus canvas
+  // tampil kosong (tanpa error) karena ukuran container belum settle
+  // saat Chart.js pertama kali membaca dimensinya (mis. langsung setelah
+  // innerHTML diganti / CSS grid belum selesai layout).
+  requestAnimationFrame(()=>{ try{ chartInstances[canvasId] && chartInstances[canvasId].resize(); }catch(_e){} });
   }catch(e){ console.error("Chart render gagal:", "drawStatusBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
 function fmtDDMMM(iso){
   if(!iso) return '';
-  const d = new Date(iso + 'T00:00:00');
-  const dd = String(d.getDate()).padStart(2,'0');
-  const mmm = d.toLocaleDateString('id-ID', { month:'short' });
-  return `${dd}-${mmm}`;
+  try{
+    // Ambil cuma bagian YYYY-MM-DD; kolom tanggal kadang berisi timestamp
+    // penuh (mis. "2026-07-24T10:00:00+00:00"), yang kalau ditempel lagi
+    // dengan "T00:00:00" jadi string tanggal tidak valid -> new Date()
+    // Invalid Date -> toLocaleDateString() throw RangeError. Karena baris
+    // ini biasa dipanggil sebagai argumen drawStackedBar/drawLineMulti
+    // (dieval SEBELUM masuk fungsi), exception di sini bisa bikin
+    // grafik-grafik setelahnya di baris kode yang sama batal digambar
+    // sama sekali walau tidak ada error yang kelihatan di grafik itu sendiri.
+    const datePart = iso.toString().slice(0,10);
+    const d = new Date(datePart + 'T00:00:00');
+    if(isNaN(d.getTime())) return '';
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mmm = d.toLocaleDateString('id-ID', { month:'short' });
+    return `${dd}-${mmm}`;
+  }catch(e){ return ''; }
 }
 function drawBar(canvasId, dataMap, orderKeys){
   try{
@@ -3004,6 +3041,11 @@ function drawBar(canvasId, dataMap, orderKeys){
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
       scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{color:CHART_GRID} } } }
   });
+  // Paksa resize sekali di frame berikutnya: memperbaiki kasus canvas
+  // tampil kosong (tanpa error) karena ukuran container belum settle
+  // saat Chart.js pertama kali membaca dimensinya (mis. langsung setelah
+  // innerHTML diganti / CSS grid belum selesai layout).
+  requestAnimationFrame(()=>{ try{ chartInstances[canvasId] && chartInstances[canvasId].resize(); }catch(_e){} });
   }catch(e){ console.error("Chart render gagal:", "drawBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
 function drawHBar(canvasId, dataMap){
@@ -3018,6 +3060,11 @@ function drawHBar(canvasId, dataMap){
         datalabels:{ ...DL_STYLE, anchor:'end', align:'right', offset:4, formatter:dlValue } },
       scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{color:CHART_GRID} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
+  // Paksa resize sekali di frame berikutnya: memperbaiki kasus canvas
+  // tampil kosong (tanpa error) karena ukuran container belum settle
+  // saat Chart.js pertama kali membaca dimensinya (mis. langsung setelah
+  // innerHTML diganti / CSS grid belum selesai layout).
+  requestAnimationFrame(()=>{ try{ chartInstances[canvasId] && chartInstances[canvasId].resize(); }catch(_e){} });
   }catch(e){ console.error("Chart render gagal:", "drawHBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
 function drawStackedBar(canvasId, categories, seriesMap, stacked, colors){
@@ -3034,6 +3081,11 @@ function drawStackedBar(canvasId, categories, seriesMap, stacked, colors){
         datalabels:{ ...DL_STYLE, anchor:'center', align:'center', formatter:dlValue } },
       scales:{ x:{ stacked, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ stacked, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{color:CHART_GRID} } } }
   });
+  // Paksa resize sekali di frame berikutnya: memperbaiki kasus canvas
+  // tampil kosong (tanpa error) karena ukuran container belum settle
+  // saat Chart.js pertama kali membaca dimensinya (mis. langsung setelah
+  // innerHTML diganti / CSS grid belum selesai layout).
+  requestAnimationFrame(()=>{ try{ chartInstances[canvasId] && chartInstances[canvasId].resize(); }catch(_e){} });
   }catch(e){ console.error("Chart render gagal:", "drawStackedBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
 function drawLineMulti(canvasId, categories, seriesMap, colors, showLabels){
@@ -3057,6 +3109,11 @@ function drawLineMulti(canvasId, categories, seriesMap, colors, showLabels){
         datalabels: showLabels ? { ...DL_STYLE, offset:4, formatter:dlValue } : { display:false } },
       scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{color:CHART_GRID} } } }
   });
+  // Paksa resize sekali di frame berikutnya: memperbaiki kasus canvas
+  // tampil kosong (tanpa error) karena ukuran container belum settle
+  // saat Chart.js pertama kali membaca dimensinya (mis. langsung setelah
+  // innerHTML diganti / CSS grid belum selesai layout).
+  requestAnimationFrame(()=>{ try{ chartInstances[canvasId] && chartInstances[canvasId].resize(); }catch(_e){} });
   }catch(e){ console.error("Chart render gagal:", "drawLineMulti", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
 function drawPie(canvasId, dataMap){
