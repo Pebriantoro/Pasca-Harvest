@@ -4458,19 +4458,25 @@ function paintProduktivitas(allRows){
     </div>
   `;
 
-  $('#searchInput_produktivitas')?.addEventListener('input', debounce(function(){
-    st.search = this.value; st.page = 1; paintProduktivitas(state[PRODUKTIVITAS_TABLE].data);
-    setTimeout(()=>{ const inp = $('#searchInput_produktivitas'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
-  }, 300));
-  $('#filterKegiatan_prod')?.addEventListener('change', function(){ st.filterKegiatan = this.value; st.page = 1; paintProduktivitas(st.data); });
-  $('#filterPekerja_prod')?.addEventListener('change', function(){ st.filterPekerja = this.value; st.page = 1; paintProduktivitas(st.data); });
-  $('#filterDari_prod')?.addEventListener('change', function(){ st.filterDari = this.value; st.page = 1; paintProduktivitas(st.data); });
-  $('#filterSampai_prod')?.addEventListener('change', function(){ st.filterSampai = this.value; st.page = 1; paintProduktivitas(st.data); });
-
+  // Grafik digambar SEGERA setelah HTML ter-render, SEBELUM wiring listener
+  // apapun di bawah. Ini sengaja dipisah try/catch sendiri: kalau ada error
+  // di kode wiring (mis. elemen filter belum ada di DOM), grafik tetap
+  // muncul karena tidak lagi ketahan/gagal ikut oleh error yang tidak terkait.
   drawHBar('chart_prod_pekerja', pekerjaPctMap);
   drawDonut('chart_prod_kegiatan', kegiatanAgg);
   drawStackedBar('chart_prod_tren', dateKeys.map(fmtDDMMM), trendSeries, false, ['#5FAE7D','#C1543C']);
   drawBar('chart_prod_kegiatan_pct', kegiatanPctMap);
+
+  try{
+    $('#searchInput_produktivitas')?.addEventListener('input', debounce(function(){
+      st.search = this.value; st.page = 1; paintProduktivitas(state[PRODUKTIVITAS_TABLE].data);
+      setTimeout(()=>{ const inp = $('#searchInput_produktivitas'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
+    }, 300));
+    $('#filterKegiatan_prod')?.addEventListener('change', function(){ st.filterKegiatan = this.value; st.page = 1; paintProduktivitas(st.data); });
+    $('#filterPekerja_prod')?.addEventListener('change', function(){ st.filterPekerja = this.value; st.page = 1; paintProduktivitas(st.data); });
+    $('#filterDari_prod')?.addEventListener('change', function(){ st.filterDari = this.value; st.page = 1; paintProduktivitas(st.data); });
+    $('#filterSampai_prod')?.addEventListener('change', function(){ st.filterSampai = this.value; st.page = 1; paintProduktivitas(st.data); });
+  }catch(e){ console.error('Wiring listener Produktivitas Harian gagal:', e); }
 }
 
 function openProduktivitasModal(id){
@@ -4943,17 +4949,19 @@ function paintMonitoringMotor(allRows){
     </div>
   `;
 
-  $('#searchInput_motor')?.addEventListener('input', debounce(function(){
-    st.search = this.value; st.page = 1; paintMonitoringMotor(state[MONITORING_MOTOR_TABLE].data);
-    setTimeout(()=>{ const inp = $('#searchInput_motor'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
-  }, 300));
-  $('#filterStatus_motor')?.addEventListener('change', function(){ st.filterStatus = this.value; st.page = 1; paintMonitoringMotor(st.data); });
-  $('#filterKondisi_motor')?.addEventListener('change', function(){ st.filterKondisi = this.value; st.page = 1; paintMonitoringMotor(st.data); });
-  $('#filterZona_motor')?.addEventListener('change', function(){ st.filterZona = this.value; st.page = 1; paintMonitoringMotor(st.data); });
-
   drawStatusProgressBar('chart_motor_kondisi', kondisiAgg);
   drawDonut('chart_motor_status', statusAgg, false);
   drawBar('chart_motor_zona', zonaAgg);
+
+  try{
+    $('#searchInput_motor')?.addEventListener('input', debounce(function(){
+      st.search = this.value; st.page = 1; paintMonitoringMotor(state[MONITORING_MOTOR_TABLE].data);
+      setTimeout(()=>{ const inp = $('#searchInput_motor'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
+    }, 300));
+    $('#filterStatus_motor')?.addEventListener('change', function(){ st.filterStatus = this.value; st.page = 1; paintMonitoringMotor(st.data); });
+    $('#filterKondisi_motor')?.addEventListener('change', function(){ st.filterKondisi = this.value; st.page = 1; paintMonitoringMotor(st.data); });
+    $('#filterZona_motor')?.addEventListener('change', function(){ st.filterZona = this.value; st.page = 1; paintMonitoringMotor(st.data); });
+  }catch(e){ console.error('Wiring listener Monitoring Motor gagal:', e); }
 }
 
 function openMonitoringMotorModal(id){
@@ -5225,17 +5233,19 @@ function paintMonitoringAset(allRows){
     </div>
   `;
 
-  $('#searchInput_aset')?.addEventListener('input', debounce(function(){
-    st.search = this.value; st.page = 1; paintMonitoringAset(state[MONITORING_ASET_TABLE].data);
-    setTimeout(()=>{ const inp = $('#searchInput_aset'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
-  }, 300));
-  $('#filterCoa_aset')?.addEventListener('change', function(){ st.filterCoa = this.value; st.page = 1; paintMonitoringAset(st.data); });
-  $('#filterSubKategori_aset')?.addEventListener('change', function(){ st.filterSubKategori = this.value; st.page = 1; paintMonitoringAset(st.data); });
-  $('#filterKondisi_aset')?.addEventListener('change', function(){ st.filterKondisi = this.value; st.page = 1; paintMonitoringAset(st.data); });
-
   drawStatusProgressBar('chart_aset_kondisi', kondisiAgg);
   drawHBar('chart_aset_coa', coaAgg);
   drawHBar('chart_aset_subkategori', subKategoriAgg);
+
+  try{
+    $('#searchInput_aset')?.addEventListener('input', debounce(function(){
+      st.search = this.value; st.page = 1; paintMonitoringAset(state[MONITORING_ASET_TABLE].data);
+      setTimeout(()=>{ const inp = $('#searchInput_aset'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
+    }, 300));
+    $('#filterCoa_aset')?.addEventListener('change', function(){ st.filterCoa = this.value; st.page = 1; paintMonitoringAset(st.data); });
+    $('#filterSubKategori_aset')?.addEventListener('change', function(){ st.filterSubKategori = this.value; st.page = 1; paintMonitoringAset(st.data); });
+    $('#filterKondisi_aset')?.addEventListener('change', function(){ st.filterKondisi = this.value; st.page = 1; paintMonitoringAset(st.data); });
+  }catch(e){ console.error('Wiring listener Monitoring Aset gagal:', e); }
 }
 
 function openMonitoringAsetModal(id){
@@ -5515,23 +5525,25 @@ function paintHeImplement(allRows){
     </div>
   `;
 
-  const searchInp = $('#searchInput_he');
-  if(searchInp){
-    searchInp.value = st.search;
-    searchInp.addEventListener('input', debounce(function(){
-      st.search = this.value; st.page = 1; paintHeImplement(state[HE_IMPLEMENT_TABLE].data);
-      setTimeout(()=>{ const inp = $('#searchInput_he'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
-    }, 300));
-  }
-  $('#filterKategori_he')?.addEventListener('change', function(){ st.filterKategori = this.value; st.page = 1; paintHeImplement(st.data); });
-  $('#filterType_he')?.addEventListener('change', function(){ st.filterType = this.value; st.page = 1; paintHeImplement(st.data); });
-  $('#filterKondisi_he')?.addEventListener('change', function(){ st.filterKondisi = this.value; st.page = 1; paintHeImplement(st.data); });
-  $('#filterVendor_he')?.addEventListener('change', function(){ st.filterVendor = this.value; st.page = 1; paintHeImplement(st.data); });
-
   drawDonut('chart_he_kondisi', kondisiAgg, false, { 'Baik':'#5FAE7D', 'Breakdown':'#C1543C' });
   drawDonut('chart_he_kategori', kategoriAgg, false, { 'HE':'#5B8FA8', 'Implement':'#D9A94A' });
   drawHBar('chart_he_type', typeAgg);
   drawHBar('chart_he_vendor', vendorAgg);
+
+  try{
+    const searchInp = $('#searchInput_he');
+    if(searchInp){
+      searchInp.value = st.search;
+      searchInp.addEventListener('input', debounce(function(){
+        st.search = this.value; st.page = 1; paintHeImplement(state[HE_IMPLEMENT_TABLE].data);
+        setTimeout(()=>{ const inp = $('#searchInput_he'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
+      }, 300));
+    }
+    $('#filterKategori_he')?.addEventListener('change', function(){ st.filterKategori = this.value; st.page = 1; paintHeImplement(st.data); });
+    $('#filterType_he')?.addEventListener('change', function(){ st.filterType = this.value; st.page = 1; paintHeImplement(st.data); });
+    $('#filterKondisi_he')?.addEventListener('change', function(){ st.filterKondisi = this.value; st.page = 1; paintHeImplement(st.data); });
+    $('#filterVendor_he')?.addEventListener('change', function(){ st.filterVendor = this.value; st.page = 1; paintHeImplement(st.data); });
+  }catch(e){ console.error('Wiring listener HE Implement gagal:', e); }
 }
 
 function openHeImplementModal(id){
@@ -5780,14 +5792,16 @@ function paintActualTK(allRows){
     </div>
   `;
 
-  $('#searchInput_actualtk')?.addEventListener('input', debounce(function(){
-    st.search = this.value; st.page = 1; paintActualTK(state[ACTUAL_TK_TABLE].data);
-    setTimeout(()=>{ const inp = $('#searchInput_actualtk'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
-  }, 300));
-  $('#filterZona_actualtk')?.addEventListener('change', function(){ st.filterZona = this.value; st.page = 1; paintActualTK(st.data); });
-
   drawHBar('chart_actualtk_kebutuhan', kebutuhanPerZona);
   drawHBar('chart_actualtk_aktual', aktualPerZona);
+
+  try{
+    $('#searchInput_actualtk')?.addEventListener('input', debounce(function(){
+      st.search = this.value; st.page = 1; paintActualTK(state[ACTUAL_TK_TABLE].data);
+      setTimeout(()=>{ const inp = $('#searchInput_actualtk'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
+    }, 300));
+    $('#filterZona_actualtk')?.addEventListener('change', function(){ st.filterZona = this.value; st.page = 1; paintActualTK(st.data); });
+  }catch(e){ console.error('Wiring listener Actual TK gagal:', e); }
 }
 
 function openActualTKModal(id){
@@ -6038,14 +6052,16 @@ function paintPlanKedatanganTK(allRows){
     </div>
   `;
 
-  $('#searchInput_plantk')?.addEventListener('input', debounce(function(){
-    st.search = this.value; st.page = 1; paintPlanKedatanganTK(state[PLAN_KEDATANGAN_TABLE].data);
-    setTimeout(()=>{ const inp = $('#searchInput_plantk'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
-  }, 300));
-  $('#filterZona_plantk')?.addEventListener('change', function(){ st.filterZona = this.value; st.page = 1; paintPlanKedatanganTK(st.data); });
-
   drawHBar('chart_plantk_rencana', rencanaPerZona);
   drawHBar('chart_plantk_aktual', aktualPerZona);
+
+  try{
+    $('#searchInput_plantk')?.addEventListener('input', debounce(function(){
+      st.search = this.value; st.page = 1; paintPlanKedatanganTK(state[PLAN_KEDATANGAN_TABLE].data);
+      setTimeout(()=>{ const inp = $('#searchInput_plantk'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
+    }, 300));
+    $('#filterZona_plantk')?.addEventListener('change', function(){ st.filterZona = this.value; st.page = 1; paintPlanKedatanganTK(st.data); });
+  }catch(e){ console.error('Wiring listener Plan Kedatangan TK gagal:', e); }
 }
 
 function openPlanKedatanganModal(id){
@@ -6771,18 +6787,20 @@ function paintProduktivitasKontraktor(allRows){
     </div>
   `;
 
-  $('#searchInput_pk')?.addEventListener('input', debounce(function(){
-    st.search = this.value; st.page = 1; paintProduktivitasKontraktor(state[PK_TABLE].data);
-    setTimeout(()=>{ const inp = $('#searchInput_pk'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
-  }, 300));
-  $('#filterKontraktor_pk')?.addEventListener('change', function(){ st.filterKontraktor = this.value; st.page = 1; paintProduktivitasKontraktor(st.data); });
-  $('#filterKegiatan_pk')?.addEventListener('change', function(){ st.filterKegiatan = this.value; st.page = 1; paintProduktivitasKontraktor(st.data); });
-  $('#filterKetHasil_pk')?.addEventListener('change', function(){ st.filterKetHasil = this.value; st.page = 1; paintProduktivitasKontraktor(st.data); });
-
   drawDonut('chart_pk_kethasil', ketHasilAgg);
   drawHBar('chart_pk_jumlahwo', jumlahWOByKontraktor);
   drawHBar('chart_pk_luasbapp', luasByKontraktor);
   drawHBar('chart_pk_kegiatan', kegiatanAgg);
+
+  try{
+    $('#searchInput_pk')?.addEventListener('input', debounce(function(){
+      st.search = this.value; st.page = 1; paintProduktivitasKontraktor(state[PK_TABLE].data);
+      setTimeout(()=>{ const inp = $('#searchInput_pk'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
+    }, 300));
+    $('#filterKontraktor_pk')?.addEventListener('change', function(){ st.filterKontraktor = this.value; st.page = 1; paintProduktivitasKontraktor(st.data); });
+    $('#filterKegiatan_pk')?.addEventListener('change', function(){ st.filterKegiatan = this.value; st.page = 1; paintProduktivitasKontraktor(st.data); });
+    $('#filterKetHasil_pk')?.addEventListener('change', function(){ st.filterKetHasil = this.value; st.page = 1; paintProduktivitasKontraktor(st.data); });
+  }catch(e){ console.error('Wiring listener Produktivitas Kontraktor gagal:', e); }
 }
 
 function openPKModal(id){
@@ -8665,21 +8683,22 @@ function paintPcRpc(allRows){
     </div>
   `;
 
-  $('#searchInput_pcrpc')?.addEventListener('input', debounce(function(){
-    st.search = this.value; st.page = 1; paintPcRpc(state[PC_RPC_TABLE].data);
-    setTimeout(()=>{ const inp = $('#searchInput_pcrpc'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
-  }, 300));
-  $('#filterZona_pr')?.addEventListener('change', function(){ st.filterZona = this.value; st.page = 1; paintPcRpc(st.data); });
-  $('#filterFuture_pr')?.addEventListener('change', function(){ st.filterFuture = this.value; st.page = 1; paintPcRpc(st.data); });
-  $('#filterActionPlan_pr')?.addEventListener('change', function(){ st.filterActionPlan = this.value; st.page = 1; paintPcRpc(st.data); });
-  $('#filterPhasing_pr')?.addEventListener('change', function(){ st.filterPhasing = this.value; st.page = 1; paintPcRpc(st.data); });
-
   drawDonut('chart_pr_future', futureAgg, false);
   drawCategoryProgressBar('chart_pr_action_plan', actionPlanAgg, PR_ACTION_PLAN_OPTIONS);
   drawBar('chart_pr_phasing', Object.fromEntries(PHASING_CHART_MONTHS.map(m=>[m, +(phasingAgg[m]||0).toFixed(2)])));
   if(Object.keys(germinasiBucketAgg).length) drawDonut('chart_pr_germinasi', germinasiBucketAgg, false, PR_GERMINASI_COLORS);
   else destroyChart('chart_pr_germinasi');
 
+  try{
+    $('#searchInput_pcrpc')?.addEventListener('input', debounce(function(){
+      st.search = this.value; st.page = 1; paintPcRpc(state[PC_RPC_TABLE].data);
+      setTimeout(()=>{ const inp = $('#searchInput_pcrpc'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }, 0);
+    }, 300));
+    $('#filterZona_pr')?.addEventListener('change', function(){ st.filterZona = this.value; st.page = 1; paintPcRpc(st.data); });
+    $('#filterFuture_pr')?.addEventListener('change', function(){ st.filterFuture = this.value; st.page = 1; paintPcRpc(st.data); });
+    $('#filterActionPlan_pr')?.addEventListener('change', function(){ st.filterActionPlan = this.value; st.page = 1; paintPcRpc(st.data); });
+    $('#filterPhasing_pr')?.addEventListener('change', function(){ st.filterPhasing = this.value; st.page = 1; paintPcRpc(st.data); });
+  }catch(e){ console.error('Wiring listener PC/RPC gagal:', e); }
 }
 
 function openPcRpcModal(id){
