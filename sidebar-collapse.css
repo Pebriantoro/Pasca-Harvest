@@ -101,7 +101,7 @@
 .sidebar-collapse-toggle svg{
   width:14px; height:14px; transition: transform .28s cubic-bezier(.4,0,.2,1);
 }
-.sidebar.collapsed .sidebar-collapse-toggle svg{ transform: rotate(180deg); }
+
 
 /* Hide the desktop collapse toggle on small/mobile widths, where the sidebar
    is already an off-canvas overlay controlled by the hamburger button */

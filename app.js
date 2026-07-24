@@ -2716,7 +2716,7 @@ function paintTablePage(table, allRows){
     drawStatusProgressBar('chart_status_'+table, kbStatusAgg);
     const kbSeriesMap = {};
     KB_STATUS_CATS.forEach(cat => { kbSeriesMap[cat] = KB_KATEGORI_KEYS.map(k => kbKategoriMulti[k][cat] || 0); });
-    drawGroupedBar('chart_kb_kategori', KB_KATEGORI_LABELS, kbSeriesMap);
+    drawGroupedBar('chart_kb_kategori', KB_KATEGORI_LABELS, kbSeriesMap, undefined, { hideYAxis:true });
   } else {
     drawStatusProgressBar('chart_status_'+table, statusAgg);
     if(isPascaHarvest){
@@ -3441,7 +3441,9 @@ async function renderDashboardKondisi(){
     </div>
   `;
 
-  const monthLabels = Array.from({length:12},(_,i)=>i+1);
+  // Cuma tampilkan bulan yang beneran ada datanya (biar grafik gak nyisain
+  // ruang kosong panjang buat bulan-bulan yang belum keisi).
+  const monthLabels = monthsWithData.length ? [...monthsWithData].sort((a,b) => a-b) : [1];
 
   const trendSeries = { Baik:[], Cukup:[], Kurang:[] };
   monthLabels.forEach(m => {
@@ -3450,7 +3452,7 @@ async function renderDashboardKondisi(){
     trendSeries.Cukup.push(recs.filter(r => r.status_bulan==='Cukup').length);
     trendSeries.Kurang.push(recs.filter(r => r.status_bulan==='Kurang').length);
   });
-  drawStackedBar('chart_kondisi_trend', monthLabels.map(m=>'B'+m), trendSeries);
+  drawStackedBar('chart_kondisi_trend', monthLabels.map(m=>'B'+m), trendSeries, true, undefined, { hideYAxis:true });
 
   const persenByKategori = {};
   KATEGORI_KONDISI.forEach(kat => {
@@ -3461,7 +3463,7 @@ async function renderDashboardKondisi(){
       return Math.round((baik/recs.length)*1000)/10;
     });
   });
-  drawLineMulti('chart_kondisi_kategori', monthLabels.map(m=>'Bulan '+m), persenByKategori);
+  drawLineMulti('chart_kondisi_kategori', monthLabels.map(m=>'Bulan '+m), persenByKategori, undefined, undefined, undefined, true);
 
   $('#kategoriPersenTbody').innerHTML = monthLabels.map((m,i) => `
     <tr${m===Number(selectedMonth) ? ' style="background:var(--bg-card-hover); font-weight:600;"' : ''}>

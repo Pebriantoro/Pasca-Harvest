@@ -34,7 +34,7 @@
     btn.type = 'button';
     btn.id = 'sidebarCollapseToggle';
     btn.className = 'sidebar-collapse-toggle';
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 6-6 6 6 6"/></svg>';
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
     header.style.position = header.style.position || 'relative';
     header.appendChild(btn);
 

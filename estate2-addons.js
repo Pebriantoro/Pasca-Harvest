@@ -418,7 +418,7 @@ async function renderTargetActual(){
 
   drawGroupedBar('chart_target_actual', ZONA_LIST.map(z=>'Zona '+z),
     { Target: ZONA_LIST.map(z=>targetByZona[z]), Actual: ZONA_LIST.map(z=>actualByZona[z]) },
-    ['#D9A94A', '#5FAE7D']);
+    ['#D9A94A', '#5FAE7D'], { hideYAxis:true });
 
   $('#targetModuleSelect').addEventListener('change', function(){ TARGET_STATE.module = this.value; renderTargetActual(); });
   $('#targetBulanSelect').addEventListener('change', function(){ TARGET_STATE.bulan = this.value; renderTargetActual(); });
