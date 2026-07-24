@@ -5886,8 +5886,8 @@ function paintActualTK(allRows){
     </div>
   `;
 
-  drawHBar('chart_actualtk_kebutuhan', kebutuhanPerZona);
-  drawHBar('chart_actualtk_aktual', aktualPerZona);
+  drawHBar('chart_actualtk_kebutuhan', kebutuhanPerZona, { hideXAxis:true });
+  drawHBar('chart_actualtk_aktual', aktualPerZona, { hideXAxis:true });
 
   try{
     $('#searchInput_actualtk')?.addEventListener('input', debounce(function(){
@@ -6146,8 +6146,8 @@ function paintPlanKedatanganTK(allRows){
     </div>
   `;
 
-  drawHBar('chart_plantk_rencana', rencanaPerZona);
-  drawHBar('chart_plantk_aktual', aktualPerZona);
+  drawHBar('chart_plantk_rencana', rencanaPerZona, { hideXAxis:true });
+  drawHBar('chart_plantk_aktual', aktualPerZona, { hideXAxis:true });
 
   try{
     $('#searchInput_plantk')?.addEventListener('input', debounce(function(){

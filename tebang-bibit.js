@@ -103,7 +103,7 @@ const TB_ACTIVITY_FIELDS = [
 const TB_ACTIVITY_GROUPS = [
   { key:'penebangan', title:'Penebangan Bibit', fields:['tb_status_tebang_bibit'] },
   { key:'pemeliharaan_awal', title:'Pemeliharaan Awal (FSA & POST)', fields:['tb_status_fsa','tb_status_post1','tb_status_post2','tb_status_post3'] },
-  { key:'pengendalian_opt', title:'Pengendalian OPT & Gulma', fields:['tb_status_weeding_rayutan','tb_status_pengendalian_hpt','tb_status_hama_tikus'] },
+  { key:'pengendalian_opt', title:'Pengendalian Hama & Gulma Rayutan', fields:['tb_status_weeding_rayutan','tb_status_pengendalian_hpt','tb_status_hama_tikus'] },
 ];
 // Header di file Excel sudah sama persis dengan label FIELD_META, kecuali kolom zona.
 const TB_HEADER_ALIASES = { zona: 'Zona Plantation' };
@@ -371,8 +371,8 @@ function paintTebangBibit(allRows){
 
   drawDonut('chart_tb_status', statusAgg, true);
   drawDonut('chart_tb_varietas', varietasAgg, false);
-  drawBar('chart_tb_phasing', Object.fromEntries(PHASING_CHART_MONTHS.map(m=>[m, +(phasingAgg[m]||0).toFixed(2)])));
-  drawGroupedBar('chart_tb_populasi', zonaOrder, populasiSeries, ['#5B8FA8','#D9A94A']);
+  drawBar('chart_tb_phasing', Object.fromEntries(PHASING_CHART_MONTHS.map(m=>[m, +(phasingAgg[m]||0).toFixed(2)])), undefined, { hideYAxis:true });
+  drawGroupedBar('chart_tb_populasi', zonaOrder, populasiSeries, ['#5B8FA8','#D9A94A'], { hideYAxis:true });
 }
 
 function openTebangBibitModal(id){
