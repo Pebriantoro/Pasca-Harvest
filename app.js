@@ -2566,11 +2566,11 @@ function paintTablePage(table, allRows){
             <div style="flex:1; min-width:110px; text-align:center; padding:6px 4px; border-right:${i < LAND_PREP_KEYS.length-1 ? '1px solid var(--border-soft)' : 'none'};">
               <div style="font-weight:700; color:var(--text-primary); font-size:13px; margin-bottom:10px; letter-spacing:.3px;">${esc(LAND_PREP_LABELS[i])}</div>
               <div style="font-size:10.5px; color:var(--accent-green); text-transform:uppercase; letter-spacing:.4px;">Done</div>
-              <div style="font-weight:700; color:var(--accent-green); font-size:15px; margin-bottom:8px; cursor:pointer; text-decoration:underline dotted;" title="Klik buat lihat daftar petak" onclick="toggleLandPrepDetail('${table}','${k}','${esc(LAND_PREP_LABELS[i])}','Done')">${fmtNum(done)}</div>
+              <div style="font-weight:700; color:var(--accent-green); font-size:15px; margin-bottom:8px; cursor:pointer;" title="Klik buat lihat daftar petak" onclick="toggleLandPrepDetail('${table}','${k}','${esc(LAND_PREP_LABELS[i])}','Done')">${fmtNum(done)}</div>
               <div style="font-size:10.5px; color:var(--accent-gold); text-transform:uppercase; letter-spacing:.4px;">Progress</div>
-              <div style="font-weight:700; color:var(--accent-gold); font-size:15px; margin-bottom:8px; cursor:pointer; text-decoration:underline dotted;" title="Klik buat lihat daftar petak" onclick="toggleLandPrepDetail('${table}','${k}','${esc(LAND_PREP_LABELS[i])}','Progress')">${fmtNum(progress)}</div>
+              <div style="font-weight:700; color:var(--accent-gold); font-size:15px; margin-bottom:8px; cursor:pointer;" title="Klik buat lihat daftar petak" onclick="toggleLandPrepDetail('${table}','${k}','${esc(LAND_PREP_LABELS[i])}','Progress')">${fmtNum(progress)}</div>
               <div style="font-size:10.5px; color:var(--accent-red); text-transform:uppercase; letter-spacing:.4px;">Not Yet</div>
-              <div style="font-weight:700; color:var(--accent-red); font-size:15px; cursor:pointer; text-decoration:underline dotted;" title="Klik buat lihat daftar petak" onclick="toggleLandPrepDetail('${table}','${k}','${esc(LAND_PREP_LABELS[i])}','Not Yet')">${fmtNum(notYet)}</div>
+              <div style="font-weight:700; color:var(--accent-red); font-size:15px; cursor:pointer;" title="Klik buat lihat daftar petak" onclick="toggleLandPrepDetail('${table}','${k}','${esc(LAND_PREP_LABELS[i])}','Not Yet')">${fmtNum(notYet)}</div>
             </div>`;
           }).join('')}
         </div>
@@ -2615,11 +2615,11 @@ function paintTablePage(table, allRows){
             <div style="flex:1; min-width:120px; text-align:center; padding:6px 4px; border-right:${i < staffPengecekanNames.length-1 ? '1px solid var(--border-soft)' : 'none'};">
               <div style="font-weight:700; color:var(--text-primary); font-size:13px; margin-bottom:10px; letter-spacing:.3px; min-height:34px; display:flex; align-items:center; justify-content:center; line-height:1.25;">${esc(name)}</div>
               <div style="font-size:10.5px; color:var(--accent-blue); text-transform:uppercase; letter-spacing:.4px;">Selesai Tebang</div>
-              <div style="font-weight:700; color:var(--accent-blue); font-size:15px; margin-bottom:8px; cursor:pointer; text-decoration:underline dotted;" title="Klik buat lihat daftar petak" onclick="toggleStaffPengecekanDetail('${table}','${esc(name)}','Selesai Tebang','ALL')">${s.total}</div>
+              <div style="font-weight:700; color:var(--accent-blue); font-size:15px; margin-bottom:8px; cursor:pointer;" title="Klik buat lihat daftar petak" onclick="toggleStaffPengecekanDetail('${table}','${esc(name)}','Selesai Tebang','ALL')">${s.total}</div>
               <div style="font-size:10.5px; color:var(--accent-green); text-transform:uppercase; letter-spacing:.4px;">Sudah Pengecekan</div>
-              <div style="font-weight:700; color:var(--accent-green); font-size:15px; margin-bottom:8px; cursor:pointer; text-decoration:underline dotted;" title="Klik buat lihat daftar petak" onclick="toggleStaffPengecekanDetail('${table}','${esc(name)}','Sudah Pengecekan','SUDAH')">${s.sudah}</div>
+              <div style="font-weight:700; color:var(--accent-green); font-size:15px; margin-bottom:8px; cursor:pointer;" title="Klik buat lihat daftar petak" onclick="toggleStaffPengecekanDetail('${table}','${esc(name)}','Sudah Pengecekan','SUDAH')">${s.sudah}</div>
               <div style="font-size:10.5px; color:var(--accent-red); text-transform:uppercase; letter-spacing:.4px;">Belum Pengecekan</div>
-              <div style="font-weight:700; color:var(--accent-red); font-size:15px; cursor:pointer; text-decoration:underline dotted;" title="Klik buat lihat daftar petak" onclick="toggleStaffPengecekanDetail('${table}','${esc(name)}','Belum Pengecekan','BELUM')">${s.belum}</div>
+              <div style="font-weight:700; color:var(--accent-red); font-size:15px; cursor:pointer;" title="Klik buat lihat daftar petak" onclick="toggleStaffPengecekanDetail('${table}','${esc(name)}','Belum Pengecekan','BELUM')">${s.belum}</div>
             </div>`;
           }).join('')}
         </div>
@@ -6426,8 +6426,8 @@ function paintJustifikasiTCH(allRows){
             ${justifikasiGroups.length===0 ? `<tr><td colspan="3"><div class="empty-state">Belum ada keterangan yang diisi.</div></td></tr>` :
               justifikasiGroups.map((g,gi) => `<tr>
                 <td style="white-space:normal;">${esc(g.teks)}</td>
-                <td style="text-align:right; cursor:pointer; color:var(--accent-gold); text-decoration:underline dotted;" class="font-mono" onclick="openJustifikasiGroupModal(${gi})" title="Lihat daftar petak">${fmtNum(g.luas)}</td>
-                <td style="text-align:right; cursor:pointer; color:var(--accent-gold); text-decoration:underline dotted;" class="font-mono" onclick="openJustifikasiGroupModal(${gi})" title="Lihat daftar petak">${g.petak}</td>
+                <td style="text-align:right; cursor:pointer; color:var(--accent-gold);" class="font-mono" onclick="openJustifikasiGroupModal(${gi})" title="Lihat daftar petak">${fmtNum(g.luas)}</td>
+                <td style="text-align:right; cursor:pointer; color:var(--accent-gold);" class="font-mono" onclick="openJustifikasiGroupModal(${gi})" title="Lihat daftar petak">${g.petak}</td>
               </tr>`).join('')}
           </tbody>
           ${justifikasiGroups.length>0 ? `<tfoot><tr style="font-weight:700; background:var(--bg-elevated);">
@@ -7860,7 +7860,7 @@ function activityStatGridHTML(categories, seriesMap, fields, panelId, rows, size
       const progress = seriesMap['Progress'][i] || 0;
       const notYet = seriesMap['Not Yet'][i] || 0;
       const key = clickable ? fields[i] : '';
-      const clickAttr = (status) => clickable ? ` cursor:pointer; text-decoration:underline dotted;" title="Klik buat lihat daftar petak" onclick="toggleActivityStatDetail('${panelId}','${key}','${esc(label)}','${status}')"` : `"`;
+      const clickAttr = (status) => clickable ? ` cursor:pointer;" title="Klik buat lihat daftar petak" onclick="toggleActivityStatDetail('${panelId}','${key}','${esc(label)}','${status}')"` : `"`;
       return `
       <div style="flex:1; min-width:110px; text-align:center; padding:6px 4px; border-right:${i < categories.length-1 ? '1px solid var(--border-soft)' : 'none'};">
         <div style="font-weight:700; color:var(--text-primary); font-size:13px; margin-bottom:10px; letter-spacing:.3px;">${esc(label)}</div>
