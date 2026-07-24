@@ -3162,6 +3162,7 @@ async function renderDashboard(){
   // Kondisi Bulanan tidak punya kolom luas sendiri (satu petak bisa punya banyak baris,
   // satu per bulan) — jadi "Luas (Ha)"-nya dihitung dari luas petak UNIK (master Pasca
   // Harvest, size_rkt) yang sudah pernah disurvey/dicatat di Kondisi Bulanan, bukan 0.
+  let kbDoneTebangPetaks, kbSurveyedDoneCount;
   {
     const areaByPetak = {};
     masterRows.forEach(r => { const p=(r.petak||'').toString().trim(); if(p) areaByPetak[p] = parseFloat(r[TABLES['pasca_harvest'].areaField]) || 0; });
@@ -3183,6 +3184,7 @@ async function renderDashboard(){
       perCategory['Kondisi Bulanan'].pct = kbPct;
       perCategory['Kondisi Bulanan'].pctNote = `${surveyedDoneCount} dari ${doneTebangPetaks.size} petak selesai tebang sudah disurvey`;
     }
+    kbDoneTebangPetaks = doneTebangPetaks; kbSurveyedDoneCount = surveyedDoneCount;
   }
   const totalPetak = masterRows.length;
   const totalPetakDone = masterRows.filter(r=>(r.status_progress||'').toLowerCase()==='done').length;
@@ -3200,14 +3202,28 @@ async function renderDashboard(){
   const statusSeries = ['Not Yet','Progress','Done'];
   const stackedData = {};
   statusSeries.forEach(s => { stackedData[s] = tableKeys.map(t => allData[t].filter(r=>(r.status_progress||'Not Yet')===s || ((r.status_progress||'').toLowerCase()===s.toLowerCase())).length); });
+  // Kondisi Bulanan tidak punya kolom status_progress (lihat catatan di atas), jadi
+  // generic filter di atas otomatis menghitung semua barisnya sebagai "Not Yet" —
+  // bikin ring-nya nampilin 0% padahal tabel "Ringkasan per Modul" pakai metrik
+  // khusus (surveyedDoneCount / doneTebangPetaks.size). Samakan di sini biar konsisten.
+  {
+    const kbIdx = tableKeys.indexOf('kondisi_bulanan');
+    if(kbIdx !== -1){
+      stackedData['Done'][kbIdx] = kbSurveyedDoneCount;
+      stackedData['Progress'][kbIdx] = 0;
+      stackedData['Not Yet'][kbIdx] = Math.max(kbDoneTebangPetaks.size - kbSurveyedDoneCount, 0);
+    }
+  }
 
   const luasPerCategory = {}; tableKeys.forEach(t=> luasPerCategory[TABLES[t].label] = perCategory[TABLES[t].label].luas);
   // "Luas Gabungan per Zona" disamakan dengan cakupan "Total Petak" (385 petak master
   // Pasca Harvest) — bukan hasil penjumlahan lintas modul, karena RPC After Giling/
   // Extra Planting/Blanking/Ratoon adalah proses pada petak yang sama sehingga akan
   // dobel hitung luasnya kalau digabung.
+  const zonaCombinedRaw = {};
+  masterRows.forEach(r => { const z=(r.zona||'').toString().trim(); if(!z) return; zonaCombinedRaw[z]=(zonaCombinedRaw[z]||0)+(parseFloat(r[TABLES['pasca_harvest'].areaField])||0); });
   const zonaCombined = {};
-  masterRows.forEach(r => { const z=(r.zona||'').toString().trim(); if(!z) return; zonaCombined[z]=(zonaCombined[z]||0)+(parseFloat(r[TABLES['pasca_harvest'].areaField])||0); });
+  Object.keys(zonaCombinedRaw).sort().forEach(z => { zonaCombined[z] = zonaCombinedRaw[z]; });
 
   // Komparasi Estimasi TCH 2026 vs TCH Nett 2026, April s/d Oktober.
   // - Estimasi TCH 2026: dirata-ratakan per bulan berdasarkan Phasing 2026 (rencana
