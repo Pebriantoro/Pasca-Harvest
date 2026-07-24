@@ -171,10 +171,11 @@ function changePHEPage(mode, delta){
 // Agregasi per Kode Unit -> meniru sheet "Mont. HM" (Target/Realisasi/HM per
 // Ha/HK/To Date/Balance/Breakdown/% Avaibility/% Utility), dihitung dari log
 // harian, bukan diinput manual.
-function pheAggregateByUnit(rows, mode){
+function pheAggregateByUnit(rows, mode, groupField){
+  groupField = groupField || 'kode_unit_he';
   const byUnit = {};
   rows.forEach(r=>{
-    const u = (r.kode_unit_he || '(tanpa kode)').toString().trim() || '(tanpa kode)';
+    const u = (r[groupField] || '(tanpa kode)').toString().trim() || '(tanpa kode)';
     if(!byUnit[u]) byUnit[u] = {
       unit:u, jenis: r.jenis_unit_he2 || '-', kontraktor: r.kontraktor_he2 || '-',
       hk:0, hmActual:0, luasWo:0, breakdown:0, liter:0,
@@ -232,6 +233,7 @@ function paintProduktivitasHE(allRowsRaw, mode){
   const filteredRows = rows;
 
   const unitAgg = pheAggregateByUnit(filteredRows, mode);
+  const jenisAgg = pheAggregateByUnit(filteredRows, mode, 'jenis_unit_he2');
 
   // --- KPI ---
   const totalUnit = new Set(filteredRows.map(r=>r.kode_unit_he).filter(Boolean)).size;
@@ -252,6 +254,11 @@ function paintProduktivitasHE(allRowsRaw, mode){
   const targetVsRealSeries = { 'Target HM': unitAgg.map(u=>u.targetHm), 'HM Actual': unitAgg.map(u=>Math.round(u.hmActual*100)/100) };
   const avaibilityByUnit = {}; unitAgg.forEach(u=>avaibilityByUnit[u.unit]=u.pctAvaibility);
   const ltrHmByUnit = {}; unitAgg.forEach(u=>ltrHmByUnit[u.unit]=u.ltrHm);
+
+  const hmHaByJenis = {}; jenisAgg.forEach(u=>hmHaByJenis[u.unit]=u.hmHa);
+  const targetVsRealCategoriesJenis = jenisAgg.map(u=>u.unit);
+  const targetVsRealSeriesJenis = { 'Target HM': jenisAgg.map(u=>u.targetHm), 'HM Actual': jenisAgg.map(u=>Math.round(u.hmActual*100)/100) };
+  const avaibilityByJenis = {}; jenisAgg.forEach(u=>avaibilityByJenis[u.unit]=u.pctAvaibility);
 
   rows = [...rows].sort((a,b)=>{
     let av = a[st.sortKey] ?? '', bv = b[st.sortKey] ?? '';
@@ -305,9 +312,19 @@ function paintProduktivitasHE(allRowsRaw, mode){
         <div class="card-body"><div class="chart-box"><canvas id="chart_${idPrefix}_kontraktor"></canvas></div></div></div>
       `}
     </div>
+    <div class="chart-grid">
+      <div class="card"><div class="card-header"><span class="card-title">HM/Ha berdasarkan Jenis Unit</span></div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_${idPrefix}_hmha_jenis"></canvas></div></div></div>
+      <div class="card"><div class="card-header"><span class="card-title">% Avaibility berdasarkan Jenis Unit</span></div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_${idPrefix}_avail_jenis"></canvas></div></div></div>
+    </div>
+    <div class="chart-grid">
+      <div class="card" style="grid-column:1 / -1;"><div class="card-header"><span class="card-title">Target HM vs HM Actual (To Date) berdasarkan Jenis Unit</span></div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_${idPrefix}_target_jenis"></canvas></div></div></div>
+    </div>
 
     <div class="card" style="margin-bottom:20px;">
-      <div class="card-header"><span class="card-title">Analisa per Unit (meniru Mont. HM)</span></div>
+      <div class="card-header"><span class="card-title">Analisa per Unit</span></div>
       <div class="card-body" style="padding:0;">
         <div class="table-scroll">
           <table class="data-table">
@@ -429,6 +446,10 @@ function paintProduktivitasHE(allRowsRaw, mode){
   drawHBar('chart_'+idPrefix+'_avail', avaibilityByUnit, { hideXAxis:true });
   if(mode === 'internal') drawHBar('chart_'+idPrefix+'_ltrhm', ltrHmByUnit);
   else drawDonut('chart_'+idPrefix+'_kontraktor', aggregateCount(filteredRows, 'kontraktor_he2'));
+
+  drawHBar('chart_'+idPrefix+'_hmha_jenis', hmHaByJenis, { hideXAxis:true });
+  drawHBar('chart_'+idPrefix+'_avail_jenis', avaibilityByJenis, { hideXAxis:true });
+  drawGroupedBar('chart_'+idPrefix+'_target_jenis', targetVsRealCategoriesJenis, targetVsRealSeriesJenis, ['#5B8FA8','#D9A94A'], { hideYAxis:true });
 }
 
 function openPHEModal(mode, id){
