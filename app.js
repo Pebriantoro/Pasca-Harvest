@@ -3559,8 +3559,9 @@ async function renderAnalisa12Bulan(){
   });
 
   drawGroupedBar('chart_analisa_trend', monthLabels.map(m=>'Bulan '+m), trendSeries,
-    [colorForLabel('Baik'), colorForLabel('Cukup'), colorForLabel('Kurang')]);
-  drawBar('chart_analisa_coverage', coverageMap);
+    [colorForLabel('Baik'), colorForLabel('Cukup'), colorForLabel('Kurang')], { hideYAxis:true });
+  const coverageMapFilled = Object.fromEntries(Object.entries(coverageMap).filter(([,v]) => v > 0));
+  drawBar('chart_analisa_coverage', coverageMapFilled, undefined, { hideYAxis:true });
   $('#analisaTbody').innerHTML = rowsHtml.join('');
 }
 
@@ -5045,7 +5046,7 @@ function paintMonitoringMotor(allRows){
 
   drawStatusProgressBar('chart_motor_kondisi', kondisiAgg);
   drawDonut('chart_motor_status', statusAgg, false);
-  drawBar('chart_motor_zona', zonaAgg);
+  drawBar('chart_motor_zona', zonaAgg, undefined, { hideYAxis:true });
 
   try{
     $('#searchInput_motor')?.addEventListener('input', debounce(function(){
@@ -5328,8 +5329,8 @@ function paintMonitoringAset(allRows){
   `;
 
   drawStatusProgressBar('chart_aset_kondisi', kondisiAgg);
-  drawHBar('chart_aset_coa', coaAgg);
-  drawHBar('chart_aset_subkategori', subKategoriAgg);
+  drawHBar('chart_aset_coa', coaAgg, { hideXAxis:true });
+  drawHBar('chart_aset_subkategori', subKategoriAgg, { hideXAxis:true });
 
   try{
     $('#searchInput_aset')?.addEventListener('input', debounce(function(){
@@ -5621,8 +5622,8 @@ function paintHeImplement(allRows){
 
   drawDonut('chart_he_kondisi', kondisiAgg, false, { 'Baik':'#5FAE7D', 'Breakdown':'#C1543C' });
   drawDonut('chart_he_kategori', kategoriAgg, false, { 'HE':'#5B8FA8', 'Implement':'#D9A94A' });
-  drawHBar('chart_he_type', typeAgg);
-  drawHBar('chart_he_vendor', vendorAgg);
+  drawHBar('chart_he_type', typeAgg, { hideXAxis:true });
+  drawHBar('chart_he_vendor', vendorAgg, { hideXAxis:true });
 
   try{
     const searchInp = $('#searchInput_he');
@@ -8789,7 +8790,7 @@ function paintPcRpc(allRows){
 
   drawDonut('chart_pr_future', futureAgg, false);
   drawCategoryProgressBar('chart_pr_action_plan', actionPlanAgg, PR_ACTION_PLAN_OPTIONS);
-  drawBar('chart_pr_phasing', Object.fromEntries(PHASING_CHART_MONTHS.map(m=>[m, +(phasingAgg[m]||0).toFixed(2)])));
+  drawBar('chart_pr_phasing', Object.fromEntries(PHASING_CHART_MONTHS.map(m=>[m, +(phasingAgg[m]||0).toFixed(2)])), undefined, { hideYAxis:true });
   if(Object.keys(germinasiBucketAgg).length) drawDonut('chart_pr_germinasi', germinasiBucketAgg, false, PR_GERMINASI_COLORS);
   else destroyChart('chart_pr_germinasi');
 
