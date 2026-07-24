@@ -92,18 +92,14 @@ function berandaRelabelBadge(html){
 
 function berandaCardHTML(item){
   return `
-    <div class="card card-hoverable" style="margin-bottom:12px; cursor:pointer; padding:16px;" onclick="${item.onClick}">
+    <div class="card card-hoverable" style="position:relative; margin-bottom:12px; cursor:pointer; padding:16px;" onclick="${item.onClick}">
+      <div style="position:absolute; top:14px; right:16px;">${item.statusHtml}</div>
       <div style="display:flex; gap:12px; align-items:flex-start;">
         <div class="chat-avatar" style="width:42px; height:42px; font-size:16px; flex-shrink:0;">${esc(berandaInitial(item.staff_name))}</div>
-        <div style="flex:1; min-width:0;">
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
-            <div>
-              <div style="font-weight:700; font-size:13.5px;">${esc(item.staff_name || 'Staff')}</div>
-              <div style="font-size:11.5px; color:var(--text-faint); margin-top:2px;">
-                ${item.icon} ${esc(item.sourceLabel)} ${item.zona ? '· Zona '+esc(item.zona) : ''} · ${esc(typeof timeAgo === 'function' ? timeAgo(item.created_at) : fmtTanggalRKH(item.tanggal))}
-              </div>
-            </div>
-            <div style="margin-left:auto; margin-right:auto;">${item.statusHtml}</div>
+        <div style="flex:1; min-width:0; padding-right:120px;">
+          <div style="font-weight:700; font-size:13.5px;">${esc(item.staff_name || 'Staff')}</div>
+          <div style="font-size:11.5px; color:var(--text-faint); margin-top:2px;">
+            ${item.icon} ${esc(item.sourceLabel)} ${item.zona ? '· Zona '+esc(item.zona) : ''} · ${esc(typeof timeAgo === 'function' ? timeAgo(item.created_at) : fmtTanggalRKH(item.tanggal))}
           </div>
           <div style="font-size:13px; color:var(--text-muted); margin-top:10px; line-height:1.5;">${item.body}</div>
         </div>
