@@ -3057,7 +3057,8 @@ function drawBar(canvasId, dataMap, orderKeys, opts){
   });
   }catch(e){ console.error("Chart render gagal:", "drawBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
-function drawHBar(canvasId, dataMap){
+function drawHBar(canvasId, dataMap, opts){
+  opts = opts || {};
   try{
   destroyChart(canvasId);
   const ctx = document.getElementById(canvasId); if(!ctx) return;
@@ -3067,11 +3068,12 @@ function drawHBar(canvasId, dataMap){
     data:{ labels, datasets:[{ data:values, backgroundColor: labels.map((l,i)=>CHART_PALETTE[i % CHART_PALETTE.length]), borderRadius:7, maxBarThickness:18 }] },
     options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, layout:{ padding:{ right:34 } }, plugins:{legend:{display:false},
         datalabels:{ ...DL_STYLE, anchor:'end', align:'right', offset:4, formatter:dlValue } },
-      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
+      scales:{ x:{ display: opts.hideXAxis ? false : true, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawHBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
-function drawStackedBar(canvasId, categories, seriesMap, stacked, colors){
+function drawStackedBar(canvasId, categories, seriesMap, stacked, colors, opts){
+  opts = opts || {};
   try{
   if(stacked === undefined) stacked = true;
   destroyChart(canvasId);
@@ -3083,7 +3085,7 @@ function drawStackedBar(canvasId, categories, seriesMap, stacked, colors){
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } },
       plugins:{ legend:{ position:'bottom', labels:{color:CHART_TEXT, boxWidth:11, font:{size:11}} },
         datalabels:{ ...DL_STYLE, anchor:'center', align:'center', formatter:dlValue } },
-      scales:{ x:{ stacked, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ stacked, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
+      scales:{ x:{ stacked, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ stacked, display: opts.hideYAxis ? false : true, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawStackedBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
@@ -4553,10 +4555,10 @@ function paintProduktivitas(allRows){
   // apapun di bawah. Ini sengaja dipisah try/catch sendiri: kalau ada error
   // di kode wiring (mis. elemen filter belum ada di DOM), grafik tetap
   // muncul karena tidak lagi ketahan/gagal ikut oleh error yang tidak terkait.
-  drawHBar('chart_prod_pekerja', pekerjaPctMap);
+  drawHBar('chart_prod_pekerja', pekerjaPctMap, { hideXAxis:true });
   drawDonut('chart_prod_kegiatan', kegiatanAgg);
-  drawStackedBar('chart_prod_tren', dateKeys.map(fmtDDMMM), trendSeries, false, ['#5FAE7D','#C1543C']);
-  drawBar('chart_prod_kegiatan_pct', kegiatanPctMap);
+  drawStackedBar('chart_prod_tren', dateKeys.map(fmtDDMMM), trendSeries, false, ['#5FAE7D','#C1543C'], { hideYAxis:true });
+  drawBar('chart_prod_kegiatan_pct', kegiatanPctMap, undefined, { hideYAxis:true });
 
   try{
     $('#searchInput_produktivitas')?.addEventListener('input', debounce(function(){
