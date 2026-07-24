@@ -2962,7 +2962,8 @@ function drawCategoryProgressBar(canvasId, dataMap, orderKeys){
   });
   }catch(e){ console.error("Chart render gagal:", "drawCategoryProgressBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
-function drawGroupedBar(canvasId, categories, seriesMap, colors){
+function drawGroupedBar(canvasId, categories, seriesMap, colors, opts){
+  opts = opts || {};
   try{
   destroyChart(canvasId);
   const ctx = document.getElementById(canvasId); if(!ctx) return;
@@ -2973,7 +2974,7 @@ function drawGroupedBar(canvasId, categories, seriesMap, colors){
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } },
       plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, font:{size:11} } },
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
-      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}, precision:0}, grid:{display:false} } } }
+      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ display: opts.hideYAxis ? false : true, ticks:{color:CHART_TEXT, font:{size:10.5}, precision:0}, grid:{display:false} } } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawGroupedBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }

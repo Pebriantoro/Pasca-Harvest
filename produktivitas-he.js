@@ -131,7 +131,7 @@ function pheRowsForMode(allRows, mode){
 
 async function renderProduktivitasHERental(){
   $('#pageEyebrow').textContent = 'PRODUKTIVITAS · HE';
-  $('#pageTitle').textContent = 'Produktivitas HE — Rental (PT. HKL & PT. PRN)';
+  $('#pageTitle').textContent = 'Produktivitas HE — Rental';
   $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
   const rows = await ensurePHEData();
   paintProduktivitasHE(rows, 'rental');
@@ -424,9 +424,9 @@ function paintProduktivitasHE(allRowsRaw, mode){
   $('#filterDari_'+idPrefix)?.addEventListener('change', function(){ st.filterDari = this.value; st.page = 1; paintProduktivitasHE(state[PHE_TABLE].data, mode); });
   $('#filterSampai_'+idPrefix)?.addEventListener('change', function(){ st.filterSampai = this.value; st.page = 1; paintProduktivitasHE(state[PHE_TABLE].data, mode); });
 
-  drawHBar('chart_'+idPrefix+'_hmha', hmHaByUnit);
-  drawGroupedBar('chart_'+idPrefix+'_target', targetVsRealCategories, targetVsRealSeries, ['#5B8FA8','#D9A94A']);
-  drawHBar('chart_'+idPrefix+'_avail', avaibilityByUnit);
+  drawHBar('chart_'+idPrefix+'_hmha', hmHaByUnit, { hideXAxis:true });
+  drawGroupedBar('chart_'+idPrefix+'_target', targetVsRealCategories, targetVsRealSeries, ['#5B8FA8','#D9A94A'], { hideYAxis:true });
+  drawHBar('chart_'+idPrefix+'_avail', avaibilityByUnit, { hideXAxis:true });
   if(mode === 'internal') drawHBar('chart_'+idPrefix+'_ltrhm', ltrHmByUnit);
   else drawDonut('chart_'+idPrefix+'_kontraktor', aggregateCount(filteredRows, 'kontraktor_he2'));
 }
