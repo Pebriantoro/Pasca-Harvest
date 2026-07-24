@@ -2720,7 +2720,7 @@ function paintTablePage(table, allRows){
   } else {
     drawStatusProgressBar('chart_status_'+table, statusAgg);
     if(isPascaHarvest){
-      drawLineMulti('chart_month_'+table, PHASING_CHART_MONTHS, monthCompareSeries, ['#D9A94A','#5FAE7D'], true);
+      drawLineMulti('chart_month_'+table, PHASING_CHART_MONTHS, monthCompareSeries, ['#D9A94A','#5FAE7D'], true, undefined, true);
     } else {
       drawBar('chart_month_'+table, monthAgg, MONTHS);
     }
@@ -2732,7 +2732,7 @@ function paintTablePage(table, allRows){
   if(isPascaHarvest){
     const seriesMap = {};
     KATEGORI_CATS.forEach(cat => { seriesMap[cat] = KATEGORI_KEYS.map(k => kategoriMulti[k][cat] || 0); });
-    drawGroupedBar('chart_kategori_kondisi', KATEGORI_LABELS, seriesMap);
+    drawGroupedBar('chart_kategori_kondisi', KATEGORI_LABELS, seriesMap, undefined, { hideYAxis:true });
     drawStatusProgressBar('chart_pengecekan_hvt', pengecekanAgg);
   }
 }
