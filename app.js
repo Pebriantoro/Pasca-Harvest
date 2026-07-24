@@ -6715,9 +6715,19 @@ function paintProduktivitasKontraktor(allRows){
   const ketHasilAgg = aggregateCount(filteredRows, 'ket_hasil');
 
   // --- Analisa Luas BAPP per Kegiatan ---
+  const KEGIATAN_LABEL_SHORT = {
+    'Post Spraying 1': 'Post 1',
+    'Post Spraying 2': 'Post 2',
+    'Fertilizing Single Aplication': 'FSA',
+    'Fertilizing Single Application': 'FSA',
+    'Pengendalian Hama Tikus': 'PHT',
+    'Pengendalian Hama Penyakit': 'HPT',
+    'Pengendalian Hama Penyakit Tanaman': 'HPT',
+  };
   const kegiatanAgg = {};
   filteredRows.forEach(r=>{
-    const k = (r.kegiatan_pk||'(tanpa kegiatan)').toString().trim() || '(tanpa kegiatan)';
+    let k = (r.kegiatan_pk||'(tanpa kegiatan)').toString().trim() || '(tanpa kegiatan)';
+    k = KEGIATAN_LABEL_SHORT[k] || k;
     kegiatanAgg[k] = (kegiatanAgg[k]||0) + (parseFloat(r.luas_bapp)||0);
   });
   Object.keys(kegiatanAgg).forEach(k=> kegiatanAgg[k] = Math.round(kegiatanAgg[k]*100)/100);
