@@ -3066,9 +3066,9 @@ function drawHBar(canvasId, dataMap, opts){
   const labels = Object.keys(dataMap), values = Object.values(dataMap);
   chartInstances[canvasId] = new Chart(ctx, {
     type:'bar',
-    data:{ labels, datasets:[{ data:values, backgroundColor: labels.map((l,i)=>CHART_PALETTE[i % CHART_PALETTE.length]), borderRadius:7, maxBarThickness:18 }] },
+    data:{ labels, datasets:[{ data:values, backgroundColor: labels.map((l,i)=>CHART_PALETTE[i % CHART_PALETTE.length]), borderRadius:7, maxBarThickness:18, minBarLength:3 }] },
     options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, layout:{ padding:{ right:34 } }, plugins:{legend:{display:false},
-        datalabels:{ ...DL_STYLE, anchor:'end', align:'right', offset:4, formatter:dlValue } },
+        datalabels:{ ...DL_STYLE, anchor:'end', align:'right', offset:4, formatter:(v)=> (v===null||v===undefined||isNaN(Number(v))) ? '' : fmtNum(Number(v),2) } },
       scales:{ x:{ display: opts.hideXAxis ? false : true, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawHBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }

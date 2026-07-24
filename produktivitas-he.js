@@ -256,9 +256,37 @@ function paintProduktivitasHE(allRowsRaw, mode){
   const ltrHmByUnit = {}; unitAgg.forEach(u=>ltrHmByUnit[u.unit]=u.ltrHm);
 
   const hmHaByJenis = {}; jenisAgg.forEach(u=>hmHaByJenis[u.unit]=u.hmHa);
-  const targetVsRealCategoriesJenis = jenisAgg.map(u=>u.unit);
-  const targetVsRealSeriesJenis = { 'Target HM': jenisAgg.map(u=>u.targetHm), 'HM Actual': jenisAgg.map(u=>Math.round(u.hmActual*100)/100) };
-  const avaibilityByJenis = {}; jenisAgg.forEach(u=>avaibilityByJenis[u.unit]=u.pctAvaibility);
+  // % Avaibility per Jenis TIDAK bisa dipool dari baris mentah lintas unit (kalau jenis
+  // punya >1 unit, tanggal yang sama kepakai banyak unit bakal ke-dedup jadi satu oleh
+  // Set tanggal di pheAggregateByUnit, HK jadi kehitung kurang dari semestinya — makanya
+  // jenis Dozer, yang isinya 3 unit dgn avaibility 91%/65%/0%, kepool jadi 0%). Jadi
+  // dihitung dari rata-rata % Avaibility per unit (unitAgg, sudah benar) dikelompokkan
+  // per jenis.
+  const jenisAvailGroups = {};
+  unitAgg.forEach(u=>{
+    const j = u.jenis || '-';
+    if(!jenisAvailGroups[j]) jenisAvailGroups[j] = { sum:0, n:0 };
+    jenisAvailGroups[j].sum += u.pctAvaibility;
+    jenisAvailGroups[j].n++;
+  });
+  const avaibilityByJenis = {};
+  Object.keys(jenisAvailGroups).forEach(j=>{ avaibilityByJenis[j] = Math.round(jenisAvailGroups[j].sum/jenisAvailGroups[j].n); });
+  // Target HM vs HM Actual per Jenis pakai RATA-RATA per unit (bukan total jumlah semua
+  // unit sejenis) — kalau dijumlah, jenis dengan banyak unit (mis. Exca-75) angkanya jauh
+  // lebih besar dan gak sebanding/apple-to-apple sama jenis yang cuma 1 unit (mis. Dozer).
+  const jenisTargetGroups = {};
+  unitAgg.forEach(u=>{
+    const j = u.jenis || '-';
+    if(!jenisTargetGroups[j]) jenisTargetGroups[j] = { targetSum:0, actualSum:0, n:0 };
+    jenisTargetGroups[j].targetSum += u.targetHm;
+    jenisTargetGroups[j].actualSum += u.hmActual;
+    jenisTargetGroups[j].n++;
+  });
+  const targetVsRealCategoriesJenis = Object.keys(jenisTargetGroups);
+  const targetVsRealSeriesJenis = {
+    'Target HM': targetVsRealCategoriesJenis.map(j=>Math.round(jenisTargetGroups[j].targetSum/jenisTargetGroups[j].n*100)/100),
+    'HM Actual': targetVsRealCategoriesJenis.map(j=>Math.round(jenisTargetGroups[j].actualSum/jenisTargetGroups[j].n*100)/100),
+  };
 
   rows = [...rows].sort((a,b)=>{
     let av = a[st.sortKey] ?? '', bv = b[st.sortKey] ?? '';
@@ -315,11 +343,19 @@ function paintProduktivitasHE(allRowsRaw, mode){
     <div class="chart-grid">
       <div class="card"><div class="card-header"><span class="card-title">HM/Ha berdasarkan Jenis Unit</span></div>
         <div class="card-body"><div class="chart-box"><canvas id="chart_${idPrefix}_hmha_jenis"></canvas></div></div></div>
-      <div class="card"><div class="card-header"><span class="card-title">% Avaibility berdasarkan Jenis Unit</span></div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">% Avaibility berdasarkan Jenis Unit</span>
+          <span style="font-size:11px; color:var(--text-faint);">rata-rata per unit</span>
+        </div>
         <div class="card-body"><div class="chart-box"><canvas id="chart_${idPrefix}_avail_jenis"></canvas></div></div></div>
     </div>
     <div class="chart-grid">
-      <div class="card" style="grid-column:1 / -1;"><div class="card-header"><span class="card-title">Target HM vs HM Actual (To Date) berdasarkan Jenis Unit</span></div>
+      <div class="card" style="grid-column:1 / -1;">
+        <div class="card-header">
+          <span class="card-title">Target HM vs HM Actual (To Date) berdasarkan Jenis Unit</span>
+          <span style="font-size:11px; color:var(--text-faint);">rata-rata per unit</span>
+        </div>
         <div class="card-body"><div class="chart-box"><canvas id="chart_${idPrefix}_target_jenis"></canvas></div></div></div>
     </div>
 
