@@ -595,6 +595,7 @@ async function submitRKHReject(id, role){
 const _rkhPrevRenderDashboard = renderDashboard;
 renderDashboard = async function(){
   await _rkhPrevRenderDashboard();
+  return;
   if(currentProfile?.role === 'viewer') return;
   const rows = await rkhFetchRows({ dateFrom: todayISO(), dateTo: todayISO() });
   const s = rkhSummarize(rows);
