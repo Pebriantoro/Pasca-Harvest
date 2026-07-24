@@ -3014,7 +3014,34 @@ function fmtDDMMM(iso){
     return `${dd}-${mmm}`;
   }catch(e){ return ''; }
 }
-function drawBar(canvasId, dataMap, orderKeys){
+function drawStatusRings(tableKeys, stackedData){
+  const green = cssVar('--accent-green','#5FAE7D');
+  const gold = cssVar('--accent-gold','#D9A94A');
+  const red = cssVar('--accent-red','#C1543C');
+  tableKeys.forEach((t,i)=>{
+    const canvasId = 'ring_'+t;
+    try{
+    const done = stackedData['Done'][i]||0;
+    const progress = stackedData['Progress'][i]||0;
+    const notYet = stackedData['Not Yet'][i]||0;
+    const total = done+progress+notYet;
+    const pct = total ? Math.round(done/total*100) : 0;
+    destroyChart(canvasId);
+    const ctx = document.getElementById(canvasId); if(!ctx) return;
+    chartInstances[canvasId] = new Chart(ctx, {
+      type:'doughnut',
+      data:{ labels:['Done','Progress','Not Yet'], datasets:[{ data:[done,progress,notYet], backgroundColor:[green,gold,red], borderWidth:0, borderRadius:6, spacing:2 }] },
+      options:{ responsive:true, maintainAspectRatio:false, cutout:'72%', rotation:-90, circumference:360,
+        plugins:{ legend:{display:false}, datalabels:{display:false},
+          tooltip:{ callbacks:{ label:(c)=>`${c.label}: ${c.parsed}` } } } }
+    });
+    const label = document.getElementById(canvasId+'_label');
+    if(label) label.textContent = pct+'%';
+    }catch(e){ console.error("Chart render gagal:", "drawStatusRings", t, e); }
+  });
+}
+function drawBar(canvasId, dataMap, orderKeys, opts){
+  opts = opts || {};
   try{
   destroyChart(canvasId);
   const ctx = document.getElementById(canvasId); if(!ctx) return;
@@ -3026,7 +3053,7 @@ function drawBar(canvasId, dataMap, orderKeys){
     data:{ labels, datasets:[{ data:values, backgroundColor: labels.map((l,i)=>CHART_PALETTE[i % CHART_PALETTE.length]), borderRadius:7, maxBarThickness:34 }] },
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } }, plugins:{legend:{display:false},
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
-      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
+      scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ display: opts.hideYAxis ? false : true, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawBar", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
 }
@@ -3221,7 +3248,23 @@ async function renderDashboard(){
     <div class="chart-grid">
       <div class="card">
         <div class="card-header"><span class="card-title">Status Progress per Modul</span></div>
-        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_stacked"></canvas></div></div>
+        <div class="card-body">
+          <div style="display:flex; flex-wrap:wrap; gap:16px; justify-content:center;">
+            ${tableKeys.map(t=>`
+              <div style="width:108px; text-align:center;">
+                <div style="position:relative; width:92px; height:92px; margin:0 auto;">
+                  <canvas id="ring_${t}"></canvas>
+                  <div id="ring_${t}_label" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; color:var(--text-primary);"></div>
+                </div>
+                <div style="font-size:10.5px; color:var(--text-faint); margin-top:8px; line-height:1.3;">${esc(TABLES[t].label)}</div>
+              </div>`).join('')}
+          </div>
+          <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:16px;">
+            <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-faint);"><i style="width:10px; height:10px; border-radius:3px; background:var(--accent-green); display:inline-block;"></i>Done</span>
+            <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-faint);"><i style="width:10px; height:10px; border-radius:3px; background:var(--accent-gold); display:inline-block;"></i>Progress</span>
+            <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-faint);"><i style="width:10px; height:10px; border-radius:3px; background:var(--accent-red); display:inline-block;"></i>Not Yet</span>
+          </div>
+        </div>
       </div>
       <div class="card">
         <div class="card-header"><span class="card-title">Proporsi Luas per Modul</span></div>
@@ -3235,7 +3278,12 @@ async function renderDashboard(){
           <span class="card-title">Luas Gabungan per Zona</span>
           <span style="font-size:11px; color:var(--text-faint);">${totalPetak} petak master Pasca Harvest</span>
         </div>
-        <div class="card-body"><div class="chart-box-sm"><canvas id="chart_dash_zona"></canvas></div></div>
+        <div class="card-body">
+          <div class="chart-box-sm"><canvas id="chart_dash_zona"></canvas></div>
+          <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:10px;">
+            ${Object.keys(zonaCombined).map((l,i)=>`<span style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-faint);"><i style="width:10px; height:10px; border-radius:3px; background:${CHART_PALETTE[i % CHART_PALETTE.length]}; display:inline-block;"></i>Zona ${esc(l)}</span>`).join('')}
+          </div>
+        </div>
       </div>
       <div class="card">
         <div class="card-header"><span class="card-title">Ringkasan per Modul</span></div>
@@ -3264,9 +3312,9 @@ async function renderDashboard(){
     </div>
   `;
 
-  drawStackedBar('chart_dash_stacked', tableKeys.map(t=>TABLES[t].label), stackedData);
+  drawStatusRings(tableKeys, stackedData);
   drawPie('chart_dash_pie', luasPerCategory);
-  drawBar('chart_dash_zona', zonaCombined);
+  drawBar('chart_dash_zona', zonaCombined, undefined, { hideYAxis:true });
   drawLineMulti('chart_dash_tch', TCH_MONTHS.map(m=>m.label), tchSeries, ['#D9A441','#4C9F70'], true);
 }
 
