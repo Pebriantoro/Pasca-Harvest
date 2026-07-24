@@ -103,7 +103,7 @@ function berandaCardHTML(item){
                 ${item.icon} ${esc(item.sourceLabel)} ${item.zona ? '· Zona '+esc(item.zona) : ''} · ${esc(typeof timeAgo === 'function' ? timeAgo(item.created_at) : fmtTanggalRKH(item.tanggal))}
               </div>
             </div>
-            <div style="margin-right:6%;">${item.statusHtml}</div>
+            <div style="margin-left:auto; margin-right:auto;">${item.statusHtml}</div>
           </div>
           <div style="font-size:13px; color:var(--text-muted); margin-top:10px; line-height:1.5;">${item.body}</div>
         </div>
