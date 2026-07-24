@@ -1,0 +1,16 @@
+{
+  "name": "Sistem Informasi Terpadu Estate 2",
+  "short_name": "SI Estate 2",
+  "description": "Sistem Informasi Terpadu Estate 2 - Season 2026",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#16261D",
+  "theme_color": "#16261D",
+  "icons": [
+    { "src": "logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "logo.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" }
+  ]
+}

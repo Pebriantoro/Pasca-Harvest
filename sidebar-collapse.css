@@ -1,0 +1,110 @@
+/* ===================== SIDEBAR COLLAPSE (icon rail mode) ===================== */
+
+:root{ --sidebar-w-full:250px; --sidebar-w-collapsed:82px; }
+
+/* Sidebar width transition (in addition to the existing transform transition) */
+.sidebar{ transition: transform .25s ease, width .28s cubic-bezier(.4,0,.2,1); }
+.main-area{ transition: margin-left .28s cubic-bezier(.4,0,.2,1); }
+
+/* Text/labels fade+shrink instead of a hard cut, so the collapse feels animated */
+.sidebar-header .cane-mark > div,
+.nav-section-label span:first-child,
+.nav-section-chevron,
+.nav-item span:not(.count-badge),
+.count-badge,
+.sidebar-footer .user-chip > div:not(.avatar):not(.avatar-circle) {
+  transition: opacity .18s ease, max-width .26s ease, margin .26s ease, transform .22s ease;
+  opacity:1; max-width:220px;
+}
+
+/* ---- Collapsed state ---- */
+.sidebar.collapsed{ width: var(--sidebar-w-collapsed); }
+.sidebar.collapsed ~ .main-area{ margin-left: var(--sidebar-w-collapsed); }
+
+/* content-pad punya max-width fixed (lihat styles.css) tanpa margin:auto,
+   jadi nempel kiri; saat sidebar collapse, ruang yang kebuka (250px - 82px)
+   ditambahkan ke cap-nya biar konten ikut melebar, bukan nyisain blank. */
+.sidebar.collapsed ~ .main-area .content-pad{
+  max-width: calc(1400px + (var(--sidebar-w-full) - var(--sidebar-w-collapsed)));
+}
+
+.sidebar.collapsed .sidebar-header{
+  padding:22px 0 16px; display:flex; justify-content:center;
+}
+.sidebar.collapsed .sidebar-header .cane-mark{ margin:0 auto; }
+.sidebar.collapsed .sidebar-header .cane-mark > div{
+  opacity:0; max-width:0; margin:0; overflow:hidden; pointer-events:none;
+}
+.sidebar.collapsed .sidebar-header .brand-logo{ transform: scale(1.15); }
+
+.sidebar.collapsed .sidebar-nav{ padding:14px 10px; }
+
+.sidebar.collapsed .nav-section-label{
+  justify-content:center; padding:16px 0 8px; gap:0;
+}
+.sidebar.collapsed .nav-section-label span:first-child,
+.sidebar.collapsed .nav-section-chevron{
+  opacity:0; max-width:0; margin:0; overflow:hidden; pointer-events:none;
+}
+.sidebar.collapsed .nav-section-body{ max-height:none !important; }
+
+.sidebar.collapsed .nav-item{
+  justify-content:center; padding:12px 0; gap:0; border-left:none; position:relative;
+}
+.sidebar.collapsed .nav-item.active{
+  background: var(--accent-gold-soft);
+  box-shadow: none;
+}
+.sidebar.collapsed .nav-item.active::before{
+  content:''; position:absolute; left:0; top:8px; bottom:8px; width:3px;
+  border-radius:0 3px 3px 0; background: var(--accent-gold);
+}
+.sidebar.collapsed .nav-item span:not(.count-badge){
+  opacity:0; max-width:0; margin:0; overflow:hidden; pointer-events:none;
+}
+/* Bigger icons when collapsed */
+.sidebar.collapsed .nav-item svg{
+  width:22px; height:22px; transition: width .26s cubic-bezier(.4,0,.2,1), height .26s cubic-bezier(.4,0,.2,1), transform .18s ease;
+}
+.sidebar.collapsed .nav-item:hover svg{ transform: scale(1.12); }
+
+/* Unread/count badge -> small floating dot instead of full pill */
+.sidebar.collapsed .nav-item .count-badge{
+  opacity:0; max-width:0; margin:0; padding:0; overflow:hidden;
+}
+.sidebar.collapsed .nav-item .unread-badge:not(.hidden){
+  opacity:1; max-width:16px; min-width:8px; height:8px; padding:0; margin:0;
+  position:absolute; top:8px; right:14px; border-radius:50%;
+  background: var(--accent-red, #C1543C); color:transparent; font-size:0;
+}
+
+.sidebar.collapsed .sidebar-footer:not(:empty){ justify-content:center; padding:14px 8px; }
+.sidebar.collapsed .sidebar-top-utility:not(:empty){ padding:14px 8px 16px; display:flex; justify-content:center; }
+
+/* Simple native tooltip on hover while collapsed (title attr set via JS) */
+.sidebar.collapsed .nav-item{ cursor:pointer; }
+
+/* ---- Collapse/expand toggle button, docked to the sidebar's right edge ---- */
+.sidebar-collapse-toggle{
+  position:absolute; top:26px; right:-13px; z-index:41;
+  width:26px; height:26px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background: var(--bg-elevated, #1c2b22); color: var(--text-muted);
+  border:1px solid var(--border, rgba(147,167,154,.25));
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  cursor:pointer; transition: background .15s ease, color .15s ease, border-color .15s ease, transform .28s cubic-bezier(.4,0,.2,1);
+}
+.sidebar-collapse-toggle:hover{
+  color: var(--accent-gold); border-color: var(--accent-gold);
+  background: var(--accent-gold-soft);
+}
+.sidebar-collapse-toggle svg{
+  width:14px; height:14px; transition: transform .28s cubic-bezier(.4,0,.2,1);
+}
+.sidebar.collapsed .sidebar-collapse-toggle svg{ transform: rotate(180deg); }
+
+/* Hide the desktop collapse toggle on small/mobile widths, where the sidebar
+   is already an off-canvas overlay controlled by the hamburger button */
+@media (max-width:880px){
+  .sidebar-collapse-toggle{ display:none; }
+}

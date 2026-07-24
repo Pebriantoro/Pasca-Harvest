@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sistem Informasi Terpadu Estate 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=1.3.10">
+<link rel="stylesheet" href="chat-polish.css?v=1.3.10">
+<link rel="stylesheet" href="sidebar-collapse.css?v=1.3.10">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+
+<!-- Tailwind CSS (Play CDN) — utility class siap dipakai buat komponen/fitur BARU.
+     CSS lama (styles.css dkk) TIDAK diubah/dihapus, jadi tampilan yang sudah ada aman.
+     Token warna di-mapping ke CSS variable brand yang sama, otomatis ngikut tema gelap/terang. -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: 'var(--bg)',
+          'bg-elevated': 'var(--bg-elevated)',
+          'bg-card': 'var(--bg-card)',
+          'bg-card-hover': 'var(--bg-card-hover)',
+          sidebar: 'var(--sidebar)',
+          border: 'var(--border)',
+          'border-soft': 'var(--border-soft)',
+          gold: 'var(--accent-gold)',
+          'gold-soft': 'var(--accent-gold-soft)',
+          green: 'var(--accent-green)',
+          'green-soft': 'var(--accent-green-soft)',
+          red: 'var(--accent-red)',
+          'red-soft': 'var(--accent-red-soft)',
+          'red-text': 'var(--accent-red-text)',
+          blue: 'var(--accent-blue)',
+          'blue-soft': 'var(--accent-blue-soft)',
+          'blue-text': 'var(--accent-blue-text)',
+          'text-primary': 'var(--text-primary)',
+          'text-muted': 'var(--text-muted)',
+          'text-faint': 'var(--text-faint)',
+        },
+        fontFamily: {
+          display: ['Space Grotesk', 'sans-serif'],
+          body: ['Inter', 'sans-serif'],
+          mono: ['IBM Plex Mono', 'monospace'],
+        },
+        borderRadius: {
+          DEFAULT: 'var(--radius)',
+          sm: 'var(--radius-sm)',
+        },
+        boxShadow: {
+          sm: 'var(--shadow-sm)',
+          md: 'var(--shadow-md)',
+          lift: 'var(--shadow-lift)',
+          'glow-gold': 'var(--shadow-glow-gold)',
+        },
+      }
+    }
+  }
+</script>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16261D">
+<style>
+  .notif-wrap{ position:relative; display:inline-flex; }
+  .notif-badge{
+    position:absolute; top:-4px; right:-4px; min-width:16px; height:16px; padding:0 4px;
+    border-radius:999px; background:#C1543C; color:#fff; font-size:10px; font-weight:700;
+    line-height:16px; text-align:center; font-family:'IBM Plex Mono', monospace;
+  }
+  .notif-badge.hidden{ display:none; }
+  .notif-panel{
+    position:absolute; top:calc(100% + 10px); right:0; width:340px; max-height:420px;
+    overflow-y:auto; background:var(--sidebar, #16261D); border:1px solid var(--border-soft, rgba(147,167,154,.18));
+    border-radius:12px; box-shadow: var(--shadow-md, 0 12px 32px rgba(0,0,0,.35)); z-index:200;
+  }
+  .notif-panel.hidden{ display:none; }
+  .notif-panel-header{
+    display:flex; align-items:center; justify-content:space-between; padding:12px 14px;
+    border-bottom:1px solid var(--border-soft, rgba(147,167,154,.18)); font-size:13px; font-weight:600;
+    color:var(--text-muted, #C9D3CC); position:sticky; top:0; background:inherit;
+  }
+  .notif-markall{
+    background:none; border:none; color:var(--accent-gold, #D9A94A); font-size:11px; cursor:pointer; padding:0;
+  }
+  .notif-empty{ padding:24px 14px; text-align:center; font-size:12.5px; color:var(--text-faint, #7C8B81); }
+  .notif-list{ display:flex; flex-direction:column; }
+  .notif-item{
+    display:flex; gap:10px; padding:11px 14px; border-bottom:1px solid rgba(147,167,154,.08); font-size:12.5px;
+  }
+  .notif-item:last-child{ border-bottom:none; }
+  .notif-item.unread{ background:rgba(217,169,74,.07); }
+  .notif-icon{ font-size:15px; line-height:1.3; }
+  .notif-body{ min-width:0; }
+  .notif-msg{ color:var(--text-muted, #C9D3CC); line-height:1.45; word-break:break-word; }
+  .notif-meta{ color:var(--text-faint, #7C8B81); font-size:10.5px; margin-top:3px; font-family:'IBM Plex Mono', monospace; }
+</style>
+<script>
+  /* Set tema sebelum CSS pertama dirender, cegah flash warna salah */
+  (function(){
+    try{
+      var t = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    }catch(e){}
+  })();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>if(typeof Chart === 'undefined'){document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"><\/script>');}</script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script>if(typeof ChartDataLabels === 'undefined'){document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"><\/script>');}</script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <defs>
+    <filter id="liquidGlassDistort" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.010 0.014" numOctaves="2" seed="9" result="noise"/>
+      <feGaussianBlur in="noise" stdDeviation="2.4" result="softNoise"/>
+      <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="16" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<div id="loadingOverlay" class="loading-overlay">
+  <img src="logo.png" alt="" class="brand-logo-lg" style="pointer-events:none; margin-bottom:2px;">
+  <div class="spinner"></div>
+  <div style="color:var(--text-muted); font-size:13px;">Memuat aplikasi…</div>
+</div>
+
+<!-- ===================== LOGIN VIEW ===================== -->
+<div id="loginView" class="login-wrap hidden">
+  <div class="login-bg" aria-hidden="true">
+    <video class="login-bg-video" autoplay muted loop playsinline preload="auto">
+      <source src="login-bg.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="login-card anim-scale-in">
+    <div class="cane-mark">
+      <img src="logo.png" alt="Pratama Nusantara Sakti" class="brand-logo brand-logo-lg">
+      <div>
+        <div class="font-display" style="font-size:14px; font-weight:700; line-height:1.3;">Sistem Administrasi Manunggal Satu Aplikasi Terpadu</div>
+      </div>
+    </div>
+
+    <div class="tab-toggle">
+      <button id="tabLogin" class="active" onclick="setAuthTab('login')">Masuk</button>
+      <button id="tabPasscode" onclick="setAuthTab('passcode')">Passcode</button>
+    </div>
+
+    <form id="loginForm" onsubmit="return handleLogin(event)">
+      <div style="margin-bottom:14px;">
+        <label class="field-label">Username</label>
+        <input class="input" type="text" id="loginUsername" placeholder="nama.pengguna" autocomplete="username" required>
+      </div>
+      <div style="margin-bottom:18px;">
+        <label class="field-label">Kata Sandi</label>
+        <input class="input" type="password" id="loginPassword" placeholder="••••••••" required>
+      </div>
+      <div id="loginError" class="hidden" style="background:var(--accent-red-soft); color:var(--accent-red-text); padding:9px 12px; border-radius:8px; font-size:12.5px; margin-bottom:14px;"></div>
+      <button class="btn btn-primary" style="width:100%;" type="submit" id="loginBtn">Masuk ke Dashboard</button>
+    </form>
+
+    <form id="passcodeForm" class="hidden" onsubmit="return handlePasscodeFormSubmit(event)">
+      <div style="margin-bottom:14px;">
+        <label class="field-label">Username</label>
+        <input class="input" type="text" id="passcodeUsername" placeholder="nama.pengguna" autocomplete="username">
+      </div>
+
+      <!-- Sudah punya passcode di perangkat ini -> tampil input 4 digit -->
+      <div id="passcodeStageKnown" class="hidden">
+        <label class="field-label">Masukkan Passcode</label>
+        <div class="pin-input-row" id="passcodePinRow"></div>
+        <div id="passcodeError" class="hidden" style="background:var(--accent-red-soft); color:var(--accent-red-text); padding:9px 12px; border-radius:8px; font-size:12.5px; margin:12px 0;"></div>
+        <button class="btn btn-primary" style="width:100%;" type="submit" id="passcodeLoginBtn">Masuk dengan Passcode</button>
+        <p style="font-size:11.5px; color:var(--text-faint); margin-top:12px; text-align:center;">
+          <a href="javascript:void(0)" onclick="resetPasscodeForAccount()">Lupa passcode / bukan Anda?</a>
+        </p>
+      </div>
+
+      <!-- Belum pernah buat passcode di perangkat ini -> tawarkan buat baru -->
+      <div id="passcodeStageNew" class="hidden">
+        <div style="background:var(--bg-elevated); border:1px solid var(--border-soft); border-radius:8px; padding:10px 12px; font-size:12px; color:var(--text-muted); margin-bottom:14px;">
+          Anda belum membuat passcode di perangkat ini. Masukkan kata sandi akun Anda satu kali untuk membuat passcode 4 digit.
+        </div>
+        <div style="margin-bottom:14px;">
+          <label class="field-label">Kata Sandi Akun</label>
+          <input class="input" type="password" id="passcodeVerifyPassword" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <label class="field-label">Buat Passcode Baru (4 digit)</label>
+        <div class="pin-input-row" id="passcodeNewPinRow"></div>
+        <label class="field-label" style="margin-top:14px; display:block;">Ulangi Passcode</label>
+        <div class="pin-input-row" id="passcodeConfirmPinRow"></div>
+        <div id="passcodeNewError" class="hidden" style="background:var(--accent-red-soft); color:var(--accent-red-text); padding:9px 12px; border-radius:8px; font-size:12.5px; margin:14px 0;"></div>
+        <button class="btn btn-primary" style="width:100%;" type="submit" id="passcodeCreateBtn">Verifikasi &amp; Buat Passcode</button>
+      </div>
+
+      <p id="passcodeHint" style="font-size:11.5px; color:var(--text-faint); margin-top:14px; text-align:center;">Ketik username Anda untuk melanjutkan.</p>
+    </form>
+
+  </div>
+
+  <div class="login-quote-wrap anim-fade-up" aria-hidden="true">
+    <p class="login-quote" id="loginQuote"></p>
+  </div>
+
+  <button class="login-version-tag" id="loginVersionTag" onclick="openChangelog()" type="button">v<span id="loginVersionNum">1.0.0</span></button>
+
+  <div id="changelogModal" class="changelog-modal hidden" onclick="if(event.target===this) closeChangelog()">
+    <div class="changelog-card">
+      <div class="changelog-head">
+        <span>Riwayat Pembaruan</span>
+        <button type="button" onclick="closeChangelog()" aria-label="Tutup">&times;</button>
+      </div>
+      <div id="changelogBody" class="changelog-body"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function syncLoginVersion(){
+    var numEl = document.getElementById('loginVersionNum');
+    if (window.APP_VERSION && numEl) numEl.textContent = window.APP_VERSION;
+  }
+  // config.js (window.APP_VERSION) is loaded near the end of <body>,
+  // after this inline script. Wait for it instead of reading it too early,
+  // otherwise the badge is stuck on the hardcoded fallback ("1.0.0").
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    syncLoginVersion();
+  }
+  document.addEventListener('DOMContentLoaded', syncLoginVersion);
+})();
+function openChangelog(){
+  var body = document.getElementById('changelogBody');
+  var log = window.APP_CHANGELOG || [];
+  body.innerHTML = log.map(function(e){
+    return '<div class="changelog-entry">'
+      + '<div class="changelog-entry-head"><span class="changelog-v">v'+e.version+'</span><span class="changelog-date">'+e.date+'</span></div>'
+      + '<ul>'+e.notes.map(function(n){ return '<li>'+n+'</li>'; }).join('')+'</ul>'
+      + '</div>';
+  }).join('') || '<p style="color:var(--text-faint); font-size:12.5px;">Belum ada riwayat.</p>';
+  document.getElementById('changelogModal').classList.remove('hidden');
+}
+function closeChangelog(){ document.getElementById('changelogModal').classList.add('hidden'); }
+</script>
+
+<!-- ===================== APP SHELL ===================== -->
+<div id="appShell" class="app-shell hidden">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="cane-mark" style="margin-bottom:0;">
+        <img src="logo.png" alt="Pratama Nusantara Sakti" class="brand-logo">
+        <div>
+          <div class="font-display" style="font-size:19px; font-weight:700; line-height:1.15;">SAMSAT</div>
+          <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono); letter-spacing:.05em;">ESTATE 2 SEASON 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-top-utility" id="sidebarUtilityBar"></div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+      <a class="nav-item nav-item-beranda" data-view="beranda" onclick="navigate('beranda')" style="margin-bottom:8px; font-weight:700;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
+        <span>Beranda</span>
+      </a>
+      <div class="nav-section" id="navSection_ringkasan">
+        <button type="button" class="nav-section-label" onclick="toggleNavSection('ringkasan')" aria-expanded="true">
+          <span>Ringkasan</span>
+          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-section-body" id="navSectionBody_ringkasan">
+          <a class="nav-item" data-view="dashboard" onclick="navigate('dashboard')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+            <span>Dashboard Gabungan</span>
+          </a>
+          <a class="nav-item" data-view="rkh" onclick="navigate('rkh')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
+            <span>Rencana Kerja Harian</span>
+          </a>
+          <a class="nav-item" data-view="pra_spa" onclick="navigate('pra_spa')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <span>Pengecekan Pra SPA</span>
+          </a>
+          <a class="nav-item" data-view="qc_by_proses" onclick="navigate('qc_by_proses')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>QC By Proses</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-section" id="navSection_komunikasi">
+        <button type="button" class="nav-section-label" onclick="toggleNavSection('komunikasi')" aria-expanded="true">
+          <span>Komunikasi</span>
+          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-section-body" id="navSectionBody_komunikasi">
+          <a class="nav-item" data-view="chat" onclick="navigate('chat')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <span>Chat Tim</span><span class="count-badge unread-badge hidden" id="chatUnreadBadge">0</span>
+          </a>
+          <a class="nav-item" data-view="dm" onclick="navigate('dm')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+            <span>Pesan Langsung</span><span class="count-badge unread-badge hidden" id="dmUnreadBadge">0</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-section" id="navSection_produktivitas">
+        <button type="button" class="nav-section-label" onclick="toggleNavSection('produktivitas')" aria-expanded="true">
+          <span>Produktivitas</span>
+          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-section-body" id="navSectionBody_produktivitas">
+          <a class="nav-item" data-view="produktivitas_harian" onclick="navigate('produktivitas_harian')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M7 19V9m5 10V5m5 14v-7"/></svg>
+            <span>Produktivitas Harian</span><span class="count-badge" id="countBadge_produktivitas_harian">–</span>
+          </a>
+          <a class="nav-item" data-view="produktivitas_kontraktor" onclick="navigate('produktivitas_kontraktor')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+            <span>Produktivitas Kontraktor</span><span class="count-badge" id="countBadge_produktivitas_kontraktor">–</span>
+          </a>
+          <a class="nav-item" data-view="produktivitas_he_rental" onclick="navigate('produktivitas_he_rental')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="18" r="2"/><path d="M4 18h-1v-4l3-3h4l4-5 3 2-3 4h2l2 3v3h-2"/><path d="M11 11l2 4"/></svg>
+            <span>Produktivitas HE — Rental</span><span class="count-badge" id="countBadge_produktivitas_he_rental">–</span>
+          </a>
+          <a class="nav-item" data-view="produktivitas_he_internal" onclick="navigate('produktivitas_he_internal')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="17" r="3"/><circle cx="17" cy="17" r="2"/><path d="M6 14V8h5l3 4h3a2 2 0 0 1 2 2v2h-2"/><path d="M11 14H8"/><path d="M4 8H2v4"/></svg>
+            <span>Produktivitas HE — Internal</span><span class="count-badge" id="countBadge_produktivitas_he_internal">–</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-section" id="navSection_menu_data">
+        <button type="button" class="nav-section-label" onclick="toggleNavSection('menu_data')" aria-expanded="true">
+          <span>Menu Data</span>
+          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-section-body" id="navSectionBody_menu_data">
+          <a class="nav-item" data-view="pasca_harvest" onclick="navigate('pasca_harvest')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M12 2c-3 3-6 4-6 8s3 5 6 5 6-1 6-5-3-5-6-8Z"/></svg>
+            <span>Pasca Harvest</span><span class="count-badge" id="countBadge_pasca_harvest">–</span>
+          </a>
+          <a class="nav-item" data-view="rpc_after_giling" onclick="navigate('rpc_after_giling')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 12a9 9 0 0 1 9-9M3 12a9 9 0 0 0 9 9m0-18a9 9 0 0 1 9 9m-9-9v18m0 0a9 9 0 0 0 9-9"/></svg>
+            <span>RPC After Giling</span><span class="count-badge" id="countBadge_rpc_after_giling">–</span>
+          </a>
+          <a class="nav-item" data-view="extra_planting_after_giling" onclick="navigate('extra_planting_after_giling')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-8M12 14c-4 0-7-2-7-6 4 0 7 1 7 4M12 14c4 0 7-2 7-6-4 0-7 1-7 4M12 8V2"/></svg>
+            <span>Extra Planting</span><span class="count-badge" id="countBadge_extra_planting_after_giling">–</span>
+          </a>
+          <a class="nav-item" data-view="blanking" onclick="navigate('blanking')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9h.01M15 15h.01M9 15l6-6"/></svg>
+            <span>Blanking</span><span class="count-badge" id="countBadge_blanking">–</span>
+          </a>
+          <a class="nav-item" data-view="ratoon" onclick="navigate('ratoon')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M12 10C8 10 6 8 6 4c4 0 6 2 6 6Zm0 0c0-4 2-6 6-6 0 4-2 6-6 6Z"/></svg>
+            <span>Ratoon</span><span class="count-badge" id="countBadge_ratoon">–</span>
+          </a>
+          <a class="nav-item" data-view="maintenance" onclick="navigate('maintenance')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m14.7 6.3 3 3L8 19H5v-3Z"/><path d="m17.5 3.5 3 3M2 22l3-1 12-12-2-2L3 19Z"/></svg>
+            <span>Maintenance</span><span class="count-badge" id="countBadge_maintenance">–</span>
+          </a>
+          <a class="nav-item" data-view="pc_rpc_eks_non_rkt" onclick="navigate('pc_rpc_eks_non_rkt')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v7.5M12 9.5 6 21h12L12 9.5Z"/><path d="M9 15h6"/></svg>
+            <span>PC &amp; RPC Eks Non RKT</span><span class="count-badge" id="countBadge_pc_rpc_eks_non_rkt">–</span>
+          </a>
+          <a class="nav-item" data-view="tebang_bibit" onclick="navigate('tebang_bibit')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 20 20 7M9 4 4 9l3 3 5-5-3-3Z"/><path d="m14 15 5 5"/></svg>
+            <span>Tebang Bibit</span><span class="count-badge" id="countBadge_tebang_bibit">–</span>
+          </a>
+          <a class="nav-item" data-view="posisi_unit" onclick="navigate('posisi_unit')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="10" width="14" height="7" rx="1.5"/><path d="M16 12h4l2 3v2h-6z"/><circle cx="6.5" cy="19" r="1.8"/><circle cx="17.5" cy="19" r="1.8"/></svg>
+            <span>Data Posisi Unit</span>
+          </a>
+        </div>
+      </div>
+
+
+      <div class="nav-section" id="navSection_approval" style="display:none;">
+        <button type="button" class="nav-section-label" onclick="toggleNavSection('approval')" aria-expanded="true">
+          <span>Approval</span>
+          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-section-body" id="navSectionBody_approval">
+          <a class="nav-item" data-view="approval" onclick="navigate('approval')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            <span>Approval</span><span class="count-badge" id="countBadge_approval">–</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-section" id="navSection_justifikasi">
+        <button type="button" class="nav-section-label" onclick="toggleNavSection('justifikasi')" aria-expanded="true">
+          <span>Justifikasi</span>
+          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-section-body" id="navSectionBody_justifikasi">
+          <a class="nav-item" data-view="justifikasi_tch_under70" onclick="navigate('justifikasi_tch_under70')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>
+            <span>Justifikasi TCH Under 70</span><span class="count-badge" id="countBadge_justifikasi_tch_under70">–</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-section" id="navSection_tenaga_kerja">
+        <button type="button" class="nav-section-label" onclick="toggleNavSection('tenaga_kerja')" aria-expanded="true">
+          <span>Tenaga Kerja</span>
+          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-section-body" id="navSectionBody_tenaga_kerja">
+          <a class="nav-item" data-view="actual_tk" onclick="navigate('actual_tk')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M2.5 21c0-3.5 3-6.5 6.5-6.5s6.5 3 6.5 6.5"/><path d="M17 11a3 3 0 1 0 0-6M21.5 21c0-3-2-5.2-4.5-6"/></svg>
+            <span>Actual TK</span><span class="count-badge" id="countBadge_actual_tk">–</span>
+          </a>
+          <a class="nav-item" data-view="plan_kedatangan_tk" onclick="navigate('plan_kedatangan_tk')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
+            <span>Plan Kedatangan TK</span><span class="count-badge" id="countBadge_plan_kedatangan_tk">–</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-section" id="navSection_armada_aset">
+        <button type="button" class="nav-section-label" onclick="toggleNavSection('armada_aset')" aria-expanded="true">
+          <span>Armada &amp; Aset</span>
+          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-section-body" id="navSectionBody_armada_aset">
+          <a class="nav-item" data-view="monitoring_motor" onclick="navigate('monitoring_motor')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6M6 17 9 8h5l3 6M9 8V5h3"/></svg>
+            <span>Monitoring Motor</span><span class="count-badge" id="countBadge_monitoring_motor">–</span>
+          </a>
+          <a class="nav-item" data-view="monitoring_aset" onclick="navigate('monitoring_aset')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg>
+            <span>Monitoring Aset</span><span class="count-badge" id="countBadge_monitoring_aset">–</span>
+          </a>
+          <a class="nav-item" data-view="he_implement" onclick="navigate('he_implement')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20h20M4 20V10l4-3 4 3v10M12 20v-6l4-3 4 3v6"/><circle cx="6" cy="20" r="0"/></svg>
+            <span>Monitoring HE &amp; Implement</span><span class="count-badge" id="countBadge_he_implement">–</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-section" id="navSection_kondisi_petak">
+        <button type="button" class="nav-section-label" onclick="toggleNavSection('kondisi_petak')" aria-expanded="true">
+          <span>Kondisi Petak</span>
+          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-section-body" id="navSectionBody_kondisi_petak">
+          <a class="nav-item" data-view="dashboard_kondisi" onclick="navigate('dashboard_kondisi')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>Dashboard Kondisi Petak</span>
+          </a>
+          <a class="nav-item" data-view="kondisi_bulanan" onclick="navigate('kondisi_bulanan')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 9h18"/><rect x="3" y="4" width="18" height="18" rx="2"/></svg>
+            <span>Kondisi Bulanan</span><span class="count-badge" id="countBadge_kondisi_bulanan">–</span>
+          </a>
+          <a class="nav-item" data-view="analisa_12_bulan" onclick="navigate('analisa_12_bulan')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20V4M3 20h18M7 16l4-6 4 3 4-8"/></svg>
+            <span>Analisa 12 Bulan</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-section" id="navSection_kontrol">
+        <button type="button" class="nav-section-label" onclick="toggleNavSection('kontrol')" aria-expanded="true">
+          <span>Kontrol &amp; Analitik</span>
+          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-section-body" id="navSectionBody_kontrol">
+          <a class="nav-item" data-view="target_actual" onclick="navigate('target_actual')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+            <span>Target vs Actual</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-section" id="navSection_administrasi" style="display:none;">
+        <button type="button" class="nav-section-label" onclick="toggleNavSection('administrasi')" aria-expanded="true">
+          <span>Administrasi</span>
+          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-section-body" id="navSectionBody_administrasi">
+          <a class="nav-item" data-view="users" onclick="navigate('users')" id="usersNavItem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M17 8.5a3 3 0 1 0 0-6M21.5 20c0-3-2-5-4.5-5.7"/></svg>
+            <span>Kelola Pengguna</span>
+          </a>
+          <a class="nav-item" data-view="log_history" onclick="navigate('log_history')" id="logHistoryNavItem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            <span>Log History</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer" id="sidebarBottomUtility"></div>
+  </aside>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+  <div class="main-area">
+    <div class="topbar">
+      <button class="menu-toggle btn btn-outline btn-icon" onclick="toggleSidebar()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div>
+        <div class="page-eyebrow" id="pageEyebrow">MODUL</div>
+        <div class="page-title" id="pageTitle">Dashboard Gabungan</div>
+      </div>
+      <div id="topbarUtilityCluster" style="margin-left:auto; display:flex; align-items:center; gap:14px;">
+        <div class="topbar-clock" id="topbarClock" title="Waktu saat ini">
+          <div class="topbar-clock-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          </div>
+          <div class="topbar-clock-text">
+            <span id="topbarClockDate">–</span>
+            <span class="topbar-clock-time" id="topbarClockTime">–</span>
+          </div>
+          <div class="topbar-weather hidden" id="topbarWeather" title="Cuaca saat ini">
+            <span class="topbar-weather-icon" id="topbarWeatherIcon"></span>
+            <span class="topbar-weather-temp" id="topbarWeatherTemp">–°</span>
+          </div>
+        </div>
+        <div class="topbar-divider"></div>
+        <div class="topbar-icon-row" style="display:flex; align-items:center; gap:14px;">
+          <button class="btn btn-outline btn-sm" id="btnMuatUlang" onclick="refreshCurrentView()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6M3 22v-6h6M3.5 9a9 9 0 0 1 15-4l2.5 3M20.5 15a9 9 0 0 1-15 4l-2.5-3"/></svg>
+            <span class="refresh-label">Muat Ulang</span>
+          </button>
+          <div class="notif-wrap" id="notifWrap" style="display:none;">
+            <button class="btn btn-outline btn-icon" title="Notifikasi" onclick="toggleNotificationPanel()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </button>
+            <span class="notif-badge hidden" id="notifBadge">0</span>
+            <div class="notif-panel hidden" id="notifPanel"></div>
+          </div>
+          <div class="settings-wrap" id="settingsWrap">
+            <button class="btn btn-outline btn-icon" title="Pengaturan" onclick="toggleSettingsPanel()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+            </button>
+            <div class="notif-panel settings-panel hidden" id="settingsPanel">
+              <div class="notif-panel-header"><span>Pengaturan</span></div>
+              <button type="button" class="settings-row theme-toggle" title="Ganti tampilan gelap/terang" onclick="toggleTheme()">
+                <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+                <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+                <span>Tampilan</span>
+                <span class="settings-row-state hidden" id="themeStateLabel">Gelap</span>
+                <span class="ui-switch" id="themeSwitch" role="switch" aria-checked="false" aria-label="Mode gelap"></span>
+              </button>
+              <button type="button" class="settings-row" id="notifSoundToggle" title="Matikan/aktifkan suara notifikasi" onclick="toggleNotifSound()">
+                <span id="notifSoundIcon" style="display:inline-flex;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+                </span>
+                <span>Suara Notifikasi</span>
+                <span class="settings-row-state hidden" id="notifSoundStateLabel">Aktif</span>
+                <span class="ui-switch" id="notifSoundSwitch" role="switch" aria-checked="true" aria-label="Suara notifikasi"></span>
+              </button>
+              <button type="button" class="settings-row" id="pushNotifToggle" title="Tetap dapat notifikasi meski aplikasi tertutup" onclick="togglePushNotifications()">
+                <span id="pushNotifIcon" style="display:inline-flex;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </span>
+                <span>Notifikasi Push</span>
+                <span class="settings-row-state hidden" id="pushNotifStateLabel">Nonaktif</span>
+                <span class="ui-switch" id="pushNotifSwitch" role="switch" aria-checked="false" aria-label="Notifikasi push"></span>
+              </button>
+              <button type="button" class="settings-row" id="langToggle" title="Ganti bahasa Indonesia/Inggris" onclick="toggleAppLanguage()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/></svg>
+                <span>Bahasa</span>
+                <span class="settings-row-state" id="langStateLabel">Indonesia</span>
+                <span class="ui-switch" id="langSwitch" role="switch" aria-checked="false" aria-label="Bahasa Inggris"></span>
+              </button>
+              <button type="button" class="settings-row" id="settingsCheckUpdateBtn" title="Cek apakah aplikasi sudah versi terbaru" onclick="checkForUpdate(true)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6M3 22v-6h6M3.5 9a9 9 0 0 1 15-4l2.5 3M20.5 15a9 9 0 0 1-15 4l-2.5-3"/></svg>
+                <span>Cek Update</span>
+                <span class="settings-row-state" id="checkUpdateVersionLabel">v–</span>
+              </button>
+              <button type="button" class="settings-row" id="settingsChangePasswordBtn" title="Ubah password akun Anda" onclick="openOwnChangePasswordModal()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Ubah Password</span>
+              </button>
+              <button type="button" class="settings-row" id="settingsChangePasscodeBtn" title="Ubah passcode 4 digit di perangkat ini" onclick="openChangePasscodeModal()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.6"/><path d="M8 11V8a4 4 0 0 1 8 0"/></svg>
+                <span>Ubah Passcode</span>
+              </button>
+              <button type="button" class="settings-row" id="settingsScanQrBtn" title="Login-kan PC lain dengan scan QR" onclick="openQrScanModal()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20h.01"/></svg>
+                <span>Scan QR Login PC</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="topbar-divider"></div>
+        <div class="user-chip user-chip-topbar">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <div style="min-width:0; cursor:pointer;" id="userChipInfo" onclick="openMyProfileModal()" title="Lihat profil">
+            <div style="font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px;" id="userName">–</div>
+            <span class="role-pill" id="userRolePill">–</span>
+          </div>
+          <button class="btn btn-outline btn-icon" id="topbarLogoutBtn" title="Keluar" onclick="handleLogout()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-pad" id="pageContent">
+      <!-- diisi dinamis oleh app.js -->
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+<div class="chat-notif-wrap" id="chatNotifWrap"></div>
+
+<!-- ===================================================================
+     GANTI BAHASA (Indonesia/Inggris) — pakai Google Website Translator.
+     Aplikasi ini isinya ribuan teks Bahasa Indonesia hardcode, jadi
+     dipakai penerjemah otomatis di sisi browser (bukan translate
+     manual tiap teks) supaya cepat & tetap sinkron kalau ada teks
+     baru ditambah nanti. Pilihan bahasa disimpan lewat cookie
+     "googtrans" + localStorage, jadi tetap kepilih pas reload/buka lagi.
+     =================================================================== -->
+<div id="google_translate_element" style="display:none;"></div>
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({ pageLanguage: 'id', includedLanguages: 'en,id', autoDisplay: false }, 'google_translate_element');
+}
+function getAppLanguage(){
+  return localStorage.getItem('app_lang') || 'id';
+}
+function toggleAppLanguage(){
+  const next = getAppLanguage() === 'en' ? 'id' : 'en';
+  localStorage.setItem('app_lang', next);
+  document.cookie = 'googtrans=/id/' + next + '; path=/;';
+  document.cookie = 'googtrans=/id/' + next + '; path=/; domain=.' + location.hostname + ';';
+  location.reload();
+}
+(function applySavedLanguageUI(){
+  var lang = getAppLanguage();
+  document.addEventListener('DOMContentLoaded', function(){
+    var stateEl = document.getElementById('langStateLabel');
+    var switchEl = document.getElementById('langSwitch');
+    if(stateEl) stateEl.textContent = lang === 'en' ? 'English' : 'Indonesia';
+    if(switchEl) switchEl.setAttribute('aria-checked', lang === 'en' ? 'true' : 'false');
+    if(switchEl) switchEl.classList.toggle('on', lang === 'en');
+    if(lang === 'en'){
+      document.cookie = 'googtrans=/id/en; path=/;';
+    }
+  });
+})();
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script src="config.js?v=1.3.10"></script>
+<script src="app.js?v=1.3.10"></script>
+<script src="tebang-bibit.js?v=1.3.10"></script>
+<script src="produktivitas-he.js?v=1.3.10"></script>
+<script src="estate2-addons.js?v=1.3.10"></script>
+<script src="push-notifications.js?v=1.3.10"></script>
+<script src="approval-workflow.js?v=1.3.10"></script>
+<script src="approval-preview.js?v=1.3.10"></script>
+<script src="pasca-harvest-staff-lock.js?v=1.3.10"></script>
+<script src="pasca-harvest-status-otomatis.js?v=1.3.10"></script>
+<script src="chat-admin-delete.js?v=1.3.10"></script>
+<script src="chat-polish.js?v=1.3.10"></script>
+<script src="chat-wallpaper.js?v=1.3.10"></script>
+<script src="peta-gis.js?v=1.3.10"></script>
+<script src="peta-export.js?v=1.3.10"></script>
+<script src="pasca-harvest-reminder-notif.js?v=1.3.10"></script>
+<script src="bulk-edit.js?v=1.3.10"></script>
+<script src="tv-mode.js?v=1.3.10"></script>
+<script src="stale-alert.js?v=1.3.10"></script>
+<script src="export-menu.js?v=1.3.10"></script>
+<script src="passcode-login.js?v=1.3.10"></script>
+<script src="qr-login.js?v=1.3.10"></script>
+<script src="login-quotes.js?v=1.3.10"></script>
+<script src="maintenance-on-time.js?v=1.3.10"></script>
+<script src="mot-overdue-notif.js?v=1.3.10"></script>
+<script src="rkh.js?v=1.3.10"></script>
+<script src="pra-spa.js?v=1.3.10"></script>
+<script src="qc-by-proses.js?v=1.3.10"></script>
+<script src="beranda.js?v=1.3.10"></script>
+<script src="posisi-unit.js?v=1.3.10"></script>
+<script src="sidebar-count-fix.js?v=1.3.10"></script>
+<script src="version-check.js?v=1.3.10"></script>
+<script src="kpi-countup.js?v=1.3.10"></script>
+<script src="sidebar-collapse.js?v=1.3.10"></script>
+</body>
+</html>
