@@ -3339,8 +3339,30 @@ async function renderDashboard(){
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><span class="card-title">Proporsi Luas per Modul</span></div>
-        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_pie"></canvas></div></div>
+        <div class="card-header">
+          <span class="card-title">Tebang Giling — Plan vs Aktual Bulan</span>
+          <span style="font-size:11px; color:var(--text-faint);">Baris: Plan Tebang (Phasing 2026) &middot; Kolom: Aktual Tebang (Bulan Tebang) &middot; Ha, dari Pasca Harvest</span>
+        </div>
+        <div class="card-body" style="padding:0; overflow-x:auto;">
+          <table class="data-table" style="font-size:12.5px;">
+            <thead>
+              <tr>
+                <th>PHASING</th>
+                ${tebangPivotMonths.map(cm=>`<th style="text-align:right;">${cm}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${tebangPivotMonths.map((rm,i)=>`<tr>
+                <td><span style="display:inline-block; padding:2px 10px; border-radius:5px; font-weight:700; font-size:11.5px; color:#1a1a1a; background:${tebangPivotColors[i % tebangPivotColors.length]};">${rm}</span></td>
+                ${tebangPivotMonths.map(cm=>`<td style="text-align:right;">${fmtCell(tebangPivot[rm][cm])}</td>`).join('')}
+              </tr>`).join('')}
+              <tr style="font-weight:700; border-top:2px solid var(--border-soft);">
+                <td>ALL</td>
+                ${tebangPivotMonths.map(cm=>`<td style="text-align:right;">${fmtCell(tebangPivotColTotals[cm])}</td>`).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -3373,37 +3395,9 @@ async function renderDashboard(){
       </div>
     </div>
 
-    <div class="card" style="margin-top:16px;">
-      <div class="card-header">
-        <span class="card-title">Tebang Giling — Plan vs Aktual Bulan</span>
-        <span style="font-size:11px; color:var(--text-faint);">Baris: Plan Tebang (Phasing 2026) &middot; Kolom: Aktual Tebang (Bulan Tebang) &middot; Ha, dari Pasca Harvest</span>
-      </div>
-      <div class="card-body" style="padding:0; overflow-x:auto;">
-        <table class="data-table" style="font-size:12.5px;">
-          <thead>
-            <tr>
-              <th>PHASING</th>
-              ${tebangPivotMonths.map(cm=>`<th style="text-align:right;">${cm}</th>`).join('')}
-            </tr>
-          </thead>
-          <tbody>
-            ${tebangPivotMonths.map((rm,i)=>`<tr>
-              <td><span style="display:inline-block; padding:2px 10px; border-radius:5px; font-weight:700; font-size:11.5px; color:#1a1a1a; background:${tebangPivotColors[i % tebangPivotColors.length]};">${rm}</span></td>
-              ${tebangPivotMonths.map(cm=>`<td style="text-align:right;">${fmtCell(tebangPivot[rm][cm])}</td>`).join('')}
-            </tr>`).join('')}
-            <tr style="font-weight:700; border-top:2px solid var(--border-soft);">
-              <td>ALL</td>
-              ${tebangPivotMonths.map(cm=>`<td style="text-align:right;">${fmtCell(tebangPivotColTotals[cm])}</td>`).join('')}
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
   `;
 
   drawStatusRings(tableKeys, stackedData);
-  drawPie('chart_dash_pie', luasPerCategory);
   drawBar('chart_dash_zona', zonaCombined, undefined, { hideYAxis:true });
   drawLineMulti('chart_dash_tch', TCH_MONTHS.map(m=>m.label), tchSeries, ['#D9A441','#4C9F70'], true, 5, true);
 }
