@@ -1,0 +1,52 @@
+/* =====================================================================
+   BOTTOM NAV MENGAMBANG (mode HP, gaya mirip WhatsApp)
+   Ganti hamburger topbar di layar <=880px jadi 3 tombol mengambang di
+   bawah: Langsung, Chat Tim, Menu. Tombol Menu buka ulang sidebar yang
+   sudah ada (isinya sudah semua menu) — jadi nggak ada markup menu dobel.
+   ===================================================================== */
+.bottom-nav{ display:none; }
+
+@media (max-width:880px){
+  .menu-toggle{ display:none !important; }
+
+  .bottom-nav{
+    display:flex;
+    position:fixed;
+    left:50%;
+    bottom:calc(14px + env(safe-area-inset-bottom,0px));
+    transform:translateX(-50%);
+    z-index:45;
+    gap:2px;
+    padding:6px;
+    border-radius:999px;
+    background:color-mix(in srgb, var(--bg-card) 70%, transparent);
+    border:1px solid var(--border-soft);
+    box-shadow:var(--shadow-md);
+    -webkit-backdrop-filter:blur(18px) saturate(160%);
+    backdrop-filter:blur(18px) saturate(160%);
+  }
+  .bottom-nav-item{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:2px; width:64px; height:52px; border:none; border-radius:999px;
+    background:transparent; color:var(--text-muted); cursor:pointer;
+    font-family:var(--font-body); font-size:10px; font-weight:600;
+    position:relative; -webkit-tap-highlight-color:transparent;
+    transition:background .18s var(--ease-out), color .18s var(--ease-out);
+  }
+  .bottom-nav-item svg{ width:20px; height:20px; flex-shrink:0; }
+  .bottom-nav-item.active{ background:var(--accent-green-soft); color:var(--accent-green); }
+  .bottom-nav-badge{
+    position:absolute; top:2px; right:8px; min-width:15px; height:15px; padding:0 4px;
+    border-radius:999px; background:var(--accent-red); color:#fff; font-size:9.5px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; line-height:1;
+  }
+  .bottom-nav-badge.hidden{ display:none; }
+
+  /* Kasih jarak biar konten paling bawah nggak ketutup bar mengambang */
+  .content-pad{ padding-bottom:calc(82px + env(safe-area-inset-bottom,0px)); }
+}
+
+@media (max-width:420px){
+  .bottom-nav-item{ width:58px; height:50px; font-size:9.5px; }
+  .bottom-nav-item svg{ width:19px; height:19px; }
+}
