@@ -3140,6 +3140,13 @@ async function renderDashboard(){
   const allData = {};
   for(const t of tableKeys) allData[t] = await ensureData(t);
 
+  // Data tambahan untuk section "Ringkasan Modul Lain" (Produktivitas Harian,
+  // Produktivitas Kontraktor, Produktivitas HE Rental/Internal) — modul-modul
+  // ini di luar TABLES (bukan modul master petak), jadi diambil terpisah.
+  const dashProdHarianRows = await ensureData('produktivitas_harian');
+  const dashProdKontraktorRows = await ensureData('produktivitas_kontraktor');
+  const dashProdHERawRows = await ensurePHEData();
+
   // ensureData() sudah membatasi data sesuai Zona akun yang login (lihat 4c).
   // Admin selalu melihat semua zona; role lain (termasuk Superintendent)
   // otomatis hanya melihat zona penugasannya masing-masing.
@@ -3273,6 +3280,70 @@ async function renderDashboard(){
   tebangPivotMonths.forEach(cm => { tebangPivotColTotals[cm] = tebangPivotMonths.reduce((s,rm)=>s+tebangPivot[rm][cm],0); });
   const fmtCell = v => v > 0 ? fmtNum(v) : '-';
 
+  // --- Ringkasan Modul Lain: chart yang sama persis dengan yang ada di
+  // halaman modul masing-masing (Produktivitas Harian, Produktivitas
+  // Kontraktor, Produktivitas HE Rental/Internal, Pasca Harvest, Kondisi
+  // Bulanan), ditampilkan ulang di sini biar kelihatan sekilas tanpa perlu
+  // pindah menu. Setiap grafik dikasih judul modul asalnya.
+  const dashByPekerja = {};
+  dashProdHarianRows.forEach(r => {
+    const pct = produktivitasPct(r);
+    if(pct === null) return;
+    const nama = (r.harian_plantation || '(tanpa nama)').toString().trim() || '(tanpa nama)';
+    if(!dashByPekerja[nama]) dashByPekerja[nama] = { sum:0, n:0 };
+    dashByPekerja[nama].sum += pct; dashByPekerja[nama].n++;
+  });
+  const dashPekerjaPctMap = {};
+  Object.entries(dashByPekerja).forEach(([k,v]) => dashPekerjaPctMap[k] = Math.round(v.sum / v.n));
+
+  const dashKetHasilAgg = aggregateCount(dashProdKontraktorRows, 'ket_hasil');
+
+  function dashPheJenisMaps(mode){
+    const rowsMode = pheRowsForMode(dashProdHERawRows, mode);
+    const unitAgg = pheAggregateByUnit(rowsMode, mode);
+    const jenisAgg = pheAggregateByUnit(rowsMode, mode, 'jenis_unit_he2');
+    const hmHaByJenis = {}; jenisAgg.forEach(u => hmHaByJenis[u.unit] = u.hmHa);
+    const jenisAvailGroups = {};
+    unitAgg.forEach(u => {
+      const j = u.jenis || '-';
+      if(!jenisAvailGroups[j]) jenisAvailGroups[j] = { sum:0, n:0 };
+      jenisAvailGroups[j].sum += u.pctAvaibility; jenisAvailGroups[j].n++;
+    });
+    const avaibilityByJenis = {};
+    Object.keys(jenisAvailGroups).forEach(j => { avaibilityByJenis[j] = Math.round(jenisAvailGroups[j].sum / jenisAvailGroups[j].n); });
+    return { hmHaByJenis, avaibilityByJenis };
+  }
+  const dashPheRental = dashPheJenisMaps('rental');
+  const dashPheInternal = dashPheJenisMaps('internal');
+
+  const DASH_KATEGORI_KEYS = ['kategori_kondisi_juringan','kategori_tunggul','kategori_kondisi_gulma','kategori_pasca_harvest'];
+  const DASH_KATEGORI_LABELS = ['Kondisi Juringan','Tunggul','Kondisi Gulma','Pasca Harvest'];
+  const DASH_STATUS_CATS = ['Baik','Cukup','Kurang'];
+  const dashHarvestedRows = masterRows.filter(r => (r.status_progress ?? '').toString().trim().toLowerCase() === 'done');
+  const dashKategoriKondisiMulti = aggregateMultiCount(dashHarvestedRows, DASH_KATEGORI_KEYS, DASH_STATUS_CATS);
+  const dashKategoriKondisiSeries = {};
+  DASH_STATUS_CATS.forEach(cat => { dashKategoriKondisiSeries[cat] = DASH_KATEGORI_KEYS.map(k => dashKategoriKondisiMulti[k][cat] || 0); });
+  const dashPengecekanAgg = (() => {
+    const m = { SUDAH:0, BELUM:0 };
+    dashHarvestedRows.forEach(r => {
+      const status = (r.status_pengecekan_pasca_hvt || '').toString().trim().toUpperCase();
+      if(status === 'SUDAH') m.SUDAH++; else m.BELUM++;
+    });
+    return m;
+  })();
+
+  const DASH_KB_KATEGORI_KEYS = ['kategori_lalang','kategori_perumpungan','kategori_rayutan','kategori_intensitas_hama','kategori_drainage','kategori_tanggul_berem'];
+  const DASH_KB_KATEGORI_LABELS = ['Lalang','Perumpungan','Rayutan','Intensitas Hama','Drainage','Tanggul/Berem'];
+  const dashKbRows = allData['kondisi_bulanan'] || [];
+  const dashKbKategoriMulti = aggregateMultiCount(dashKbRows, DASH_KB_KATEGORI_KEYS, DASH_STATUS_CATS);
+  const dashKbKategoriSeries = {};
+  DASH_STATUS_CATS.forEach(cat => { dashKbKategoriSeries[cat] = DASH_KB_KATEGORI_KEYS.map(k => dashKbKategoriMulti[k][cat] || 0); });
+  const dashKbStatusAgg = aggregateCount(dashKbRows, 'status_bulan');
+
+  // Header kecil bergaya modul, dipasang di atas tiap grafik yang dipindahkan
+  // dari halaman modul lain supaya jelas asalnya.
+  const moduleTag = label => `<div style="font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--accent-gold); margin-bottom:4px;">${esc(label)}</div>`;
+
   // KPI baris atas Dashboard Gabungan: Target (Total Luas Pasca Harvest),
   // Progress (luas petak yang status_progress = Progress / sedang jalan),
   // Balance (luas petak yang belum tebang, status_progress = Not Yet/kosong),
@@ -3395,11 +3466,87 @@ async function renderDashboard(){
       </div>
     </div>
 
+    <div style="margin-top:28px; margin-bottom:14px; display:flex; align-items:center; gap:12px;">
+      <span style="font-family:var(--font-display); font-weight:600; font-size:16px; color:var(--text-primary);">Ringkasan Modul Lain</span>
+      <span style="flex:1; height:1px; background:var(--border-soft);"></span>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-header"><span class="card-title">${moduleTag('Produktivitas Harian')}Produktivitas Rata-rata per Pekerja (%)</span></div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_prod_pekerja"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">${moduleTag('Produktivitas Kontraktor')}Analisa Ket Hasil (Lulus vs Tidak Lulus)</span></div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_pk_kethasil"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-header"><span class="card-title">${moduleTag('Produktivitas HE — Rental')}HM/Ha berdasarkan Jenis Unit</span></div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_pher_hmha"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">${moduleTag('Produktivitas HE — Rental')}% Avaibility berdasarkan Jenis Unit</span></div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_pher_avail"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-header"><span class="card-title">${moduleTag('Produktivitas HE — Internal')}HM/Ha berdasarkan Jenis Unit</span></div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_phei_hmha"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">${moduleTag('Produktivitas HE — Internal')}% Avaibility berdasarkan Jenis Unit</span></div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_phei_avail"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">${moduleTag('Pasca Harvest')}Kategori Kondisi Lapangan Pasca Panen</span>
+          <span style="font-size:11px; color:var(--text-faint);">${dashHarvestedRows.length} petak status Done</span>
+        </div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_kategori_kondisi"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">${moduleTag('Pasca Harvest')}Status Pengecekan Pasca HVT</span>
+          <span style="font-size:11px; color:var(--text-faint);">${dashHarvestedRows.length} petak status Done</span>
+        </div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_pengecekan_hvt"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-header"><span class="card-title">${moduleTag('Kondisi Bulanan')}Kategori Kondisi (Baik/Cukup/Kurang)</span></div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_kb_kategori"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">${moduleTag('Kondisi Bulanan')}Distribusi Status Bulan</span></div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart_dash_kb_status"></canvas></div></div>
+      </div>
+    </div>
+
   `;
 
   drawStatusRings(tableKeys, stackedData);
   drawBar('chart_dash_zona', zonaCombined, undefined, { hideYAxis:true });
   drawLineMulti('chart_dash_tch', TCH_MONTHS.map(m=>m.label), tchSeries, ['#D9A441','#4C9F70'], true, 5, true);
+  drawHBar('chart_dash_prod_pekerja', dashPekerjaPctMap, { hideXAxis:true });
+  drawDonut('chart_dash_pk_kethasil', dashKetHasilAgg);
+  drawHBar('chart_dash_pher_hmha', dashPheRental.hmHaByJenis, { hideXAxis:true });
+  drawHBar('chart_dash_pher_avail', dashPheRental.avaibilityByJenis, { hideXAxis:true });
+  drawHBar('chart_dash_phei_hmha', dashPheInternal.hmHaByJenis, { hideXAxis:true });
+  drawHBar('chart_dash_phei_avail', dashPheInternal.avaibilityByJenis, { hideXAxis:true });
+  drawGroupedBar('chart_dash_kategori_kondisi', DASH_KATEGORI_LABELS, dashKategoriKondisiSeries, undefined, { hideYAxis:true });
+  drawStatusProgressBar('chart_dash_pengecekan_hvt', dashPengecekanAgg);
+  drawGroupedBar('chart_dash_kb_kategori', DASH_KB_KATEGORI_LABELS, dashKbKategoriSeries, undefined, { hideYAxis:true });
+  drawStatusProgressBar('chart_dash_kb_status', dashKbStatusAgg);
 }
 
 /* ---------------------------------------------------------------------
