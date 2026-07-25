@@ -55,8 +55,33 @@
     menu.classList.toggle('active', !!(sidebar && sidebar.classList.contains('open')));
   }
 
+  function injectCloseButton(){
+    var header = document.querySelector('.sidebar-header');
+    if(!header || document.getElementById('bnavCloseMenu')) return;
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'bnavCloseMenu';
+    btn.className = 'bnav-close-menu';
+    btn.setAttribute('aria-label', 'Tutup menu');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    btn.onclick = function(){ toggleSidebar(); };
+    header.appendChild(btn);
+  }
+
+  // Bottom-nav cuma tampil kalau udah login (appShell nggak "hidden").
+  function watchLoginState(){
+    var bar = document.getElementById('bottomNav');
+    var shell = document.getElementById('appShell');
+    if(!bar || !shell) return;
+    var sync = function(){ bar.classList.toggle('is-hidden', shell.classList.contains('hidden')); };
+    sync();
+    new MutationObserver(sync).observe(shell, { attributes:true, attributeFilter:['class'] });
+  }
+
   function init(){
     buildBar();
+    injectCloseButton();
+    watchLoginState();
     mirrorBadge('dmUnreadBadge', 'bnavDMBadge');
     mirrorBadge('chatUnreadBadge', 'bnavChatBadge');
 

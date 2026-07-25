@@ -5,9 +5,27 @@
    sudah ada (isinya sudah semua menu) — jadi nggak ada markup menu dobel.
    ===================================================================== */
 .bottom-nav{ display:none; }
+.bottom-nav.is-hidden{ display:none !important; }
 
 @media (max-width:880px){
   .menu-toggle{ display:none !important; }
+
+  /* Tombol Menu buka full layar (bukan drawer sempit 250px) */
+  .sidebar.open{
+    width:100vw !important;
+    max-width:100vw !important;
+    transform:translateX(0) !important;
+  }
+  .sidebar-backdrop{ display:none !important; }
+  .sidebar-header{ position:relative; }
+  .bnav-close-menu{
+    position:absolute; top:14px; right:14px; width:36px; height:36px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:999px; border:1px solid var(--border-soft);
+    background:var(--bg-card-hover); color:var(--text-primary);
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .bnav-close-menu svg{ width:18px; height:18px; }
 
   .bottom-nav{
     display:flex;
