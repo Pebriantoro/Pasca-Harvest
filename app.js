@@ -3286,6 +3286,7 @@ async function renderDashboard(){
     .reduce((s,r) => s + (parseFloat(r[TABLES['pasca_harvest'].areaField]) || 0), 0);
   let kpiTchSum = 0, kpiTchCount = 0;
   masterRows.forEach(r => {
+    if((r.status_progress||'').toString().trim().toLowerCase() !== 'done') return;
     const v = r.tch_nett_bapp_2026;
     if(v !== null && v !== undefined && v !== ''){ kpiTchSum += parseFloat(v) || 0; kpiTchCount++; }
   });
@@ -3302,7 +3303,7 @@ async function renderDashboard(){
       ${kpiCard('Progress', fmtNum(kpiProgressLuas)+' Ha', 'luas status Progress · Pasca Harvest', 'var(--accent-blue)', 'progress')}
       ${kpiCard('Balance', fmtNum(kpiBalanceLuas)+' Ha', 'luas belum tebang · Pasca Harvest', 'var(--accent-red)', 'luas')}
       ${kpiCard('Persentase', overallPct+'%', 'status Done · Pasca Harvest', 'var(--accent-green)', 'progress')}
-      ${kpiCard('Rata-Rata TCH Nett', fmtNum(kpiAvgTchNett)+' Ton/Ha', 'TCH Nett BAPP 2026 · Pasca Harvest', 'var(--accent-gold)', 'luas')}
+      ${kpiCard('Rata-Rata TCH Nett', fmtNum(kpiAvgTchNett)+' Ton/Ha', 'TCH Nett BAPP 2026 · status Done', 'var(--accent-gold)', 'luas')}
     </div>
 
     <div class="chart-grid" id="dashTopTchGrid">
