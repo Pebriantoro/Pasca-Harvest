@@ -1,0 +1,92 @@
+/* =====================================================================
+   BERANDA WORKFLOW HERO — carousel gambar alur budidaya tebu (Persiapan
+   Lahan s/d Tebang Giling) digabung dengan teks penjelasan, di grid yang
+   sama, tampil paling atas halaman Beranda. Additif — tidak mengubah CSS
+   yang sudah ada.
+
+   Catatan performa (biar smooth & tidak lag, terutama di HP):
+   - Cuma 2 layer <img> yang aktif dipakai bergantian (teknik ping-pong),
+     BUKAN 8 layer ditumpuk sekaligus — supaya browser cuma perlu decode/
+     composite 2 gambar dalam satu waktu, bukan 8.
+   - Transisi pakai opacity + transform saja (GPU-accelerated), tidak ada
+     properti yang memicu reflow (width/height/top/left tidak dianimasikan).
+   - Semua gambar sudah dikompres ke WebP (~50-300KB, turun dari PNG asli
+     yang 9-12MB) dan disediakan 2 resolusi (desktop & mobile) via srcset,
+     supaya HP otomatis unduh versi yang lebih kecil.
+   ===================================================================== */
+
+.wf-hero{
+  position:relative;
+  border-radius:16px;
+  overflow:hidden;
+  margin-bottom:16px;
+  min-height:300px;
+  background:var(--bg-elevated);
+  border:1px solid var(--border-soft);
+}
+.wf-hero .wf-slide{
+  position:absolute; inset:0;
+  display:grid;
+  grid-template-columns: 1.35fr 1fr;
+  opacity:0;
+  will-change:opacity;
+  transition:opacity .9s ease;
+  pointer-events:none;
+}
+.wf-hero .wf-slide.wf-active{
+  position:relative;
+  opacity:1;
+  pointer-events:auto;
+}
+.wf-slide-media{ position:relative; overflow:hidden; min-height:300px; background:#0d1a14; }
+.wf-slide-media img{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+}
+.wf-slide-media::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg, rgba(11,20,16,0) 55%, var(--bg-elevated) 100%);
+}
+.wf-slide-text{
+  display:flex; flex-direction:column; justify-content:center;
+  padding:26px 30px; gap:10px; min-width:0;
+}
+.wf-slide-step{
+  font-family:var(--font-display); font-weight:700; font-size:11.5px;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--accent-gold);
+}
+.wf-slide-title{
+  font-family:var(--font-display); font-weight:700; font-size:20px;
+  color:var(--text-primary); line-height:1.2;
+}
+.wf-slide-desc{
+  font-size:12.5px; line-height:1.55; color:var(--text-muted);
+  display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.wf-dots{
+  position:absolute; left:30px; bottom:16px; z-index:2;
+  display:flex; gap:6px;
+}
+.wf-dots button{
+  width:7px; height:7px; border-radius:50%; border:none; padding:0;
+  background:rgba(255,255,255,0.35); cursor:pointer; transition:background .25s, width .25s;
+}
+.wf-dots button.wf-active{ background:var(--accent-gold); width:18px; border-radius:4px; }
+
+@media (max-width:760px){
+  .wf-hero{ min-height:0; }
+  .wf-hero .wf-slide{ grid-template-columns:1fr; position:absolute; }
+  .wf-slide-media{ min-height:180px; aspect-ratio:16/9; }
+  .wf-slide-media::after{ background:linear-gradient(180deg, rgba(11,20,16,0) 60%, var(--bg-elevated) 100%); }
+  .wf-slide-text{ padding:16px 18px 46px; }
+  .wf-slide-title{ font-size:16.5px; }
+  .wf-slide-desc{ font-size:12px; -webkit-line-clamp:3; }
+  .wf-dots{ left:18px; bottom:14px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .wf-hero .wf-slide{ transition:none; }
+}

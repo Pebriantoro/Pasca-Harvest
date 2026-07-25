@@ -130,6 +130,7 @@ async function renderBeranda(){
     return;
   }
   $('#pageContent').innerHTML = `
+    ${typeof wfHeroHTML === 'function' ? wfHeroHTML() : ''}
     <div class="card" style="margin-bottom:16px; padding:16px;">
       <div style="font-weight:700; font-size:14px;">👋 Aktivitas Terbaru Tim</div>
       <div style="font-size:12px; color:var(--text-faint); margin-top:4px;">Ringkasan input Rencana Kerja Harian, Pengecekan Pra SPA & QC By Proses, terbaru di atas.</div>
@@ -137,6 +138,7 @@ async function renderBeranda(){
     <div id="berandaFilterBar"></div>
     <div id="berandaFeedList"><div style="display:flex; justify-content:center; padding:40px;"><div class="spinner"></div></div></div>
   `;
+  if(typeof wfInitHero === 'function') wfInitHero();
   berandaFeedCache = await berandaFetchFeed();
   renderBerandaFeed();
 }

@@ -17,11 +17,27 @@
      terutama utk aset cache-first di atas).
    ===================================================================== */
 
-const CACHE_NAME = 'estate2-shell-v21';
+const CACHE_NAME = 'estate2-shell-v22';
 const STATIC_ASSETS = [
   './manifest.json',
   './logo.png',
   './petak-boundaries.geojson',
+  './assets/workflow/persiapan-lahan.webp',
+  './assets/workflow/persiapan-lahan-m.webp',
+  './assets/workflow/bajak.webp',
+  './assets/workflow/bajak-m.webp',
+  './assets/workflow/furrowing.webp',
+  './assets/workflow/furrowing-m.webp',
+  './assets/workflow/planting.webp',
+  './assets/workflow/planting-m.webp',
+  './assets/workflow/post-spray.webp',
+  './assets/workflow/post-spray-m.webp',
+  './assets/workflow/fertilizing.webp',
+  './assets/workflow/fertilizing-m.webp',
+  './assets/workflow/tebang-bibit.webp',
+  './assets/workflow/tebang-bibit-m.webp',
+  './assets/workflow/tebang-giling.webp',
+  './assets/workflow/tebang-giling-m.webp',
 ];
 
 self.addEventListener('install', (event) => {
