@@ -40,6 +40,12 @@ function avatarUrlOrDefault(url){
 function avatarBgStyle(url){
   return `background-image:url('${avatarUrlOrDefault(url)}'); background-size:cover; background-position:center;`;
 }
+// Sampul profil (kayak cover photo FB). Kalau belum ada foto sampul,
+// fallback ke gradient ijo-emas khas tema, bukan kotak kosong polos.
+function coverBgStyle(url){
+  if(url) return `background-image:url('${url}'); background-size:cover; background-position:center;`;
+  return `background:linear-gradient(135deg, var(--accent-green-soft), var(--accent-gold-soft));`;
+}
 
 // per-table runtime state (cache, filter, sort, page)
 const state = {};
@@ -599,8 +605,14 @@ function openMyProfileModal(){
         <div class="card-title">Profil Saya</div>
         <button class="btn btn-outline btn-icon" onclick="closeModal()">✕</button>
       </div>
-      <div class="modal-body" style="text-align:center; padding-top:6px;">
-        <div class="user-avatar" style="width:72px; height:72px; font-size:26px; margin:0 auto 14px; ${avatarBgStyle(p.avatar_url)}"></div>
+      <div class="profile-cover" style="height:96px; position:relative; ${coverBgStyle(p.cover_url)}">
+        <button type="button" class="btn btn-outline btn-icon" onclick="triggerCoverUpload()" title="Ganti sampul"
+          style="position:absolute; top:8px; right:8px; background:rgba(18,32,13,.55); border-color:rgba(255,255,255,.3); backdrop-filter:blur(4px); width:30px; height:30px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
+        </button>
+        <div class="user-avatar" style="width:78px; height:78px; font-size:26px; position:absolute; left:50%; bottom:0; transform:translate(-50%, 50%); border:4px solid var(--bg-card); box-sizing:content-box; ${avatarBgStyle(p.avatar_url)}"></div>
+      </div>
+      <div class="modal-body" style="text-align:center; padding-top:46px;">
         <div style="font-size:16px; font-weight:700;">${esc(name)}</div>
         <div style="margin-top:6px;">
           <span class="role-pill role-${esc(p.role||'')}">${esc(zonaRestrict ? `${p.role} · Zona ${zonaRestrict}` : (p.role || '–'))}</span>
@@ -1753,6 +1765,64 @@ async function handleAvatarFileChange(e){
   if(!file.type.startsWith('image/')){ toast('File harus berupa gambar', true); return; }
   if(file.size > 2*1024*1024){ toast('Ukuran gambar maksimal 2MB', true); return; }
   openAvatarCropModal(file);
+}
+
+/* ---------------------------------------------------------------------
+   4b2. SAMPUL PROFIL (cover photo, kayak FB). Gak pake modal crop
+   drag/zoom kayak avatar (biar ringkas) — langsung center-crop rasio
+   lebar (16:6) lewat canvas, baru diunggah.
+   --------------------------------------------------------------------- */
+function ensureCoverFileInput(){
+  let inp = document.getElementById('coverFileInput');
+  if(!inp){
+    inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*'; inp.id = 'coverFileInput'; inp.className = 'hidden';
+    inp.addEventListener('change', handleCoverFileChange);
+    document.body.appendChild(inp);
+  }
+  return inp;
+}
+function triggerCoverUpload(){
+  ensureCoverFileInput().click();
+}
+async function handleCoverFileChange(e){
+  const file = e.target.files[0];
+  e.target.value = '';
+  if(!file) return;
+  if(!file.type.startsWith('image/')){ toast('File harus berupa gambar', true); return; }
+  if(file.size > 4*1024*1024){ toast('Ukuran gambar maksimal 4MB', true); return; }
+  const objUrl = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    const OUT_W = 960, OUT_H = 360; // rasio ~16:6, cukup lebar buat sampul
+    const canvas = document.createElement('canvas');
+    canvas.width = OUT_W; canvas.height = OUT_H;
+    const ctx = canvas.getContext('2d');
+    const srcRatio = img.naturalWidth / img.naturalHeight, outRatio = OUT_W / OUT_H;
+    let sx, sy, sW, sH;
+    if(srcRatio > outRatio){ sH = img.naturalHeight; sW = sH * outRatio; sx = (img.naturalWidth - sW) / 2; sy = 0; }
+    else { sW = img.naturalWidth; sH = sW / outRatio; sx = 0; sy = (img.naturalHeight - sH) / 2; }
+    ctx.drawImage(img, sx, sy, sW, sH, 0, 0, OUT_W, OUT_H);
+    canvas.toBlob(async (blob) => {
+      URL.revokeObjectURL(objUrl);
+      if(blob) await uploadCoverBlob(blob);
+    }, 'image/jpeg', 0.9);
+  };
+  img.src = objUrl;
+}
+async function uploadCoverBlob(blob){
+  toast('Mengunggah sampul…');
+  const path = `${currentUser.id}/cover.jpg`;
+  const { error: upErr } = await supa.storage.from('avatars').upload(path, blob, { upsert: true, cacheControl: '3600', contentType: 'image/jpeg' });
+  if(upErr){ toast('Gagal mengunggah sampul: ' + upErr.message, true); return; }
+  const { data: pub } = supa.storage.from('avatars').getPublicUrl(path);
+  const coverUrl = pub.publicUrl + '?t=' + Date.now();
+  const { error: updErr } = await supa.from('profiles').update({ cover_url: coverUrl }).eq('id', currentUser.id);
+  if(updErr){ toast('Gagal menyimpan sampul (kolom cover_url ada di tabel profiles?): ' + updErr.message, true); return; }
+  currentProfile.cover_url = coverUrl;
+  toast('Sampul profil berhasil diperbarui');
+  const overlay = document.getElementById('modalOverlay');
+  if(overlay){ overlay.remove(); openMyProfileModal(); }
 }
 
 /* ---------------------------------------------------------------------
