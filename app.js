@@ -1314,7 +1314,7 @@ async function renderChat(){
       </div>
       <div class="chat-messages" id="chatMessages"></div>
       <form class="chat-input-bar" id="chatForm" onsubmit="return sendChatMessage(event)">
-        <textarea class="input chat-textarea" id="chatInput" rows="1" placeholder="Tulis pesan… (Enter untuk kirim, Shift+Enter untuk baris baru)" onkeydown="handleChatKeydown(event)" required></textarea>
+        <textarea class="input chat-textarea" id="chatInput" rows="1" placeholder="Tulis pesan…" onkeydown="handleChatKeydown(event)" required></textarea>
         <button class="btn btn-primary btn-icon chat-send-btn" type="submit" title="Kirim">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z"/></svg>
         </button>
@@ -1622,7 +1622,7 @@ function openDMConversation(userId){
     </div>
     <div class="chat-messages" id="dmMessages"></div>
     <form class="chat-input-bar" id="dmForm" onsubmit="return sendDMMessage(event)">
-      <textarea class="input chat-textarea" id="dmInput" rows="1" placeholder="Tulis pesan pribadi… (Enter untuk kirim, Shift+Enter untuk baris baru)" onkeydown="handleDMKeydown(event)" required></textarea>
+      <textarea class="input chat-textarea" id="dmInput" rows="1" placeholder="Tulis pesan pribadi…" onkeydown="handleDMKeydown(event)" required></textarea>
       <button class="btn btn-primary btn-icon chat-send-btn" type="submit" title="Kirim">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z"/></svg>
       </button>
