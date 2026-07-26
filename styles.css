@@ -537,13 +537,23 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
   border-left:1px solid var(--border); margin-left:2px;
 }
 .topbar-weather.hidden{ display:none; }
-.topbar-weather-icon{ display:flex; align-items:center; justify-content:center; color: var(--accent-gold); flex-shrink:0; }
+.topbar-weather-icon{ display:flex; align-items:center; justify-content:center; color: var(--accent-gold); flex-shrink:0; width:14px; height:14px; }
 .topbar-weather-icon svg{ display:block; }
 .topbar-weather-temp{
   font-family: var(--font-mono); font-size:12.5px; font-weight:600;
   color: var(--text-muted); white-space:nowrap;
 }
 #topbarUtilityCluster.in-sidebar .topbar-weather{ margin-top:0; }
+
+/* Widget cuaca pindah ke kartu profil (mode HP) — dibesarin, jadi pill sendiri
+   di ujung kanan kartu, ngisi slot bekas tombol Keluar yang udah pindah. */
+#topbarUtilityCluster.in-sidebar .user-chip-topbar .topbar-weather{
+  margin-left:auto; padding:6px 10px 6px 8px; border-left:none;
+  background: var(--bg-elevated); border:1px solid var(--border); border-radius:10px;
+  gap:6px; flex-shrink:0;
+}
+#topbarUtilityCluster.in-sidebar .user-chip-topbar .topbar-weather-icon{ width:24px; height:24px; }
+#topbarUtilityCluster.in-sidebar .user-chip-topbar .topbar-weather-temp{ font-size:14.5px; }
 #notifSoundToggle.btn-sound-muted{ color: var(--text-faint); border-color: var(--border); }
 #notifSoundToggle.btn-sound-muted:hover{ color: var(--accent-red, #C1543C); border-color: var(--accent-red, #C1543C); }
 
@@ -613,7 +623,7 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 .user-online-status{ display:inline-flex; align-items:center; gap:7px; font-size:12.5px; color: var(--text-muted); }
 .user-chip-topbar{ padding:4px 8px 4px 4px; border-radius:30px; transition: background .15s; }
 .user-chip-topbar:hover{ background: var(--bg-card); }
-.user-avatar{ width:34px; height:34px; border-radius:8px; background: var(--accent-green-soft); color: var(--accent-green); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; font-family:var(--font-display); flex-shrink:0; }
+.user-avatar{ width:34px; height:34px; border-radius:8px; background: var(--accent-green-soft); color: var(--accent-green); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; font-family:var(--font-display); flex-shrink:0; overflow:hidden; background-repeat:no-repeat !important; background-position:center center !important; }
 .role-pill{ font-size:10px; text-transform:uppercase; letter-spacing:.05em; padding:1px 7px; border-radius:20px; font-weight:700; }
 .role-admin{ background: var(--accent-red-soft); color: var(--accent-red-text); }
 .role-manager{ background: var(--accent-gold-soft); color: var(--accent-gold); }

@@ -1726,7 +1726,7 @@ function renderAvatarEditIcon(){
   if(!overlay){
     overlay = document.createElement('div');
     overlay.id = 'avatarEditIcon';
-    overlay.style.cssText = 'position:absolute; bottom:-2px; right:-2px; width:15px; height:15px; background:var(--accent-gold); border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid var(--sidebar); pointer-events:none;';
+    overlay.style.cssText = 'position:absolute; bottom:1px; right:1px; width:15px; height:15px; background:var(--accent-gold); border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid var(--sidebar); pointer-events:none;';
     overlay.innerHTML = `<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#12200D" stroke-width="3"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>`;
   }
   avatarEl.appendChild(overlay); // re-append (textContent='' above may have removed it)
@@ -1907,6 +1907,23 @@ function relocateSettingsAndLogout(){
 let _rslTimer = null;
 window.addEventListener('resize', function(){ clearTimeout(_rslTimer); _rslTimer = setTimeout(relocateSettingsAndLogout, 120); });
 relocateSettingsAndLogout();
+
+/* --- Pindahkan badge cuaca dari sebelah jam ke kartu profil (sebelah kanan,
+   bekas slot tombol Keluar yang udah dipindah ke icon-row) saat HP/tablet
+   kecil (<=880px), sekalian diperbesar lewat CSS. Balik ke sebelah jam lagi
+   kalau layar melebar. ------------------------------------------------- */
+function relocateWeatherWidget(){
+  const weather = document.getElementById('topbarWeather');
+  const clock = document.getElementById('topbarClock');
+  const chip = document.querySelector('.user-chip-topbar');
+  if(!weather || !clock || !chip) return;
+  const isMobile = window.innerWidth <= 880;
+  if(isMobile && weather.parentElement !== chip) chip.appendChild(weather);
+  else if(!isMobile && weather.parentElement !== clock) clock.appendChild(weather);
+}
+let _rwwTimer = null;
+window.addEventListener('resize', function(){ clearTimeout(_rwwTimer); _rwwTimer = setTimeout(relocateWeatherWidget, 120); });
+relocateWeatherWidget();
 
 /* --- Hide/Collapse Sub Menu per Section ---------------------------------
    Setiap section sidebar (Ringkasan, Komunikasi, Produktivitas, Menu Data,
@@ -7909,11 +7926,13 @@ const WEATHER_FALLBACK_COORD = { lat: -5.45, lon: 105.27 }; // Bandar Lampung
 const WEATHER_REFRESH_MS = 15 * 60 * 1000;
 
 const WMO_ICON = {
-  clearSun: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
-  cloud: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.4 2A4 4 0 0 0 6.5 19h11Z"/></svg>',
-  rain: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 14a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.4 2A4 4 0 0 0 6.5 14h11Z"/><path d="M8 17v3M12 17v3M16 17v3"/></svg>',
-  storm: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 12a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.4 2A4 4 0 0 0 6.5 12h11Z"/><path d="M13 13l-3 5h3l-2 4"/></svg>',
-  fog: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9h18M3 15h18"/><path d="M6 5h6M6 19h12"/></svg>'
+  clearSun: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+  // Awan berlapis (bukan cuma 1 outline) biar keliatan bervolume/realistis:
+  // 2 gumpal belakang setengah transparan + 1 gumpal utama solid + highlight tipis.
+  cloud: '<svg width="100%" height="100%" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><ellipse cx="11.5" cy="23" rx="7.5" ry="6" fill="currentColor" opacity=".45"/><ellipse cx="23" cy="20" rx="7" ry="6" fill="currentColor" opacity=".6"/><path d="M9.5 28c-3.9 0-7-2.9-7-6.6 0-3.2 2.4-5.9 5.7-6.5C9 10.6 13 7.3 17.7 7.3c4.8 0 8.9 3.5 9.6 8.1 3.3.4 5.8 3.2 5.8 6.5 0 3.6-3.1 6.6-7 6.6H9.5Z" fill="currentColor"/><ellipse cx="13.5" cy="15.5" rx="3.4" ry="2.1" fill="#fff" opacity=".22"/></svg>',
+  rain: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 14a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.4 2A4 4 0 0 0 6.5 14h11Z"/><path d="M8 17v3M12 17v3M16 17v3"/></svg>',
+  storm: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 12a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.4 2A4 4 0 0 0 6.5 12h11Z"/><path d="M13 13l-3 5h3l-2 4"/></svg>',
+  fog: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9h18M3 15h18"/><path d="M6 5h6M6 19h12"/></svg>'
 };
 
 function weatherCodeToIcon(code){
