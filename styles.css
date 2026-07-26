@@ -649,11 +649,7 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 .page-eyebrow{ font-family: var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color: var(--accent-gold); margin-bottom:4px; }
 
 /* ===================== CARDS / KPI ===================== */
-.kpi-grid{
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:20px;
-  position:sticky; top:64px; z-index:20; background:var(--bg);
-  padding-top:14px; margin-top:-14px; margin-bottom:28px;
-}
+.kpi-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:28px; }
 .kpi-card{
   background: var(--bg-card); border:1px solid var(--border); border-radius: var(--radius);
   padding:16px 18px; position:relative; overflow:hidden;
@@ -969,7 +965,7 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
   .page-eyebrow{ font-size:10px; }
 
   /* KPI cards: 2 per baris, padding & huruf dipadatkan */
-  .kpi-grid{ grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:20px; top:54px; padding-top:10px; margin-top:-10px; }
+  .kpi-grid{ grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:20px; }
   .kpi-card{ padding:10px 12px; border-radius:8px; }
   .kpi-card .kpi-label{ font-size:9.5px; margin-bottom:5px; }
   .kpi-card .kpi-value{ font-size:18px; }
