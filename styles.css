@@ -553,7 +553,7 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
   gap:6px; flex-shrink:0;
 }
 #topbarUtilityCluster.in-sidebar .user-chip-topbar .topbar-weather-icon{ width:24px; height:24px; }
-#topbarUtilityCluster.in-sidebar .user-chip-topbar .topbar-weather-temp{ font-size:14.5px; }
+#topbarUtilityCluster.in-sidebar .user-chip-topbar .topbar-weather-temp{ font-size:14.5px; color: var(--text-primary); }
 #notifSoundToggle.btn-sound-muted{ color: var(--text-faint); border-color: var(--border); }
 #notifSoundToggle.btn-sound-muted:hover{ color: var(--accent-red, #C1543C); border-color: var(--accent-red, #C1543C); }
 
@@ -958,7 +958,7 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
 #topbarUtilityCluster.in-sidebar .user-chip{ width:100%; flex-basis:100%; }
 #topbarUtilityCluster.in-sidebar .user-chip > div:nth-child(2){ flex:1; min-width:0; }
 #topbarUtilityCluster.in-sidebar .user-chip #userName{ max-width:none !important; }
-#topbarUtilityCluster.in-sidebar .user-chip-topbar{ border-top:none !important; padding-top:0 !important; }
+#topbarUtilityCluster.in-sidebar .user-chip-topbar{ border-top:none !important; }
 #topbarUtilityCluster.in-sidebar .user-chip{
   gap:12px; padding:10px 12px; border-radius:12px;
   background: var(--bg-card, rgba(255,255,255,.03));
