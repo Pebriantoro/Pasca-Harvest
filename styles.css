@@ -1001,7 +1001,8 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
 
   /* Tombol lebih ringkas di HP (input/select tetap 16px agar iOS tidak auto-zoom) */
   .input, select.input{ font-size:16px; padding:9px 10px; }
-  .qcp-filter-bar select.input{ font-size:13px; padding:8px 28px 8px 9px; }
+  .qcp-filter-bar .input{ font-size:13px; padding:8px 9px; }
+  .qcp-filter-bar select.input{ padding:8px 28px 8px 9px; }
   .btn{ padding:7px 13px; font-size:12.5px; }
   .btn-sm{ font-size:12px; padding:5px 10px; }
   .btn-icon{ width:32px; height:32px; }
