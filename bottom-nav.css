@@ -45,7 +45,7 @@
   }
   .bottom-nav-item{
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:2px; width:64px; height:52px; border:none; border-radius:999px;
+    gap:2px; width:72px; height:56px; border:none; border-radius:999px;
     background:transparent; color:var(--text-muted); cursor:pointer;
     font-family:var(--font-body); font-size:10px; font-weight:600;
     position:relative; -webkit-tap-highlight-color:transparent;
@@ -65,6 +65,12 @@
 }
 
 @media (max-width:420px){
-  .bottom-nav-item{ width:58px; height:50px; font-size:9.5px; }
+  .bottom-nav-item{ width:64px; height:54px; font-size:9.5px; }
   .bottom-nav-item svg{ width:19px; height:19px; }
+}
+
+/* Chat Tim & Pesan Langsung sudah bisa diakses lewat bottom-nav, jadi
+   nggak usah ditampilkan dobel di sidebar saat mode HP. */
+@media (max-width:880px){
+  #navSection_komunikasi{ display:none; }
 }

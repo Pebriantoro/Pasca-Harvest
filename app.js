@@ -1890,14 +1890,15 @@ relocateTopbarUtility();
 function relocateSettingsAndLogout(){
   const settingsWrap = document.getElementById('settingsWrap');
   const logoutBtn = document.getElementById('topbarLogoutBtn');
-  const bottomBar = document.getElementById('sidebarBottomUtility');
   const iconRow = document.querySelector('.topbar-icon-row');
   const userChip = document.querySelector('.user-chip-topbar');
-  if(!settingsWrap || !logoutBtn || !bottomBar || !iconRow || !userChip) return;
+  if(!settingsWrap || !logoutBtn || !iconRow || !userChip) return;
   const isMobile = window.innerWidth <= 880;
   if(isMobile){
-    if(settingsWrap.parentElement !== bottomBar) bottomBar.appendChild(settingsWrap);
-    if(logoutBtn.parentElement !== bottomBar) bottomBar.appendChild(logoutBtn);
+    // Keduanya ditaruh di icon-row, tepat di sebelah tombol notifikasi
+    // (bukan lagi dipisah ke bar bawah sidebar).
+    if(settingsWrap.parentElement !== iconRow) iconRow.appendChild(settingsWrap);
+    if(logoutBtn.parentElement !== iconRow) iconRow.appendChild(logoutBtn);
   } else {
     if(settingsWrap.parentElement !== iconRow) iconRow.appendChild(settingsWrap);
     if(logoutBtn.parentElement !== userChip) userChip.appendChild(logoutBtn);
