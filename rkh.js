@@ -186,9 +186,10 @@ function rkhTimelineHTML(rows, limit){
       <div class="rkh-timeline-dot"></div>
       <div class="rkh-timeline-content">
         <div style="display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap;">
-          <b>${esc(r.petak)} — ${esc(r.aktivitas)}</b>
+          <b>${esc(r.petak)}</b>
           ${rkhBadge(r.status)}
         </div>
+        <div style="color:var(--text-primary); margin-top:2px;">${esc(r.aktivitas)}</div>
         <div style="color:var(--text-muted); margin-top:2px;">
           ${esc(r.staff_name||'-')} · Kontraktor ${esc(r.kontraktor||'-')} · ${esc(r.jumlah_tk ?? '-')} TK
           ${r.keterangan ? ' · ' + esc(r.keterangan) : ''}
