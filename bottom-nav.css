@@ -25,7 +25,7 @@
   .sidebar-backdrop{ display:none !important; }
   .sidebar-header{ position:relative; }
   .bnav-close-menu{
-    position:absolute; top:14px; right:14px; width:36px; height:36px;
+    position:absolute; top:50%; right:14px; transform:translateY(-50%); width:36px; height:36px;
     display:flex; align-items:center; justify-content:center;
     border-radius:999px; border:1px solid var(--border-soft);
     background:var(--bg-card-hover); color:var(--text-primary);
