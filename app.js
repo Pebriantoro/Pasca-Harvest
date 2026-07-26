@@ -600,7 +600,7 @@ function openMyProfileModal(){
   overlay.className = 'modal-overlay';
   overlay.id = 'modalOverlay';
   overlay.innerHTML = `
-    <div class="modal-box" style="max-width:360px;">
+    <div class="modal-box" style="max-width:360px; min-height:0;">
       <div class="modal-header">
         <div class="card-title">Profil Saya</div>
         <button class="btn btn-outline btn-icon" onclick="closeModal()">✕</button>
