@@ -551,9 +551,9 @@ async function renderQcpSummaryOnly(){
   QCP_KEGIATAN_LIST.forEach(k => { perKegiatan[k] = qcpSummarize(rows.filter(r => r.kegiatan === k)); });
 
   $('#pageContent').innerHTML = `
+    ${qcpSummaryCards(s)}
     <div class="card" style="margin-bottom:16px;"><div class="card-header"><span class="card-title">Ringkasan QC By Proses — Semua Zona</span><button class="btn btn-outline btn-sm" onclick="qcpExportJPEG(qcpState.exportRows)">Export JPEG</button></div></div>
     ${qcpFilterBarHTML(allRows, 'renderQcpSummaryOnly()')}
-    ${qcpSummaryCards(s)}
     <div class="card" style="margin-top:16px;">
       <div class="card-header"><span class="card-title">Ringkasan per Zona</span></div>
       <div class="table-scroll">
