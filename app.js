@@ -560,11 +560,13 @@ function applyRoleUI(){
   avatarEl.onclick = triggerAvatarUpload;
   renderAvatarEditIcon();
   const pill = $('#userRolePill');
-  pill.textContent = currentProfile.role;
+  const roleShortLabel = { superintendent: 'SPTD', supervisor: 'SPV' };
+  const roleDisplay = roleShortLabel[currentProfile.role] || currentProfile.role;
+  pill.textContent = roleDisplay;
   pill.className = 'role-pill role-' + currentProfile.role;
   const zonaRestrict = getUserZonaRestriction();
   pill.title = zonaRestrict ? `Dibatasi ke Zona ${zonaRestrict}` : '';
-  pill.textContent = zonaRestrict ? `${currentProfile.role} · Zona ${zonaRestrict}` : currentProfile.role;
+  pill.textContent = zonaRestrict ? `${roleDisplay} · Zona ${zonaRestrict}` : roleDisplay;
   // Menu Administrasi (Kelola Pengguna) hanya ditampilkan untuk role Admin.
   const canOpenAdminMenu = isAdminRole();
   $('#navSection_administrasi').style.display = canOpenAdminMenu ? '' : 'none';
