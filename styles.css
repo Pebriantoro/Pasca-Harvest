@@ -1619,6 +1619,9 @@ body::before{
 .badge.badge-stamp.badge-rejected,
 .badge.badge-stamp.badge-notyet{ transform:rotate(-2deg); }
 .badge.badge-stamp.badge-neutral{ opacity:.85; }
+@media (max-width:880px){
+  .badge.badge-stamp{ padding:3px 10px; font-size:10.5px; border-width:1.6px; outline-width:1px; }
+}
 
 
 /* --- Efek glow KPI card khusus mode gelap (pakai warna --tone tiap kartu) --- */

@@ -189,7 +189,7 @@ function rkhTimelineHTML(rows, limit){
           <b>${esc(r.petak)}</b>
           ${rkhBadge(r.status)}
         </div>
-        <div style="color:var(--text-primary); margin-top:2px;">${esc(r.aktivitas)}</div>
+        <div style="color:var(--text-primary); margin-top:-2px; line-height:1.3;">${esc(r.aktivitas)}</div>
         <div style="color:var(--text-muted); margin-top:2px;">
           ${esc(r.staff_name||'-')} · Kontraktor ${esc(r.kontraktor||'-')} · ${esc(r.jumlah_tk ?? '-')} TK
           ${r.keterangan ? ' · ' + esc(r.keterangan) : ''}
