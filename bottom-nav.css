@@ -10,10 +10,16 @@
 @media (max-width:880px){
   .menu-toggle{ display:none !important; }
 
-  /* Tombol Menu buka full layar (bukan drawer sempit 250px) */
-  .sidebar.open{
+  /* Tombol Menu buka full layar (bukan drawer sempit 250px).
+     Lebar dibikin tetap 100vw dari awal (ketutup maupun kebuka) supaya
+     cuma transform yang dianimasikan — kalau width ikut berubah pas
+     class .open nempel, translateX(-100%) jadi salah hitung (based on
+     lebar lama) dan animasi geser jadi keliatan gak jalan/patah. */
+  .sidebar{
     width:100vw !important;
     max-width:100vw !important;
+  }
+  .sidebar.open{
     transform:translateX(0) !important;
   }
   .sidebar-backdrop{ display:none !important; }
