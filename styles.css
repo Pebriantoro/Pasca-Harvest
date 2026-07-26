@@ -949,6 +949,15 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
 #topbarUtilityCluster.in-sidebar .user-chip{ width:100%; }
 #topbarUtilityCluster.in-sidebar .user-chip > div:nth-child(2){ flex:1; min-width:0; }
 #topbarUtilityCluster.in-sidebar .user-chip #userName{ max-width:none !important; }
+#topbarUtilityCluster.in-sidebar .user-chip-topbar{ border-top:none !important; padding-top:0 !important; }
+#topbarUtilityCluster.in-sidebar .user-chip{
+  gap:12px; padding:10px 12px; border-radius:12px;
+  background: var(--bg-card, rgba(255,255,255,.03));
+  border:1px solid var(--border-soft);
+}
+#topbarUtilityCluster.in-sidebar .user-avatar{ width:46px; height:46px; font-size:17px; border-radius:11px; }
+#topbarUtilityCluster.in-sidebar #userName{ font-size:15.5px; }
+#topbarUtilityCluster.in-sidebar .role-pill{ font-size:11px; padding:2px 9px; }
 
 .sidebar-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:39; }
 .sidebar-backdrop.show{ display:block; }
