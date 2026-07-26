@@ -543,7 +543,7 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
   font-family: var(--font-mono); font-size:12.5px; font-weight:600;
   color: var(--text-muted); white-space:nowrap;
 }
-#topbarUtilityCluster.in-sidebar .topbar-weather{ padding-left:0; border-left:none; margin-left:0; margin-top:4px; }
+#topbarUtilityCluster.in-sidebar .topbar-weather{ margin-top:0; }
 #notifSoundToggle.btn-sound-muted{ color: var(--text-faint); border-color: var(--border); }
 #notifSoundToggle.btn-sound-muted:hover{ color: var(--accent-red, #C1543C); border-color: var(--accent-red, #C1543C); }
 
@@ -935,18 +935,17 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
 
 /* ===== Cluster jam/status/aksi/profil saat dipindah ke sidebar (HP) ===== */
 #topbarUtilityCluster.in-sidebar{
-  margin-left:0; width:100%; display:flex; flex-direction:column; align-items:stretch; gap:10px;
+  margin-left:0; width:100%; display:flex; flex-direction:row; flex-wrap:wrap; align-items:center; gap:10px;
 }
-#topbarUtilityCluster.in-sidebar > *{ border-top:1px solid var(--border-soft); padding-top:10px; }
-#topbarUtilityCluster.in-sidebar > *:first-child{ border-top:none; padding-top:0; }
+#topbarUtilityCluster.in-sidebar > *{ border-top:none; padding-top:0; }
 #topbarUtilityCluster.in-sidebar .topbar-divider{ display:none; }
-#topbarUtilityCluster.in-sidebar .topbar-clock{ width:100%; justify-content:flex-start; padding:10px 12px; }
+#topbarUtilityCluster.in-sidebar .topbar-clock{ flex:1 1 auto; min-width:0; width:auto; justify-content:flex-start; align-items:flex-end; padding:10px 12px; }
 #topbarUtilityCluster.in-sidebar #topbarClockDate{ display:block !important; font-size:11.5px; }
 #topbarUtilityCluster.in-sidebar .topbar-clock-time{ font-size:15px; }
 #topbarUtilityCluster.in-sidebar #userName,
 #topbarUtilityCluster.in-sidebar #userRolePill{ display:inline !important; }
-#topbarUtilityCluster.in-sidebar .topbar-icon-row{ width:100%; flex-wrap:wrap; gap:8px; }
-#topbarUtilityCluster.in-sidebar .user-chip{ width:100%; }
+#topbarUtilityCluster.in-sidebar .topbar-icon-row{ width:auto; flex-wrap:nowrap; gap:8px; flex-shrink:0; }
+#topbarUtilityCluster.in-sidebar .user-chip{ width:100%; flex-basis:100%; }
 #topbarUtilityCluster.in-sidebar .user-chip > div:nth-child(2){ flex:1; min-width:0; }
 #topbarUtilityCluster.in-sidebar .user-chip #userName{ max-width:none !important; }
 #topbarUtilityCluster.in-sidebar .user-chip-topbar{ border-top:none !important; padding-top:0 !important; }
@@ -958,6 +957,7 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
 #topbarUtilityCluster.in-sidebar .user-avatar{ width:46px; height:46px; font-size:17px; border-radius:11px; }
 #topbarUtilityCluster.in-sidebar #userName{ font-size:15.5px; }
 #topbarUtilityCluster.in-sidebar .role-pill{ font-size:11px; padding:2px 9px; }
+#topbarUtilityCluster.in-sidebar #userChipInfo{ display:flex; flex-direction:column; align-items:flex-start; gap:5px; }
 
 .sidebar-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:39; }
 .sidebar-backdrop.show{ display:block; }
