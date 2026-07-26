@@ -21,8 +21,7 @@
    - LANGKAH 2: SEMUA akun Superintendent di zona yang sama approve final.
    - Admin & Manager: hanya lihat ringkasan SEMUA zona (summary all),
      tanpa aksi.
-   - Filter tersedia: Tanggal, Petak, Kegiatan, Staff, Supervisor,
-     Superintendent.
+   - Filter tersedia: Tanggal, Petak, Kegiatan.
 
    Butuh tabel `qc_by_proses` — lihat qc_by_proses_schema.sql (WAJIB
    dijalankan sekali di Supabase SQL Editor sebelum menu ini bisa dipakai).
@@ -167,7 +166,7 @@ const QCP_KEGIATAN_LIST = Object.keys(QCP_KEGIATAN);
 let qcpState = {
   tab: 'aksi', // 'aksi' | 'tim'
   rows: [],
-  filters: { tanggal: '', petak: '', kegiatan: '', staffId: '', supervisorId: '', superintendentId: '' },
+  filters: { tanggal: '', petak: '', kegiatan: '' },
 };
 
 /* ---------------------------------------------------------------------
@@ -182,9 +181,17 @@ let qcpState = {
     .qcp-kategori.baik{ background:rgba(67,160,71,.18); color:#6FCB74; }
     .qcp-kategori.cukup{ background:rgba(253,216,53,.18); color:#E3C33C; }
     .qcp-kategori.kurang{ background:rgba(229,57,53,.18); color:#F0A392; }
-    .qcp-filter-bar{ display:flex; gap:8px; flex-wrap:wrap; align-items:end; padding:12px 14px; margin-bottom:14px; }
-    .qcp-filter-bar .qcp-f{ display:flex; flex-direction:column; gap:4px; min-width:140px; }
+    .qcp-filter-bar{
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr));
+      gap:10px 12px; align-items:end; padding:14px; margin-bottom:14px;
+    }
+    .qcp-filter-bar .qcp-f{ display:flex; flex-direction:column; gap:4px; min-width:0; }
     .qcp-filter-bar label{ font-size:11px; color:var(--text-muted); }
+    .qcp-f-reset button{ width:100%; }
+    @media (max-width:640px){
+      .qcp-filter-bar{ grid-template-columns:1fr 1fr; }
+      .qcp-f-reset{ grid-column:1 / -1; }
+    }
     .qcp-avg-box{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:10px; font-size:12.5px; }
   `;
   const el = document.createElement('style');
@@ -248,9 +255,6 @@ function qcpApplyFilters(rows){
     if(f.tanggal && r.tanggal !== f.tanggal) return false;
     if(f.petak && !(r.petak || '').toLowerCase().includes(f.petak.toLowerCase())) return false;
     if(f.kegiatan && r.kegiatan !== f.kegiatan) return false;
-    if(f.staffId && r.staff_id !== f.staffId) return false;
-    if(f.supervisorId && r.supervisor_id !== f.supervisorId) return false;
-    if(f.superintendentId && r.approved_by_id !== f.superintendentId) return false;
     return true;
   });
 }
@@ -297,13 +301,9 @@ function qcpSummaryCards(s){
 }
 
 /* ---------------------------------------------------------------------
-   5. FILTER BAR (Tanggal, Petak, Kegiatan, Staff, Supervisor, Superintendent)
+   5. FILTER BAR (Tanggal, Petak, Kegiatan)
    --------------------------------------------------------------------- */
 function qcpFilterBarHTML(rows, rerenderFn){
-  const uniq = (field) => Array.from(new Set(rows.map(r => r[field]).filter(Boolean))).sort();
-  const staffOpts = Array.from(new Map(rows.filter(r=>r.staff_id).map(r => [r.staff_id, r.staff_name])).entries());
-  const svOpts = Array.from(new Map(rows.filter(r=>r.supervisor_id).map(r => [r.supervisor_id, r.supervisor_name])).entries());
-  const siOpts = Array.from(new Map(rows.filter(r=>r.approved_by_id).map(r => [r.approved_by_id, r.approved_by_name])).entries());
   const f = qcpState.filters;
   return `
     <div class="card qcp-filter-bar">
@@ -313,19 +313,7 @@ function qcpFilterBarHTML(rows, rerenderFn){
         <option value="">Semua Kegiatan</option>
         ${QCP_KEGIATAN_LIST.map(k => `<option value="${esc(k)}" ${f.kegiatan===k?'selected':''}>${esc(k)}</option>`).join('')}
       </select></div>
-      <div class="qcp-f"><label>Staff</label><select class="input" onchange="qcpState.filters.staffId=this.value; ${rerenderFn}">
-        <option value="">Semua Staff</option>
-        ${staffOpts.map(([id,name]) => `<option value="${id}" ${f.staffId===id?'selected':''}>${esc(name)}</option>`).join('')}
-      </select></div>
-      <div class="qcp-f"><label>Supervisor</label><select class="input" onchange="qcpState.filters.supervisorId=this.value; ${rerenderFn}">
-        <option value="">Semua Supervisor</option>
-        ${svOpts.map(([id,name]) => `<option value="${id}" ${f.supervisorId===id?'selected':''}>${esc(name)}</option>`).join('')}
-      </select></div>
-      <div class="qcp-f"><label>Superintendent</label><select class="input" onchange="qcpState.filters.superintendentId=this.value; ${rerenderFn}">
-        <option value="">Semua Superintendent</option>
-        ${siOpts.map(([id,name]) => `<option value="${id}" ${f.superintendentId===id?'selected':''}>${esc(name)}</option>`).join('')}
-      </select></div>
-      <div class="qcp-f"><button class="btn btn-outline btn-sm" onclick="qcpState.filters={tanggal:'',petak:'',kegiatan:'',staffId:'',supervisorId:'',superintendentId:''}; ${rerenderFn}">Reset Filter</button></div>
+      <div class="qcp-f qcp-f-reset"><button class="btn btn-outline btn-sm" onclick="qcpState.filters={tanggal:'',petak:'',kegiatan:''}; ${rerenderFn}">Reset Filter</button></div>
     </div>
   `;
 }
