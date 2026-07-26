@@ -50,9 +50,10 @@
     var menu = document.getElementById('bnavMenu');
     var sidebar = document.getElementById('sidebar');
     if(!dm || !chat || !menu) return;
-    dm.classList.toggle('active', lastView === 'dm');
-    chat.classList.toggle('active', lastView === 'chat');
-    menu.classList.toggle('active', !!(sidebar && sidebar.classList.contains('open')));
+    var menuOpen = !!(sidebar && sidebar.classList.contains('open'));
+    dm.classList.toggle('active', !menuOpen && lastView === 'dm');
+    chat.classList.toggle('active', !menuOpen && lastView === 'chat');
+    menu.classList.toggle('active', menuOpen);
   }
 
   function injectCloseButton(){
