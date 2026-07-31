@@ -1,0 +1,139 @@
+/* =====================================================================
+   LIQUID GLASS — CLEAR EDITION
+   Addon murni, tidak menyentuh styles.css/dkk. Menerapkan gaya liquid
+   glass ke seluruh shell (sidebar, topbar, kpi-card, card, modal,
+   dropdown, bottom-nav) dengan opacity lebih tinggi + blur moderat
+   supaya teks tetap tajam/terbaca di PC maupun HP (bukan glass yang
+   bikin buram). Ada fallback otomatis kalau browser/HP tidak dukung
+   backdrop-filter, dan blur diturunkan di layar kecil demi performa.
+   ===================================================================== */
+
+:root{
+  --glass-blur: 18px;
+  --glass-blur-sm: 10px;
+  --glass-sat: 1.4;
+  --glass-bg-dark: rgba(24,41,34,0.62);
+  --glass-bg-dark-strong: rgba(20,34,28,0.78);
+  --glass-border-dark: rgba(237,235,226,0.10);
+  --glass-hi-dark: rgba(255,255,255,0.06);
+
+  --glass-bg-light: rgba(255,255,255,0.62);
+  --glass-bg-light-strong: rgba(255,255,255,0.78);
+  --glass-border-light: rgba(28,36,32,0.08);
+  --glass-hi-light: rgba(255,255,255,0.9);
+}
+
+/* ---- mesh backdrop: tanpa ini, glass tidak punya apa-apa buat direfraksi ---- */
+body{ position:relative; }
+body::before{
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(52% 40% at 14% 8%, rgba(217,169,74,0.16), transparent 60%),
+    radial-gradient(46% 38% at 92% 14%, rgba(95,174,125,0.18), transparent 60%),
+    radial-gradient(60% 50% at 50% 100%, rgba(91,143,168,0.10), transparent 60%),
+    var(--bg);
+}
+:root[data-theme="light"] body::before{
+  background:
+    radial-gradient(52% 40% at 14% 8%, rgba(176,126,46,0.10), transparent 60%),
+    radial-gradient(46% 38% at 92% 14%, rgba(62,139,92,0.10), transparent 60%),
+    radial-gradient(60% 50% at 50% 100%, rgba(56,110,138,0.07), transparent 60%),
+    var(--bg);
+}
+.app-shell, .login-wrap, .topbar, .sidebar, #pageContent{ position:relative; z-index:1; }
+
+/* ---- reusable glass panel ---- */
+.sidebar,
+.topbar,
+.kpi-card,
+.card,
+.modal-box,
+.notif-panel,
+.bottom-nav,
+.changelog-card{
+  background: var(--glass-bg-dark) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  border-color: var(--glass-border-dark) !important;
+  box-shadow:
+    0 8px 28px rgba(0,0,0,0.28),
+    inset 0 1px 0 var(--glass-hi-dark);
+}
+:root[data-theme="light"] .sidebar,
+:root[data-theme="light"] .topbar,
+:root[data-theme="light"] .kpi-card,
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .modal-box,
+:root[data-theme="light"] .bottom-nav,
+:root[data-theme="light"] .changelog-card{
+  background: var(--glass-bg-light) !important;
+  border-color: var(--glass-border-light) !important;
+  box-shadow:
+    0 8px 24px rgba(20,20,15,0.08),
+    inset 0 1px 0 var(--glass-hi-light);
+}
+
+/* Panel yang isinya harus paling gampang dibaca (dropdown, modal, bottom-nav)
+   dikasih opacity lebih tinggi biar teks tetap tajam, bukan "clear" berlebihan. */
+.modal-box, .notif-panel, .bottom-nav, .changelog-card{
+  background: var(--glass-bg-dark-strong) !important;
+}
+:root[data-theme="light"] .modal-box,
+:root[data-theme="light"] .bottom-nav,
+:root[data-theme="light"] .changelog-card{
+  background: var(--glass-bg-light-strong) !important;
+}
+
+.topbar{ border-bottom-color: var(--glass-border-dark); }
+:root[data-theme="light"] .topbar{ border-bottom-color: var(--glass-border-light); }
+
+.modal-overlay{
+  background: rgba(6,12,9,0.42) !important;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+:root[data-theme="light"] .modal-overlay{ background: rgba(20,20,15,0.28) !important; }
+
+/* kpi-card & card sudah punya ::before glow di styles.css — biarkan, cukup
+   pastikan isolation tetap aktif supaya glow tidak bocor ke atas glass */
+.kpi-card, .card{ isolation:isolate; }
+
+/* nav-item aktif tetap solid gold soft, tapi hover jadi kaca tipis */
+.nav-item:hover{
+  background: color-mix(in srgb, var(--bg-card) 55%, transparent) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm));
+  backdrop-filter: blur(var(--glass-blur-sm));
+}
+
+/* ---- mobile: turunin blur + naikin opacity dikit biar HP tetep smooth & jelas ---- */
+@media (max-width:880px){
+  :root{ --glass-blur: 12px; --glass-blur-sm: 8px; }
+  .sidebar, .topbar, .kpi-card, .card, .modal-box, .notif-panel, .bottom-nav, .changelog-card{
+    background: var(--glass-bg-dark-strong) !important;
+  }
+  :root[data-theme="light"] .sidebar,
+  :root[data-theme="light"] .topbar,
+  :root[data-theme="light"] .kpi-card,
+  :root[data-theme="light"] .card,
+  :root[data-theme="light"] .modal-box,
+  :root[data-theme="light"] .bottom-nav,
+  :root[data-theme="light"] .changelog-card{
+    background: var(--glass-bg-light-strong) !important;
+  }
+}
+
+/* ---- fallback kalau backdrop-filter tidak didukung: jangan jadi transparan doang ---- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
+  .sidebar, .topbar, .kpi-card, .card, .modal-box, .notif-panel, .bottom-nav, .changelog-card{
+    background: var(--bg-card) !important;
+  }
+}
+
+/* ---- hormati preferensi user yang minta transparansi dikurangi ---- */
+@media (prefers-reduced-transparency: reduce){
+  .sidebar, .topbar, .kpi-card, .card, .modal-box, .notif-panel, .bottom-nav, .changelog-card{
+    background: var(--bg-card) !important;
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+  body::before{ display:none; }
+}
