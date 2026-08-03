@@ -115,8 +115,8 @@
      bar & nutupin tab Menu/Langsung/Chat (gak keklik selama panel
      kebuka). Naikin posisi panel biar float DI ATAS bar, bukan nutupin. */
   #settingsPanel{
-    bottom: calc(82px + env(safe-area-inset-bottom,0px)) !important;
-    max-height: min(58vh, 400px) !important;
+    bottom: calc(100px + env(safe-area-inset-bottom,0px)) !important;
+    max-height: min(55vh, 380px) !important;
   }
 }
 
