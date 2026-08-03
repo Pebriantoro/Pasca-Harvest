@@ -49,28 +49,71 @@
   }
   .bottom-nav-item{
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:2px; width:72px; height:56px; border:none; border-radius:999px;
+    gap:1px; width:64px; height:56px; border:none; border-radius:999px;
     background:transparent; color:var(--text-muted); cursor:pointer;
-    font-family:var(--font-body); font-size:10px; font-weight:600;
+    font-family:var(--font-body); font-size:9.5px; font-weight:600;
     position:relative; -webkit-tap-highlight-color:transparent;
-    transition:background .18s var(--ease-out), color .18s var(--ease-out);
+    transition:color .2s var(--ease-out);
   }
-  .bottom-nav-item svg{ width:20px; height:20px; flex-shrink:0; }
-  .bottom-nav-item.active{ background:var(--accent-green-soft); color:var(--accent-green); }
+  .bottom-nav-item svg{ width:19px; height:19px; flex-shrink:0; }
+
+  /* Bubble ikon: yang aktif "ngambang" naik ke atas garis bar, mirip
+     bump-nav di video referensi. Non-aktif tetap flat. */
+  .bn-icon-wrap{
+    display:flex; align-items:center; justify-content:center;
+    width:26px; height:26px; border-radius:999px;
+    transition:transform .38s cubic-bezier(.34,1.56,.64,1),
+               background-color .3s var(--ease-out), box-shadow .3s var(--ease-out), color .3s var(--ease-out);
+  }
+  .bn-label{ transition:opacity .25s var(--ease-out), transform .3s var(--ease-out); }
+
+  .bottom-nav-item.active{ color:var(--accent-green); }
+  .bottom-nav-item.active .bn-icon-wrap{
+    transform:translateY(-13px) scale(1.14);
+    background:var(--accent-green);
+    color:#fff;
+    box-shadow:0 6px 14px -2px rgba(0,0,0,.35), 0 0 0 4px color-mix(in srgb, var(--bg-card) 92%, transparent);
+    animation:bnavPop .38s cubic-bezier(.34,1.56,.64,1);
+  }
+  .bottom-nav-item.active .bn-label{ transform:translateY(-4px); }
+
+  .bottom-nav-item:active .bn-icon-wrap{ transform:scale(.88); }
+  .bottom-nav-item.active:active .bn-icon-wrap{ transform:translateY(-13px) scale(1.02); }
+
+  @keyframes bnavPop{
+    0%{ transform:translateY(0) scale(1); }
+    55%{ transform:translateY(-17px) scale(1.22); }
+    100%{ transform:translateY(-13px) scale(1.14); }
+  }
+
+  /* Titik indikator kecil yang geser mengikuti tab aktif di bawah bubble */
+  .bn-indicator{
+    position:absolute; left:0; bottom:5px; width:4px; height:4px; border-radius:999px;
+    background:var(--accent-green); opacity:0; pointer-events:none;
+    transition:transform .38s cubic-bezier(.34,1.56,.64,1), opacity .2s var(--ease-out);
+    transform:translateX(-999px);
+  }
+  .bn-indicator.show{ opacity:1; margin-left:-2px; }
+
   .bottom-nav-badge{
-    position:absolute; top:2px; right:8px; min-width:15px; height:15px; padding:0 4px;
+    position:absolute; top:2px; right:6px; min-width:15px; height:15px; padding:0 4px;
     border-radius:999px; background:var(--accent-red); color:#fff; font-size:9.5px; font-weight:700;
     display:flex; align-items:center; justify-content:center; line-height:1;
+    transition:transform .2s var(--ease-out);
   }
   .bottom-nav-badge.hidden{ display:none; }
 
   /* Kasih jarak biar konten paling bawah nggak ketutup bar mengambang */
   .content-pad{ padding-bottom:calc(82px + env(safe-area-inset-bottom,0px)); }
+
+  /* Pengaturan udah pindah jadi tab "Atur" di bottom-nav, jadi tombol
+     gear lama di topbar-icon-row disembunyikan biar gak dobel. */
+  #settingsWrap{ display:none !important; }
 }
 
 @media (max-width:420px){
-  .bottom-nav-item{ width:64px; height:54px; font-size:9.5px; }
-  .bottom-nav-item svg{ width:19px; height:19px; }
+  .bottom-nav-item{ width:57px; height:54px; font-size:9px; }
+  .bottom-nav-item svg{ width:18px; height:18px; }
 }
 
 /* Chat Tim & Pesan Langsung sudah bisa diakses lewat bottom-nav, jadi

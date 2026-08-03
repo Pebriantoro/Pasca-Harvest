@@ -12,19 +12,24 @@
     bar.id = 'bottomNav';
     bar.innerHTML =
       '<button type="button" class="bottom-nav-item" id="bnavDM" onclick="navigate(\'dm\')">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>' +
-        '<span>Langsung</span>' +
+        '<span class="bn-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>' +
+        '<span class="bn-label">Langsung</span>' +
         '<span class="bottom-nav-badge hidden" id="bnavDMBadge">0</span>' +
       '</button>' +
       '<button type="button" class="bottom-nav-item" id="bnavChat" onclick="navigate(\'chat\')">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>' +
-        '<span>Chat Tim</span>' +
+        '<span class="bn-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>' +
+        '<span class="bn-label">Chat Tim</span>' +
         '<span class="bottom-nav-badge hidden" id="bnavChatBadge">0</span>' +
       '</button>' +
       '<button type="button" class="bottom-nav-item" id="bnavMenu" onclick="toggleSidebar()">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>' +
-        '<span>Menu</span>' +
-      '</button>';
+        '<span class="bn-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></span>' +
+        '<span class="bn-label">Menu</span>' +
+      '</button>' +
+      '<button type="button" class="bottom-nav-item" id="bnavSettings" onclick="if(typeof toggleSettingsPanel===\'function\')toggleSettingsPanel();">' +
+        '<span class="bn-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></span>' +
+        '<span class="bn-label">Atur</span>' +
+      '</button>' +
+      '<span class="bn-indicator" id="bnavIndicator"></span>';
     document.body.appendChild(bar);
   }
 
@@ -43,17 +48,46 @@
   }
 
   var lastView = null;
+  function slideIndicatorTo(el){
+    var ind = document.getElementById('bnavIndicator');
+    var bar = document.getElementById('bottomNav');
+    if(!ind || !bar) return;
+    if(!el){ ind.classList.remove('show'); return; }
+    var barRect = bar.getBoundingClientRect();
+    var elRect = el.getBoundingClientRect();
+    var centerX = (elRect.left - barRect.left) + elRect.width / 2;
+    ind.style.transform = 'translateX(' + centerX + 'px)';
+    ind.classList.add('show');
+  }
   function highlightActive(view){
     if(view !== undefined) lastView = view;
     var dm = document.getElementById('bnavDM');
     var chat = document.getElementById('bnavChat');
     var menu = document.getElementById('bnavMenu');
+    var settings = document.getElementById('bnavSettings');
     var sidebar = document.getElementById('sidebar');
-    if(!dm || !chat || !menu) return;
+    var settingsPanel = document.getElementById('settingsPanel');
+    if(!dm || !chat || !menu || !settings) return;
     var menuOpen = !!(sidebar && sidebar.classList.contains('open'));
-    dm.classList.toggle('active', !menuOpen && lastView === 'dm');
-    chat.classList.toggle('active', !menuOpen && lastView === 'chat');
-    menu.classList.toggle('active', menuOpen);
+    var settingsOpen = !!(settingsPanel && !settingsPanel.classList.contains('hidden'));
+    dm.classList.toggle('active', !menuOpen && !settingsOpen && lastView === 'dm');
+    chat.classList.toggle('active', !menuOpen && !settingsOpen && lastView === 'chat');
+    menu.classList.toggle('active', menuOpen && !settingsOpen);
+    settings.classList.toggle('active', settingsOpen);
+    var activeEl = bar_activeElement();
+    slideIndicatorTo(activeEl);
+    function bar_activeElement(){
+      if(settingsOpen) return settings;
+      if(menuOpen) return menu;
+      if(lastView === 'dm') return dm;
+      if(lastView === 'chat') return chat;
+      return null;
+    }
+  }
+  function watchSettingsPanel(){
+    var panel = document.getElementById('settingsPanel');
+    if(!panel) return;
+    new MutationObserver(function(){ highlightActive(); }).observe(panel, { attributes:true, attributeFilter:['class'] });
   }
 
   function injectCloseButton(){
@@ -83,8 +117,10 @@
     buildBar();
     injectCloseButton();
     watchLoginState();
+    watchSettingsPanel();
     mirrorBadge('dmUnreadBadge', 'bnavDMBadge');
     mirrorBadge('chatUnreadBadge', 'bnavChatBadge');
+    window.addEventListener('resize', function(){ highlightActive(); });
 
     // Bungkus navigate() & toggleSidebar() punya app.js supaya tab aktif
     // ikut ke-update, tanpa ubah file aslinya.
