@@ -109,6 +109,15 @@
   /* Pengaturan udah pindah jadi tab "Atur" di bottom-nav, jadi tombol
      gear lama di topbar-icon-row disembunyikan biar gak dobel. */
   #settingsWrap{ display:none !important; }
+
+  /* Panel Atur (.notif-panel, z-index:200) & bottom-nav bar sama-sama
+     fixed di bottom:14px — kalau dibiarin, panel numpuk PERSIS di atas
+     bar & nutupin tab Menu/Langsung/Chat (gak keklik selama panel
+     kebuka). Naikin posisi panel biar float DI ATAS bar, bukan nutupin. */
+  #settingsPanel{
+    bottom: calc(82px + env(safe-area-inset-bottom,0px)) !important;
+    max-height: min(58vh, 400px) !important;
+  }
 }
 
 @media (max-width:420px){
