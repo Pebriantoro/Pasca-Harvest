@@ -2389,43 +2389,64 @@ function resetFilters(table){
   st.page = 1;
   paintTablePage(table, state[table].data);
 }
-// Klik angka Done/Progress/Not Yet di card "Monitoring Persiapan Lahan" ->
-// muncul panel daftar petak (auto-hide: klik lagi angka yg sama = nutup,
-// klik angka lain = ganti isi). Muncul di semua modul yg punya LAND_PREP_KEYS
-// (RPC After Giling, Extra Planting, Blanking, dst) — bukan cuma satu modul.
-function toggleLandPrepDetail(table, key, label, status){
-  const panel = document.getElementById(`landPrepDetailPanel_${table}`);
-  if(!panel) return;
-  const thisKey = key + '|' + status;
-  if(panel.dataset.openKey === thisKey){ panel.innerHTML = ''; panel.dataset.openKey = ''; return; }
-  const rows = (window.__landPrepDetailRows && window.__landPrepDetailRows[table]) || [];
-  const list = rows.filter(r => ((r[key] ?? 'Not Yet').toString().trim() || 'Not Yet') === status);
-  panel.dataset.openKey = thisKey;
-  const color = status === 'Done' ? 'var(--accent-green)' : status === 'Progress' ? 'var(--accent-gold)' : 'var(--accent-red)';
-  panel.innerHTML = `
-    <div class="card" style="margin-bottom:16px; border-left:3px solid ${color};">
-      <div class="card-header">
-        <span class="card-title">${esc(label)} — ${esc(status)} (${list.length} petak)</span>
-        <span style="cursor:pointer; font-size:12px; color:var(--text-faint);" onclick="toggleLandPrepDetail('${table}','${key}','${esc(label)}','${status}')">✕ Tutup</span>
+// ===== Drawer bawah global (dipake SEMUA grafik/card yg angkanya bisa
+// diklik: Monitoring Persiapan Lahan, Status Pengecekan Pasca HVT,
+// Maintenance Done/Progress/Not Yet, dst). Ganti cara lama (panel nempel
+// di bawah card) jadi drawer slide-up dari bawah layar, cocok buat PC.
+// openKey unik per sumber+angka -> klik angka yg sama = nutup drawer,
+// klik angka lain = drawer ganti isi (masih 1 drawer aktif).
+function openStatDrawer(openKey, title, color, columns, rows, emptyText){
+  const existing = document.getElementById('globalStatDrawerOverlay');
+  if(existing && existing.dataset.openKey === openKey){ closeStatDrawer(); return; }
+  closeStatDrawer();
+  const overlay = document.createElement('div');
+  overlay.className = 'stat-drawer-overlay';
+  overlay.id = 'globalStatDrawerOverlay';
+  overlay.dataset.openKey = openKey;
+  overlay.onclick = (e) => { if(e.target === overlay) closeStatDrawer(); };
+  overlay.innerHTML = `
+    <div class="stat-drawer" style="border-top:3px solid ${color};" onclick="event.stopPropagation()">
+      <div class="stat-drawer-handle"></div>
+      <div class="stat-drawer-header">
+        <span class="stat-drawer-title">${esc(title)} (${rows.length})</span>
+        <span class="stat-drawer-close" onclick="closeStatDrawer()">✕ Tutup</span>
       </div>
-      <div class="card-body" style="padding:0; max-height:260px; overflow:auto;">
+      <div class="stat-drawer-body">
         <table class="data-table" style="font-size:12.5px;">
-          <thead><tr><th>Petak</th><th>Zona</th><th>Staff</th></tr></thead>
+          <thead><tr>${columns.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead>
           <tbody>
-            ${list.length ? list.map(r => `<tr><td>${esc(r.petak||'-')}</td><td>${esc(r.zona||'-')}</td><td>${esc(r.staff||'-')}</td></tr>`).join('') : `<tr><td colspan="3" style="text-align:center; color:var(--text-faint); padding:14px;">Tidak ada petak</td></tr>`}
+            ${rows.length ? rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${columns.length}" style="text-align:center; color:var(--text-faint); padding:14px;">${esc(emptyText || 'Tidak ada data')}</td></tr>`}
           </tbody>
         </table>
       </div>
     </div>`;
+  document.body.appendChild(overlay);
+  document.addEventListener('keydown', statDrawerEscHandler);
+}
+function closeStatDrawer(){
+  const overlay = document.getElementById('globalStatDrawerOverlay');
+  if(overlay) overlay.remove();
+  document.removeEventListener('keydown', statDrawerEscHandler);
+}
+function statDrawerEscHandler(e){ if(e.key === 'Escape') closeStatDrawer(); }
+
+// Klik angka Done/Progress/Not Yet di card "Monitoring Persiapan Lahan" ->
+// buka stat drawer bawah berisi daftar petak. Muncul di semua modul yg
+// punya LAND_PREP_KEYS (RPC After Giling, Extra Planting, Blanking, dst).
+function toggleLandPrepDetail(table, key, label, status){
+  const rows = (window.__landPrepDetailRows && window.__landPrepDetailRows[table]) || [];
+  const list = rows.filter(r => ((r[key] ?? 'Not Yet').toString().trim() || 'Not Yet') === status);
+  const color = status === 'Done' ? 'var(--accent-green)' : status === 'Progress' ? 'var(--accent-gold)' : 'var(--accent-red)';
+  openStatDrawer(
+    'landPrep|' + table + '|' + key + '|' + status,
+    `${label} — ${status}`, color, ['Petak','Zona','Staff'],
+    list.map(r => [r.petak||'-', r.zona||'-', r.staff||'-']),
+    'Tidak ada petak'
+  );
 }
 // Klik angka Selesai Tebang/Sudah Pengecekan/Belum Pengecekan di card "Status
-// Pengecekan Pasca HVT by Staff" -> muncul panel daftar petak (auto-hide: klik lagi
-// angka yg sama = nutup, klik angka lain = ganti isi). status: 'ALL'|'SUDAH'|'BELUM'.
+// Pengecekan Pasca HVT by Staff" -> buka stat drawer bawah. status: 'ALL'|'SUDAH'|'BELUM'.
 function toggleStaffPengecekanDetail(table, staffName, label, status){
-  const panel = document.getElementById(`pengecekanStaffDetailPanel_${table}`);
-  if(!panel) return;
-  const thisKey = staffName + '|' + status;
-  if(panel.dataset.openKey === thisKey){ panel.innerHTML = ''; panel.dataset.openKey = ''; return; }
   const rows = (window.__staffPengecekanDetailRows && window.__staffPengecekanDetailRows[table]) || [];
   const list = rows.filter(r => {
     let name = (r.staff || '').toString().trim() || '(Tanpa Staff)';
@@ -2438,23 +2459,13 @@ function toggleStaffPengecekanDetail(table, staffName, label, status){
     const st2 = (r.status_pengecekan_pasca_hvt || '').toString().trim().toUpperCase();
     return status === 'SUDAH' ? st2 === 'SUDAH' : st2 !== 'SUDAH';
   });
-  panel.dataset.openKey = thisKey;
   const color = status === 'SUDAH' ? 'var(--accent-green)' : status === 'BELUM' ? 'var(--accent-red)' : 'var(--accent-blue)';
-  panel.innerHTML = `
-    <div class="card" style="margin-top:12px; margin-bottom:16px; border-left:3px solid ${color};">
-      <div class="card-header">
-        <span class="card-title">${esc(staffName)} — ${esc(label)} (${list.length} petak)</span>
-        <span style="cursor:pointer; font-size:12px; color:var(--text-faint);" onclick="toggleStaffPengecekanDetail('${table}','${esc(staffName)}','${esc(label)}','${status}')">✕ Tutup</span>
-      </div>
-      <div class="card-body" style="padding:0; max-height:260px; overflow:auto;">
-        <table class="data-table" style="font-size:12.5px;">
-          <thead><tr><th>Petak</th><th>Zona</th><th>Status Pengecekan</th></tr></thead>
-          <tbody>
-            ${list.length ? list.map(r => `<tr><td>${esc(r.petak||'-')}</td><td>${esc(r.zona||'-')}</td><td>${esc((r.status_pengecekan_pasca_hvt||'BELUM').toString().toUpperCase())}</td></tr>`).join('') : `<tr><td colspan="3" style="text-align:center; color:var(--text-faint); padding:14px;">Tidak ada petak</td></tr>`}
-          </tbody>
-        </table>
-      </div>
-    </div>`;
+  openStatDrawer(
+    'staffPengecekan|' + table + '|' + staffName + '|' + status,
+    `${staffName} — ${label}`, color, ['Petak','Zona','Status Pengecekan'],
+    list.map(r => [r.petak||'-', r.zona||'-', (r.status_pengecekan_pasca_hvt||'BELUM').toString().toUpperCase()]),
+    'Tidak ada petak'
+  );
 }
 function toggleFilterPanel(table){
   state[table].filterPanelOpen = !state[table].filterPanelOpen;
@@ -8177,35 +8188,22 @@ function activityStatGridHTML(categories, seriesMap, fields, panelId, rows, size
 }
 // Klik angka Done/Progress/Not Yet di kartu Grafik Mekanisasi/Drain/Hama/Mandatory
 // (Maintenance) atau Persiapan Lahan/Proses Penanaman/Pemeliharaan (PC & RPC Eks Non
-// RKT) -> muncul panel daftar petak (auto-hide: klik lagi angka yg sama = nutup).
+// RKT) -> buka stat drawer bawah berisi daftar petak.
 function toggleActivityStatDetail(panelId, key, label, status){
-  const panel = document.getElementById(`${panelId}_detail`);
-  if(!panel) return;
   const cache = (window.__activityDetailRows && window.__activityDetailRows[panelId]) || { rows:[], sizeField:null };
-  const thisKey = key + '|' + status;
-  if(panel.dataset.openKey === thisKey){ panel.innerHTML = ''; panel.dataset.openKey = ''; return; }
   const list = cache.rows.filter(r => {
     const v = (r[key] || '').toString().trim() || 'Not Yet';
     return v.toLowerCase() === status.toLowerCase();
   });
-  panel.dataset.openKey = thisKey;
   const color = status === 'Done' ? 'var(--accent-green)' : status === 'Progress' ? 'var(--accent-gold)' : 'var(--accent-red)';
   const sizeField = cache.sizeField;
-  panel.innerHTML = `
-    <div class="card" style="margin-top:12px; border-left:3px solid ${color};">
-      <div class="card-header">
-        <span class="card-title">${esc(label)} — ${esc(status)} (${list.length} petak)</span>
-        <span style="cursor:pointer; font-size:12px; color:var(--text-faint);" onclick="toggleActivityStatDetail('${panelId}','${key}','${esc(label)}','${status}')">✕ Tutup</span>
-      </div>
-      <div class="card-body" style="padding:0; max-height:260px; overflow:auto;">
-        <table class="data-table" style="font-size:12.5px;">
-          <thead><tr><th>Petak</th><th>Zona</th>${sizeField ? '<th>Luas (Ha)</th>' : ''}</tr></thead>
-          <tbody>
-            ${list.length ? list.map(r => `<tr><td>${esc(r.petak||'-')}</td><td>${esc(r.zona||'-')}</td>${sizeField ? `<td>${fmtNum(r[sizeField]||0)}</td>` : ''}</tr>`).join('') : `<tr><td colspan="${sizeField?3:2}" style="text-align:center; color:var(--text-faint); padding:14px;">Tidak ada petak</td></tr>`}
-          </tbody>
-        </table>
-      </div>
-    </div>`;
+  const columns = sizeField ? ['Petak','Zona','Luas (Ha)'] : ['Petak','Zona'];
+  openStatDrawer(
+    'activityStat|' + panelId + '|' + key + '|' + status,
+    `${label} — ${status}`, color, columns,
+    list.map(r => sizeField ? [r.petak||'-', r.zona||'-', fmtNum(r[sizeField]||0)] : [r.petak||'-', r.zona||'-']),
+    'Tidak ada petak'
+  );
 }
 
 // Rekap luas (Ha) per aktivitas berdasarkan status Not yet / Progress / Done
