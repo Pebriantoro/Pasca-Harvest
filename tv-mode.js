@@ -82,7 +82,7 @@ function injectTvModeButton(){
   btn.id = 'settingsTvModeBtn';
   btn.className = 'settings-row';
   btn.title = 'Buka/tutup dashboard mode TV layar penuh';
-  btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><span>Mode TV</span><span class="ui-switch" id="tvModeSwitch" role="switch" aria-checked="false" aria-label="Mode TV"></span>`;
+  btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><span class="settings-row-label">Mode TV</span><span class="ui-switch" id="tvModeSwitch" role="switch" aria-checked="false" aria-label="Mode TV"></span>`;
   btn.onclick = () => {
     if(TV_STATE.open){
       closeTvMode();

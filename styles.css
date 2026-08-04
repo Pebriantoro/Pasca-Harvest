@@ -565,9 +565,18 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
   .user-chip-topbar .btn-icon{ height:32px; }
 }
 
-/* ===================== MENU PENGATURAN (Tema + Suara) ===================== */
+/* ===================== MENU PENGATURAN (Tema + Suara) =====================
+   Rapihin buat PC: panel dilebarin dikit (220px -> 258px) supaya label +
+   state text ("Nonaktif"/"Indonesia") + switch gak berebut tempat & bikin
+   teks turun baris (penyebab utama tampilan berantakan). Label dikasih
+   nowrap+ellipsis biar gak pernah wrap, state-label & switch dikelompokkan
+   rapat di ujung kanan (bukan sama-sama margin-left:auto yg dulu rebutan
+   ruang kosong). Panel juga dikasih max-height+scroll halus kalau baris
+   kepanjangan (Mode TV nambah 1 baris lagi lewat JS). ============ */
 .settings-wrap{ position:relative; display:inline-flex; }
-.settings-wrap .settings-panel{ width:220px; padding:6px 0; }
+.settings-wrap .settings-panel{
+  width:258px; padding:6px 0; max-height:min(72vh, 480px); overflow-y:auto;
+}
 .sidebar-footer .settings-wrap .settings-panel{ top:auto; bottom:calc(100% + 10px); }
 .settings-row{
   display:flex; align-items:center; gap:10px; width:100%; padding:11px 14px;
@@ -578,7 +587,22 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 .settings-row:last-child{ border-bottom:none; }
 .settings-row:hover{ background:var(--bg-card-hover); color:var(--text-primary); }
 .settings-row svg{ width:15px; height:15px; flex-shrink:0; color:var(--accent-gold); }
-.settings-row-state{ margin-left:auto; font-family:var(--font-mono); font-size:10.5px; color:var(--text-faint); }
+/* Teks label (mis. "Notifikasi Push") ambil sisa ruang & gak pernah wrap;
+   kalau kepanjangan dipotong "..." daripada dorong state/switch keluar baris.
+   Pakai class eksplisit (bukan :first-of-type) karena beberapa row icon-nya
+   dibungkus <span> (Suara Notifikasi, Notifikasi Push) — kalau pake selector
+   posisi, span pembungkus icon itu yg kena flex:1, bukan labelnya. */
+.settings-row-label{
+  flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+/* State text (Nonaktif/Indonesia/v1.3.9) & switch dikelompokkan rapat di
+   kanan — gak lagi sama-sama margin-left:auto (dulu rebutan ruang & bikin
+   wrap). Cuma elemen PERTAMA di grup kanan yg dorong ke ujung kanan. */
+.settings-row-state{
+  margin-left:auto; flex-shrink:0; white-space:nowrap;
+  font-family:var(--font-mono); font-size:10.5px; color:var(--text-faint);
+}
+.settings-row-state + .ui-switch{ margin-left:8px; }
 
 /* ===== Toggle switch ala iOS — dipakai di Tampilan / Suara Notifikasi / Mode TV ===== */
 .settings-row.has-switch{ margin-left:auto; }
