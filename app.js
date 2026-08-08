@@ -340,6 +340,25 @@ function skeletonListHTML(n){
     </div>
   `).join('');
 }
+
+/* ===================== STRETCH CARD SAMPAI MENTOK BAWAH VIEWPORT =====================
+   Dipakai Chat Tim (.chat-card) & Pesan Langsung (.dm-layout) biar nggak nyisain
+   ruang kosong di bawah, apapun ukuran layarnya (bukan angka calc(100vh - Npx)
+   yang ditebak-tebak). Cuma jalan di desktop (>880px); di mobile dibiarkan pakai
+   aturan CSS bawaan karena ada bottom-nav yang makan ruang. */
+function fitCardBottom(el, minH){
+  if(!el) return;
+  if(window.innerWidth <= 880){ el.style.height = ''; return; }
+  const rect = el.getBoundingClientRect();
+  const pad = parseFloat(getComputedStyle($('#pageContent')).paddingBottom) || 24;
+  const h = window.innerHeight - rect.top - pad;
+  el.style.height = Math.max(h, minH || 420) + 'px';
+}
+function fitStretchCards(){
+  fitCardBottom(document.querySelector('.chat-card'), 420);
+  fitCardBottom(document.querySelector('.dm-layout'), 460);
+}
+window.addEventListener('resize', fitStretchCards);
 function $all(sel){ return Array.from(document.querySelectorAll(sel)); }
 function esc(v){ return v===null||v===undefined ? '' : String(v); }
 // type bisa: 'success' (default) | 'error' | 'warning' | 'info', atau boolean
@@ -1370,6 +1389,7 @@ async function renderChat(){
   renderChatMessages();
   renderOnlineIndicators();
   scrollChatToBottom();
+  fitStretchCards();
   // Auto-focus hanya di layar besar (desktop). Di HP, auto-focus bikin
   // keyboard langsung muncul & browser "melompat/zoom" ke form chat begitu
   // menu dibuka — jadi di layar <=880px baris ini sengaja dilewati.
@@ -1604,6 +1624,7 @@ async function renderDM(){
   `;
   renderDMUserList();
   if(dmActiveUserId) openDMConversation(dmActiveUserId);
+  fitStretchCards();
 }
 
 function renderDMUserList(){
