@@ -1728,6 +1728,14 @@ body::before{
 .nav-item.active{
   background: var(--accent-gold); color:#1B1405; font-weight:700;
   box-shadow: 0 6px 16px -4px var(--accent-gold-soft), inset 0 1px 0 rgba(255,255,255,0.18);
+  animation: navGlowPulse 2.6s ease-in-out infinite;
+}
+@keyframes navGlowPulse{
+  0%, 100%{ box-shadow: 0 6px 16px -4px var(--accent-gold-soft), 0 0 14px -2px var(--accent-gold), inset 0 1px 0 rgba(255,255,255,0.18); }
+  50%{ box-shadow: 0 8px 22px -2px var(--accent-gold-soft), 0 0 26px 2px var(--accent-gold), inset 0 1px 0 rgba(255,255,255,0.24); }
+}
+@media (prefers-reduced-motion: reduce){
+  .nav-item.active{ animation:none; box-shadow: 0 6px 16px -4px var(--accent-gold-soft), 0 0 18px -2px var(--accent-gold), inset 0 1px 0 rgba(255,255,255,0.18); }
 }
 .nav-item.active svg{ color:#1B1405; filter:none; }
 .nav-item.active .count-badge{ background: rgba(27,20,5,0.16); color:#1B1405; }
