@@ -394,7 +394,7 @@ async function renderQcByProses(){
     $('#pageContent').innerHTML = `<div class="empty-state">Menu ini tidak tersedia untuk role Viewer.</div>`;
     return;
   }
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
 
   if(role === 'staff') return renderQcpStaff();
   if(role === 'supervisor') return renderQcpAtasan('supervisor');

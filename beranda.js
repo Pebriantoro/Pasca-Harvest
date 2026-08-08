@@ -136,7 +136,7 @@ async function renderBeranda(){
       <div style="font-size:12px; color:var(--text-faint); margin-top:4px;">Ringkasan input Rencana Kerja Harian, Pengecekan Pra SPA & QC By Proses, terbaru di atas.</div>
     </div>
     <div id="berandaFilterBar"></div>
-    <div id="berandaFeedList"><div style="display:flex; justify-content:center; padding:40px;"><div class="spinner"></div></div></div>
+    <div id="berandaFeedList">${skeletonListHTML(4)}</div>
   `;
   if(typeof wfInitHero === 'function') wfInitHero();
   berandaFeedCache = await berandaFetchFeed();

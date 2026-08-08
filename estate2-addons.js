@@ -351,7 +351,7 @@ const TARGET_STATE = { module:'pasca_harvest', tahun:new Date().getFullYear(), b
 async function renderTargetActual(){
   $('#pageEyebrow').textContent = 'KONTROL & JEJAK AKTIVITAS';
   $('#pageTitle').textContent = 'Target vs Actual';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
 
   const rows = await ensureData(TARGET_STATE.module);
   const cfg = TARGET_MODULES[TARGET_STATE.module];

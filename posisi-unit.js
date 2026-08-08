@@ -190,6 +190,35 @@ function puFilterBarHTML(rows, rerenderFn){
 }
 
 /* ---------------------------------------------------------------------
+   3b. SKELETON LOADER
+   --------------------------------------------------------------------- */
+function puSkeletonHTML(){
+  const kpi = Array.from({length:4}).map(() => `<div class="skeleton skeleton-kpi"></div>`).join('');
+  const row = (w) => `<tr class="skeleton-row">${w.map(pct => `<td><div class="skeleton skeleton-line" style="width:${pct}%;"></div></td>`).join('')}</tr>`;
+  const rows = Array.from({length:6}).map(() => row([70,55,60,50,80,40,45])).join('');
+  return `
+    <div class="kpi-grid">${kpi}</div>
+    <div class="card" style="margin-top:16px;">
+      <div class="card-header"><div class="skeleton skeleton-line" style="width:160px; height:16px;"></div></div>
+    </div>
+    <div class="card" style="margin-top:14px; padding:12px 14px;">
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        ${Array.from({length:5}).map(() => `<div class="skeleton skeleton-line" style="width:130px; height:34px; margin:0;"></div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="skeleton skeleton-line" style="width:220px; height:16px;"></div></div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Tanggal</th><th>Jenis Unit</th><th>Kode Unit</th><th>Petak</th><th>Keterangan</th><th>Status</th><th>Aksi</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+/* ---------------------------------------------------------------------
    4. HALAMAN UTAMA
    --------------------------------------------------------------------- */
 async function renderPosisiUnit(){
@@ -200,7 +229,7 @@ async function renderPosisiUnit(){
     $('#pageContent').innerHTML = `<div class="empty-state">Menu ini tidak tersedia untuk role Viewer.</div>`;
     return;
   }
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = puSkeletonHTML();
 
   if(role === 'staff') return renderPuStaff();
   if(role === 'supervisor') return renderPuAtasan();

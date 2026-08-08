@@ -307,6 +307,39 @@ Object.keys(TABLES).forEach(k => {
    3. UTIL
    --------------------------------------------------------------------- */
 function $(sel){ return document.querySelector(sel); }
+
+/* ===================== SKELETON LOADER (GLOBAL, DIPAKAI SEMUA MODUL) ===================== */
+function skeletonPageHTML(opts){
+  const o = Object.assign({ kpi:4, cols:6, rows:6 }, opts||{});
+  const widths = [70,55,60,50,80,40,45,65];
+  const kpi = Array.from({length:o.kpi}).map(() => `<div class="skeleton skeleton-kpi"></div>`).join('');
+  const theadCells = Array.from({length:o.cols}).map(() => `<th><div class="skeleton skeleton-line" style="width:60%; height:10px; margin:0;"></div></th>`).join('');
+  const row = () => `<tr class="skeleton-row">${Array.from({length:o.cols}).map((_,i) => `<td><div class="skeleton skeleton-line" style="width:${widths[i % widths.length]}%;"></div></td>`).join('')}</tr>`;
+  const rows = Array.from({length:o.rows}).map(row).join('');
+  return `
+    ${o.kpi ? `<div class="kpi-grid">${kpi}</div>` : ''}
+    <div class="card" style="margin-top:${o.kpi?16:0}px;">
+      <div class="card-header"><div class="skeleton skeleton-line" style="width:200px; height:16px;"></div></div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr>${theadCells}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+function skeletonListHTML(n){
+  return Array.from({length:n||4}).map(() => `
+    <div class="card" style="padding:14px; margin-bottom:10px; display:flex; gap:12px; align-items:center;">
+      <div class="skeleton" style="width:40px; height:40px; border-radius:50%; flex:none;"></div>
+      <div style="flex:1;">
+        <div class="skeleton skeleton-line" style="width:60%;"></div>
+        <div class="skeleton skeleton-line" style="width:40%;"></div>
+      </div>
+    </div>
+  `).join('');
+}
 function $all(sel){ return Array.from(document.querySelectorAll(sel)); }
 function esc(v){ return v===null||v===undefined ? '' : String(v); }
 // type bisa: 'success' (default) | 'error' | 'warning' | 'info', atau boolean
@@ -2273,7 +2306,7 @@ async function renderTablePage(table){
   const cfg = TABLES[table];
   $('#pageEyebrow').textContent = cfg.eyebrow;
   $('#pageTitle').textContent = cfg.label;
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensureData(table);
   paintTablePage(table, rows);
 }
@@ -3235,7 +3268,7 @@ function drawPie(canvasId, dataMap){
 async function renderDashboard(){
   $('#pageEyebrow').textContent = 'RINGKASAN SEASON 2026';
   $('#pageTitle').textContent = 'Dashboard Gabungan';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
 
   const tableKeys = Object.keys(TABLES);
   const allData = {};
@@ -3668,7 +3701,7 @@ const KATEGORI_KONDISI = [
 async function renderDashboardKondisi(){
   $('#pageEyebrow').textContent = 'PEMANTAUAN RUTIN';
   $('#pageTitle').textContent = 'Dashboard Kondisi Petak';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
 
   // Catatan: tabel referensi 'petak' sering kosong/tidak sinkron, jadi dipakai
   // 'pasca_harvest' sebagai sumber daftar petak master (konsisten dengan validasi
@@ -3821,7 +3854,7 @@ const ANALISA_KRITERIA_OPTIONS = [
 async function renderAnalisa12Bulan(){
   $('#pageEyebrow').textContent = 'TREN TAHUNAN';
   $('#pageTitle').textContent = 'Analisa Kondisi Bulan 1–12';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
 
   const kd = await ensureData('kondisi_bulanan');
 
@@ -4623,7 +4656,7 @@ async function ensureProduktivitasData(){
 async function renderProduktivitas(){
   $('#pageEyebrow').textContent = 'PRODUKTIVITAS HARIAN';
   $('#pageTitle').textContent = 'Produktivitas Harian Plantation';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensureProduktivitasData();
   await ensureNormaOverrides();
   paintProduktivitas(rows);
@@ -5200,7 +5233,7 @@ async function ensureMonitoringMotorData(){
 async function renderMonitoringMotor(){
   $('#pageEyebrow').textContent = 'ARMADA & ASET';
   $('#pageTitle').textContent = 'Monitoring Motor';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensureMonitoringMotorData();
   paintMonitoringMotor(rows);
 }
@@ -5490,7 +5523,7 @@ async function ensureMonitoringAsetData(){
 async function renderMonitoringAset(){
   $('#pageEyebrow').textContent = 'ARMADA & ASET';
   $('#pageTitle').textContent = 'Monitoring Aset';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensureMonitoringAsetData();
   paintMonitoringAset(rows);
 }
@@ -5767,7 +5800,7 @@ async function ensureHeImplementData(){
 async function renderHeImplement(){
   $('#pageEyebrow').textContent = 'ARMADA & ASET';
   $('#pageTitle').textContent = 'Monitoring HE & Implement';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensureHeImplementData();
   paintHeImplement(rows);
 }
@@ -6067,7 +6100,7 @@ async function ensureActualTKData(){
 async function renderActualTK(){
   $('#pageEyebrow').textContent = 'TENAGA KERJA';
   $('#pageTitle').textContent = 'Actual TK';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensureActualTKData();
   paintActualTK(rows);
 }
@@ -6326,7 +6359,7 @@ async function ensurePlanKedatanganData(){
 async function renderPlanKedatanganTK(){
   $('#pageEyebrow').textContent = 'TENAGA KERJA';
   $('#pageTitle').textContent = 'Plan Kedatangan TK';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensurePlanKedatanganData();
   paintPlanKedatanganTK(rows);
 }
@@ -6608,7 +6641,7 @@ function buildJustifikasiTCHRows(pascaRows, keteranganRows){
 async function renderJustifikasiTCH(){
   $('#pageEyebrow').textContent = 'JUSTIFIKASI';
   $('#pageTitle').textContent = 'Justifikasi TCH Under 70';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   // Selalu ambil data Pasca Harvest & Keterangan terbaru (memakai cache masing-masing
   // yang otomatis batal setiap ada import/tambah/edit/hapus di Pasca Harvest), sehingga
   // daftar TCH Under 70 di menu ini selalu sinkron dengan data Pasca Harvest terkini.
@@ -6972,7 +7005,7 @@ async function ensureProduktivitasKontraktorData(){
 async function renderProduktivitasKontraktor(){
   $('#pageEyebrow').textContent = 'PRODUKTIVITAS';
   $('#pageTitle').textContent = 'Produktivitas Kontraktor';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensureProduktivitasKontraktorData();
   paintProduktivitasKontraktor(rows);
 }
@@ -7464,7 +7497,7 @@ async function renderUsers(){
     $('#pageContent').innerHTML = `<div class="empty-state">Halaman ini hanya dapat diakses oleh Admin.</div>`;
     return;
   }
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const { data: profiles, error } = await supa.from('profiles').select('*').order('created_at', { ascending:false });
   if(error){ $('#pageContent').innerHTML = `<div class="empty-state">Gagal memuat: ${error.message}</div>`; return; }
 
@@ -7533,7 +7566,7 @@ async function renderLogHistory(){
     $('#pageContent').innerHTML = `<div class="empty-state">Halaman ini hanya dapat diakses oleh Admin.</div>`;
     return;
   }
-  $('#pageContent').innerHTML = `${logHistoryTabBar()}<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = `${logHistoryTabBar()}${skeletonPageHTML()}`;
   if(logHistoryState.tab === 'audit'){
     const { data, error } = await supa.from('field_audit_log')
       .select('*').order('created_at', { ascending:false }).limit(500);
@@ -8260,7 +8293,7 @@ async function ensureMaintenanceData(){
 async function renderMaintenance(){
   $('#pageEyebrow').textContent = '';
   $('#pageTitle').textContent = 'Maintenance';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensureMaintenanceData();
   paintMaintenance(rows);
 }
@@ -8876,7 +8909,7 @@ async function ensurePcRpcData(){
 async function renderPcRpc(){
   $('#pageEyebrow').textContent = '';
   $('#pageTitle').textContent = 'PC & RPC Eks Non RKT';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensurePcRpcData();
   paintPcRpc(rows);
 }

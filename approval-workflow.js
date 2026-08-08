@@ -204,7 +204,7 @@ async function renderApproval() {
   if (!canAccessApprovalTab()) { toast('Menu ini tidak tersedia untuk role Anda', true); return navigate('dashboard'); }
   $('#pageEyebrow').textContent = 'PERSETUJUAN';
   $('#pageTitle').textContent = 'Approval';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const items = await fetchApprovalRows();
   paintApproval(items);
 }

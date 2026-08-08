@@ -154,7 +154,7 @@ async function ensureTebangBibitData(){
 async function renderTebangBibit(){
   $('#pageEyebrow').textContent = '';
   $('#pageTitle').textContent = 'Tebang Bibit';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensureTebangBibitData();
   paintTebangBibit(rows);
 }

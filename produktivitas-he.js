@@ -132,14 +132,14 @@ function pheRowsForMode(allRows, mode){
 async function renderProduktivitasHERental(){
   $('#pageEyebrow').textContent = 'PRODUKTIVITAS · HE';
   $('#pageTitle').textContent = 'Produktivitas HE — Rental';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensurePHEData();
   paintProduktivitasHE(rows, 'rental');
 }
 async function renderProduktivitasHEInternal(){
   $('#pageEyebrow').textContent = 'PRODUKTIVITAS · HE';
   $('#pageTitle').textContent = 'Produktivitas HE — Internal';
-  $('#pageContent').innerHTML = `<div style="display:flex; justify-content:center; padding:60px;"><div class="spinner"></div></div>`;
+  $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensurePHEData();
   paintProduktivitasHE(rows, 'internal');
 }
