@@ -1522,11 +1522,12 @@ body::before{
 
 .card{
   background:
+    radial-gradient(220px 160px at 100% 0%, color-mix(in srgb, var(--accent-gold) 30%, transparent), transparent 75%),
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='190' height='140' viewBox='0 0 190 140'><polyline points='0,110 30,86 58,100 86,52 114,72 142,26 170,48 190,10' fill='none' stroke='white' stroke-width='4' opacity='0.35'/><circle cx='86' cy='52' r='4.5' fill='white' opacity='0.4'/><circle cx='142' cy='26' r='4.5' fill='white' opacity='0.4'/><circle cx='170' cy='120' r='60' fill='white' opacity='0.05'/></svg>") right bottom / 170px 120px no-repeat,
     var(--bg-card);
-  background-blend-mode: soft-light, normal;
+  background-blend-mode: normal, soft-light, normal;
 }
-:root[data-theme="light"] .card{ background-blend-mode: soft-light, normal; opacity:1; }
+:root[data-theme="light"] .card{ background: color-mix(in srgb, var(--accent-gold) 4%, var(--bg-card)); background-blend-mode: soft-light, normal; opacity:1; }
 
 .table-scroll{
   background-image:
