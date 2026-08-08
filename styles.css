@@ -1709,3 +1709,34 @@ body::before{
     inset 0 1px 0 rgba(255,255,255,0.04),
     0 0 34px -3px color-mix(in srgb, var(--tone, var(--accent-gold)) 55%, transparent);
 }
+
+/* =====================================================================
+   SIDEBAR REDESIGN — pill nav ala referensi (DealDeck), warna tetap
+   ikut theme gold/dark yang sudah ada. Override selector lama di atas.
+   ===================================================================== */
+.sidebar{ width:264px; padding-bottom:4px; }
+.sidebar-header{ padding:20px 18px 18px; }
+.sidebar-nav{ padding:12px 14px 16px; display:flex; flex-direction:column; }
+.nav-section{ margin-bottom:4px; }
+.nav-section-label{ padding:16px 8px 8px; font-size:10.5px; letter-spacing:.09em; }
+.nav-section + .nav-section{ padding-top:6px; }
+
+.nav-item{
+  border-left:none; border-radius:12px; padding:10px 12px; gap:12px;
+  margin-bottom:3px; font-size:13.5px;
+}
+.nav-item:hover{
+  background: var(--bg-card-hover); color: var(--text-primary);
+  box-shadow:none; transform:none;
+}
+.nav-item.active{
+  background: var(--accent-gold); color:#1B1405; font-weight:700;
+  box-shadow: 0 6px 16px -4px var(--accent-gold-soft), inset 0 1px 0 rgba(255,255,255,0.18);
+}
+.nav-item.active svg{ color:#1B1405; filter:none; }
+.nav-item.active .count-badge{ background: rgba(27,20,5,0.16); color:#1B1405; }
+:root[data-theme="light"] .nav-item.active{ color:#241804; }
+:root[data-theme="light"] .nav-item.active svg{ color:#241804; }
+
+.sidebar-footer{ padding:12px 14px 16px; margin:4px 14px 0; border-top:none; }
+.sidebar-footer:not(:empty){ background: var(--bg-elevated); border-radius:14px; padding:10px 12px; }
