@@ -1757,3 +1757,14 @@ body{ background: var(--bg-elevated); }
   .main-area{ margin-left:0; border-radius:0; }
   .topbar{ border-radius:0; }
 }
+
+/* --- scrollbar sidebar-nav: tipis, rapi, sejajar (bukan nempel/ngambang) --- */
+.sidebar-nav{
+  padding-right:8px; scrollbar-gutter:stable;
+  scrollbar-width:thin; scrollbar-color: var(--border-soft) transparent;
+}
+.sidebar-nav::-webkit-scrollbar{ width:5px; }
+.sidebar-nav::-webkit-scrollbar-track{ background:transparent; margin:4px 0; }
+.sidebar-nav::-webkit-scrollbar-thumb{ background: var(--border-soft); border-radius:10px; border:none; }
+.sidebar-nav:hover::-webkit-scrollbar-thumb{ background: var(--text-faint); }
+.sidebar-nav::-webkit-scrollbar-thumb:hover{ background: var(--accent-gold); }
