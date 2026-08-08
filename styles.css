@@ -1747,19 +1747,20 @@ body{ background: var(--bg-elevated); }
 .sidebar-header{ border-bottom:1px solid var(--border-soft); }
 .sidebar-footer{ border-top:1px solid var(--border-soft); margin:0; border-radius:0; background:none; }
 .main-area{ margin-left:292px; background: var(--bg); border-radius:20px 0 0 0; min-height:100vh; }
-.topbar{ background: var(--bg); margin-top:14px; top:14px; border-radius:16px 16px 0 0; }
+.topbar{ background: var(--bg); margin-top:14px; top:14px; border-radius:16px 16px 0 0; position:sticky; }
 /* gap 14px di atas topbar itu di luar box sticky-nya, jadi pas discroll konten
-   (mis. gambar hero) numpang lewat di situ — "bocor". Tutup permanen pakai
-   strip fixed senada bg halaman, nangkring di atas konten tapi di bawah topbar/sidebar. */
-body::before{
-  content:''; position:fixed; top:0; left:0; right:0; height:14px;
-  background: var(--bg-elevated); z-index:25; pointer-events:none;
+   (mis. gambar hero) numpang lewat di situ — "bocor". Tutup pakai pseudo-el
+   nempel ke topbar sendiri (radius sama, lebar sama) biar nyatu, bukan strip
+   lebar-penuh terpisah yang bikin sudut kotak di seam sidebar. */
+.topbar::before{
+  content:''; position:absolute; left:0; right:0; top:-14px; height:14px;
+  background: var(--bg-elevated); border-radius:16px 16px 0 0; z-index:-1;
 }
 @media (max-width:880px){
   .sidebar{ top:0; bottom:0; left:0; border-radius:0; border:none; box-shadow:none; }
   .main-area{ margin-left:0; border-radius:0; }
   .topbar{ margin-top:0; top:0; border-radius:0; }
-  body::before{ display:none; }
+  .topbar::before{ display:none; }
 }
 
 /* --- scrollbar utama (halaman/window) samain gaya sama slider sidebar --- */
