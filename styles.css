@@ -107,10 +107,6 @@ body{
 h1,h2,h3,h4,.font-display{ font-family: var(--font-display); letter-spacing:-0.01em; }
 .font-mono{ font-family: var(--font-mono); }
 ::selection{ background: var(--accent-gold); color:#12200D; }
-::-webkit-scrollbar{ width:9px; height:9px; }
-::-webkit-scrollbar-track{ background: transparent; }
-::-webkit-scrollbar-thumb{ background: var(--border); border-radius:10px; }
-::-webkit-scrollbar-thumb:hover{ background: var(--accent-gold); }
 
 a{ color: inherit; }
 button{ font-family: inherit; cursor:pointer; }
@@ -1751,12 +1747,19 @@ body{ background: var(--bg-elevated); }
 .sidebar-header{ border-bottom:1px solid var(--border-soft); }
 .sidebar-footer{ border-top:1px solid var(--border-soft); margin:0; border-radius:0; background:none; }
 .main-area{ margin-left:292px; background: var(--bg); border-radius:20px 0 0 0; min-height:100vh; }
-.topbar{ background: var(--bg); border-radius:20px 0 0 0; }
+.topbar{ background: var(--bg); margin-top:14px; top:14px; border-radius:16px 16px 0 0; }
 @media (max-width:880px){
   .sidebar{ top:0; bottom:0; left:0; border-radius:0; border:none; box-shadow:none; }
   .main-area{ margin-left:0; border-radius:0; }
-  .topbar{ border-radius:0; }
+  .topbar{ margin-top:0; top:0; border-radius:0; }
 }
+
+/* --- scrollbar utama (halaman/window) samain gaya sama slider sidebar --- */
+::-webkit-scrollbar{ width:6px; height:6px; }
+::-webkit-scrollbar-track{ background:transparent; }
+::-webkit-scrollbar-thumb{ background: var(--border-soft); border-radius:10px; }
+::-webkit-scrollbar-thumb:hover{ background: var(--accent-gold); }
+html{ scrollbar-width:thin; scrollbar-color: var(--border-soft) transparent; }
 
 /* --- scrollbar sidebar-nav: tipis, rapi, sejajar (bukan nempel/ngambang) --- */
 .sidebar-nav{

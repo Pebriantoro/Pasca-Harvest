@@ -19,7 +19,10 @@
 
 /* ---- Collapsed state ---- */
 .sidebar.collapsed{ width: var(--sidebar-w-collapsed); }
-.sidebar.collapsed ~ .main-area{ margin-left: var(--sidebar-w-collapsed); }
+/* sidebar ngambang (margin 14px kiri + 14px jarak ke konten, lihat styles.css),
+   jadi margin-left main-area harus ikut lebar rail + gap itu, bukan cuma lebar rail
+   mentah — kalau tidak, konten numpuk ke rail pas diciutkan. */
+.sidebar.collapsed ~ .main-area{ margin-left: calc(var(--sidebar-w-collapsed) + 28px); }
 
 /* content-pad punya max-width fixed (lihat styles.css) tanpa margin:auto,
    jadi nempel kiri; saat sidebar collapse, ruang yang kebuka (250px - 82px)
