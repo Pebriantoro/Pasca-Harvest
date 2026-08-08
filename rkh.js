@@ -525,6 +525,8 @@ async function submitRKHForm(id){
     $('#rkhFormError').classList.remove('hidden');
     return;
   }
+  const before = id ? (rkhState.rows || []).find(r => r.id === id) || null : null;
+  logAudit(RKH_TABLE, id, payload.petak, before, payload, 'form'); // riwayat tambah & edit Rencana Kerja Harian
   toast(id ? 'Rencana Kerja Harian diperbarui, menunggu verifikasi ulang' : 'Rencana Kerja Harian ditambahkan');
   closeModal();
   renderRKHStaff();
@@ -534,6 +536,7 @@ async function submitRKHForm(id){
    7. VERIFIKASI / APPROVE / TOLAK (Supervisor & Superintendent)
    --------------------------------------------------------------------- */
 async function rkhVerify(id){
+  const before = (rkhState.rows || []).find(r => r.id === id) || null;
   const { error } = await supa.from(RKH_TABLE).update({
     status: RKH_STATUS.PENDING_SUPERINTENDENT,
     verified_by_id: currentUser.id,
@@ -542,10 +545,12 @@ async function rkhVerify(id){
     updated_at: new Date().toISOString(),
   }).eq('id', id);
   if(error){ toast('Gagal verifikasi: ' + error.message, true); return; }
+  logAudit(RKH_TABLE, id, before?.petak, before, { status: RKH_STATUS.PENDING_SUPERINTENDENT }, 'status');
   toast('RKH diverifikasi, diteruskan ke Superintendent');
   renderRKHAtasan('supervisor');
 }
 async function rkhApprove(id){
+  const before = (rkhState.rows || []).find(r => r.id === id) || null;
   const { error } = await supa.from(RKH_TABLE).update({
     status: RKH_STATUS.APPROVED,
     approved_by_id: currentUser.id,
@@ -554,6 +559,7 @@ async function rkhApprove(id){
     updated_at: new Date().toISOString(),
   }).eq('id', id);
   if(error){ toast('Gagal approve: ' + error.message, true); return; }
+  logAudit(RKH_TABLE, id, before?.petak, before, { status: RKH_STATUS.APPROVED }, 'status');
   toast('RKH disetujui (final)');
   renderRKHAtasan('superintendent');
 }
@@ -578,6 +584,7 @@ function openRKHRejectModal(id, role){
 async function submitRKHReject(id, role){
   const reason = $('#rkhRejectReason').value.trim();
   if(!reason){ toast('Alasan penolakan wajib diisi', true); return; }
+  const before = (rkhState.rows || []).find(r => r.id === id) || null;
   const { error } = await supa.from(RKH_TABLE).update({
     status: RKH_STATUS.REJECTED,
     rejection_reason: reason,
@@ -586,6 +593,7 @@ async function submitRKHReject(id, role){
   }).eq('id', id);
   $('#rkhRejectOverlay')?.remove();
   if(error){ toast('Gagal menolak: ' + error.message, true); return; }
+  logAudit(RKH_TABLE, id, before?.petak, before, { status: RKH_STATUS.REJECTED, rejection_reason: reason }, 'status');
   toast('Rencana Kerja Harian ditolak, staff akan merevisi');
   renderRKHAtasan(role);
 }

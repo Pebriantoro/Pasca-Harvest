@@ -150,6 +150,7 @@ saveRecord = async function (table, id) {
       if (res.error) { toast('Gagal menyimpan: ' + res.error.message, true); return; }
 
       toast(id ? 'Data berhasil diperbarui' : 'Data baru berhasil ditambahkan');
+      logFieldAudit(table, id || res.data?.[0]?.id, finalPayload.petak, before, finalPayload, cfg.columns, 'form'); // riwayat tambah & edit
       await logNotification({ table, action: id ? 'edit' : 'tambah', petakList: [finalPayload.petak], zona: finalPayload.zona });
       closeModal();
       state[table].loaded = false;
@@ -260,9 +261,15 @@ async function approveMany(list) {
   if (!step) return;
   const actorName = currentProfile.full_name || currentProfile.email;
   const nowIso = new Date().toISOString();
+  const beforeMap = new Map(list.map(({ table, id }) => [`${table}:${id}`, (state[table]?.data || []).find(r => r.id === id) || null]));
   const results = await Promise.all(list.map(({ table, id }) =>
     supa.from(table).update({ status_approval: step.nextStatus, [step.actorField]: actorName, [step.atField]: nowIso }).eq('id', id)
   ));
+  list.forEach(({ table, id }, i) => {
+    if (results[i].error) return;
+    const before = beforeMap.get(`${table}:${id}`);
+    logAudit(table, id, before?.petak, before, { status_approval: step.nextStatus }, 'status');
+  });
   const failed = results.filter(r => r.error).length;
   const ok = list.length - failed;
   toast(failed ? `${ok} baris ${step.doneToast}, ${failed} gagal` : `${ok} baris berhasil ${step.doneToast}`, !!failed && !ok);

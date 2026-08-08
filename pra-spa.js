@@ -664,6 +664,8 @@ async function submitPraSpaForm(id){
     $('#praSpaFormError').classList.remove('hidden');
     return;
   }
+  const before = id ? (praSpaState.rows || []).find(r => r.id === id) || null : null;
+  logAudit(PRASPA_TABLE, id, payload.no_petak, before, payload, 'form'); // riwayat tambah & edit Pengecekan Pra SPA
   toast(id ? 'Pengecekan Pra SPA diperbarui, menunggu verifikasi ulang' : 'Pengecekan Pra SPA ditambahkan');
   closeModal();
   renderPraSpaStaff();
@@ -671,8 +673,10 @@ async function submitPraSpaForm(id){
 
 async function praSpaDeleteRow(id){
   if(!confirm('Hapus data Pengecekan Pra SPA ini? Tindakan tidak bisa dibatalkan.')) return;
+  const before = (praSpaState.rows || []).find(r => r.id === id) || null;
   const { error } = await supa.from(PRASPA_TABLE).delete().eq('id', id).eq('staff_id', currentUser.id);
   if(error){ toast('Gagal menghapus: ' + error.message, true); return; }
+  logAudit(PRASPA_TABLE, id, before?.no_petak, before, {}, 'hapus'); // riwayat hapus Pengecekan Pra SPA
   toast('Pengecekan Pra SPA dihapus');
   renderPraSpaStaff();
 }
@@ -740,6 +744,7 @@ function openPraSpaDetailModal(id){
 }
 
 async function praSpaVerify(id){
+  const before = (praSpaState.rows || []).find(r => r.id === id) || null;
   const { error } = await supa.from(PRASPA_TABLE).update({
     status: PRASPA_STATUS.PENDING_SUPERINTENDENT,
     verified_by_id: currentUser.id,
@@ -748,11 +753,13 @@ async function praSpaVerify(id){
     updated_at: new Date().toISOString(),
   }).eq('id', id);
   if(error){ toast('Gagal verifikasi: ' + error.message, true); return; }
+  logAudit(PRASPA_TABLE, id, before?.no_petak, before, { status: PRASPA_STATUS.PENDING_SUPERINTENDENT }, 'status');
   toast('Pengecekan Pra SPA diverifikasi, diteruskan ke Superintendent');
   closeModal();
   renderPraSpaAtasan('supervisor');
 }
 async function praSpaApprove(id){
+  const before = (praSpaState.rows || []).find(r => r.id === id) || null;
   const { error } = await supa.from(PRASPA_TABLE).update({
     status: PRASPA_STATUS.APPROVED,
     approved_by_id: currentUser.id,
@@ -761,6 +768,7 @@ async function praSpaApprove(id){
     updated_at: new Date().toISOString(),
   }).eq('id', id);
   if(error){ toast('Gagal approve: ' + error.message, true); return; }
+  logAudit(PRASPA_TABLE, id, before?.no_petak, before, { status: PRASPA_STATUS.APPROVED }, 'status');
   toast('Pengecekan Pra SPA disetujui (final)');
   closeModal();
   renderPraSpaAtasan('superintendent');
@@ -785,6 +793,7 @@ function openPraSpaRejectModal(id, role){
 async function submitPraSpaReject(id, role){
   const reason = $('#praSpaRejectReason').value.trim();
   if(!reason){ toast('Alasan penolakan wajib diisi', true); return; }
+  const before = (praSpaState.rows || []).find(r => r.id === id) || null;
   const { error } = await supa.from(PRASPA_TABLE).update({
     status: PRASPA_STATUS.REJECTED,
     rejection_reason: reason,
@@ -793,6 +802,7 @@ async function submitPraSpaReject(id, role){
   }).eq('id', id);
   $('#praSpaRejectOverlay')?.remove();
   if(error){ toast('Gagal menolak: ' + error.message, true); return; }
+  logAudit(PRASPA_TABLE, id, before?.no_petak, before, { status: PRASPA_STATUS.REJECTED, rejection_reason: reason }, 'status');
   toast('Pengecekan Pra SPA ditolak, staff akan merevisi');
   closeModal();
   renderPraSpaAtasan(role);

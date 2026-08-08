@@ -4207,6 +4207,19 @@ function insertFieldAuditRows(rows){
 function logFieldAudit(table, recordId, petak, before, after, columns, source){
   insertFieldAuditRows(buildFieldAuditRows(table, recordId, petak, before, after, columns, source));
 }
+// Versi simpel: otomatis nentuin daftar kolom dari gabungan key before+after
+// (skip kolom bookkeeping id/created_at/dst). Dipakai modul-modul yang punya
+// form/save/delete sendiri di luar saveRecord/doDelete generik, supaya semua
+// aksi tambah/update/hapus dari akun manapun tetap tercatat di Log History →
+// Riwayat Perubahan Data.
+function auditCols(before, after){
+  const skip = new Set(['id','created_at','updated_at','created_by','updated_by']);
+  const keys = new Set([...(before ? Object.keys(before) : []), ...(after ? Object.keys(after) : [])]);
+  return Array.from(keys).filter(k => !skip.has(k));
+}
+function logAudit(table, recordId, petak, before, after, source){
+  logFieldAudit(table, recordId, petak, before || null, after || {}, auditCols(before, after), source || 'form');
+}
 async function saveRecord(table, id){
   const form = $('#recordForm');
   const cfg = TABLES[table];
@@ -4264,7 +4277,7 @@ async function saveRecord(table, id){
   }
   if(res.error){ toast('Gagal menyimpan: ' + res.error.message, true); return; }
   toast(id ? 'Data berhasil diperbarui' : 'Data baru berhasil ditambahkan');
-  if(id) logFieldAudit(table, id, payload.petak, before, payload, cfg.columns); // riwayat perubahan per-kolom
+  logFieldAudit(table, id || res.data?.[0]?.id, payload.petak, before, payload, cfg.columns, 'form'); // riwayat perubahan: tambah & edit sama-sama tercatat
   await logNotification({ table, action: id ? 'edit' : 'tambah', petakList: [payload.petak], zona: payload.zona });
   closeModal();
   state[table].loaded = false;
@@ -4293,6 +4306,7 @@ async function doDelete(table, id){
   $('#confirmOverlay')?.remove();
   if(error){ toast('Gagal menghapus: ' + error.message, true); return; }
   toast('Data berhasil dihapus');
+  logFieldAudit(table, id, rec?.petak, rec || null, {}, TABLES[table]?.columns || Object.keys(rec || {}), 'hapus'); // catat penghapusan ke Riwayat Perubahan Data
   await logNotification({ table, action:'hapus', petakList: [rec?.petak], zona: rec?.zona });
   state[table].loaded = false;
   await ensureData(table);
@@ -7642,7 +7656,7 @@ function drawFieldAuditTable(){
                 <td style="color:var(--accent-red-text);">${esc(r.old_value ?? '–')}</td>
                 <td style="color:var(--accent-green);">${esc(r.new_value ?? '–')}</td>
                 <td>${esc(r.changed_by_name || '–')}</td>
-                <td><span class="status-badge">${esc({form:'Form', import:'Import XLSX', bulk_edit:'Edit Massal'}[r.source] || r.source || 'Form')}</span></td>
+                <td><span class="status-badge">${esc({form:'Form', import:'Import XLSX', bulk_edit:'Edit Massal', hapus:'Hapus Data', status:'Verifikasi/Approval'}[r.source] || r.source || 'Form')}</span></td>
               </tr>
             `).join('') : `<tr><td colspan="8" style="text-align:center; color:var(--text-faint); padding:24px;">Belum ada riwayat perubahan data.</td></tr>`}
           </tbody>

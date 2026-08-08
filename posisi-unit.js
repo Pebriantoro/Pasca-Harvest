@@ -287,9 +287,11 @@ async function renderPuStaff(){
 }
 async function puDeleteRow(id){
   if(!confirm('Hapus data posisi unit ini? Tindakan tidak bisa dibatalkan.')) return;
+  const before = (puState.rows || []).find(r => r.id === id) || null;
   const { data, error } = await supa.from(PU_TABLE).delete().eq('id', id).eq('staff_id', currentUser.id).select('id');
   if(error){ toast('Gagal menghapus: ' + error.message, true); return; }
   if(!data || !data.length){ toast('Gagal menghapus: ditolak server (cek RLS delete policy tabel posisi_unit)', true); return; }
+  logAudit(PU_TABLE, id, before?.petak, before, {}, 'hapus'); // riwayat hapus Data Posisi Unit
   toast('Data Posisi Unit dihapus');
   puCache = null;
   renderPuStaff();
@@ -361,6 +363,7 @@ async function renderPuAtasan(){
   `;
 }
 async function puVerify(id){
+  const before = (puState.rows || []).find(r => r.id === id) || null;
   const { error } = await supa.from(PU_TABLE).update({
     status: PU_STATUS_VERIFIED,
     verified_by_id: currentUser.id,
@@ -368,6 +371,7 @@ async function puVerify(id){
     verified_at: new Date().toISOString(),
   }).eq('id', id);
   if(error){ toast('Gagal verifikasi: ' + error.message, true); return; }
+  logAudit(PU_TABLE, id, before?.petak, before, { status: PU_STATUS_VERIFIED }, 'status');
   toast('Data Posisi Unit diverifikasi');
   puCache = null;
   renderPuAtasan();
@@ -493,6 +497,8 @@ async function submitPuForm(id){
     $('#puFormError').classList.remove('hidden');
     return;
   }
+  const before = id ? (puState.rows || []).find(r => r.id === id) || null : null;
+  logAudit(PU_TABLE, id, payload.petak, before, payload, 'form'); // riwayat tambah & edit Data Posisi Unit
   toast(id ? 'Data Posisi Unit diperbarui, menunggu verifikasi ulang' : 'Data Posisi Unit ditambahkan');
   closeModal();
   puCache = null;

@@ -106,6 +106,9 @@ async function flushOfflineQueue(){
       else if(item.action === 'update') res = await supa.from(item.table).update(item.payload).eq('id', item.recordId).select();
       else if(item.action === 'delete') res = await supa.from(item.table).delete().eq('id', item.recordId);
       if(res && res.error){ console.error('Sinkron gagal untuk item offline:', res.error.message); continue; }
+      if(item.action === 'insert') logAudit(item.table, res?.data?.[0]?.id, item.payload?.petak, null, item.payload, 'form');
+      else if(item.action === 'update') logAudit(item.table, item.recordId, item.payload?.petak, null, item.payload, 'form');
+      else if(item.action === 'delete') logAudit(item.table, item.recordId, item.payload?.petak, item.payload || null, {}, 'hapus');
       await removeOfflineItem(item.localId);
     }catch(e){ console.error('Gagal sinkron item offline:', e); }
   }
@@ -251,6 +254,7 @@ saveRecord = async function(table, id){
       if(res.error){ toast('Gagal menyimpan: ' + res.error.message, true); return; }
 
       toast(id ? 'Data berhasil diperbarui' : 'Data baru berhasil ditambahkan');
+      logFieldAudit(table, id || res.data?.[0]?.id, finalPayload.petak, before, finalPayload, cfg.columns, 'form'); // riwayat tambah & edit
       await logNotification({ table, action: id ? 'edit' : 'tambah', petakList: [finalPayload.petak], zona: finalPayload.zona });
       closeModal();
       state[table].loaded = false;
@@ -302,6 +306,7 @@ doDelete = async function(table, id){
   $('#confirmOverlay')?.remove();
   if(error){ toast('Gagal menghapus: ' + error.message, true); return; }
   toast('Data berhasil dihapus');
+  logFieldAudit(table, id, rec?.petak, rec || null, {}, TABLES[table]?.columns || Object.keys(rec || {}), 'hapus'); // riwayat hapus
   await logNotification({ table, action:'hapus', petakList: [rec?.petak], zona: rec?.zona });
   state[table].loaded = false;
   await ensureData(table);

@@ -710,6 +710,8 @@ async function submitQcpForm(id){
     $('#qcpFormError').classList.remove('hidden');
     return;
   }
+  const before = id ? (qcpState.rows || []).find(r => r.id === id) || null : null;
+  logAudit(QCP_TABLE, id, payload.petak, before, payload, 'form'); // riwayat tambah & edit QC By Proses
   toast(id ? 'QC By Proses diperbarui, menunggu verifikasi ulang' : 'QC By Proses ditambahkan');
   closeModal();
   renderQcpStaff();
@@ -717,8 +719,10 @@ async function submitQcpForm(id){
 
 async function qcpDeleteRow(id){
   if(!confirm('Hapus data QC By Proses ini? Tindakan tidak bisa dibatalkan.')) return;
+  const before = (qcpState.rows || []).find(r => r.id === id) || null;
   const { error } = await supa.from(QCP_TABLE).delete().eq('id', id).eq('staff_id', currentUser.id);
   if(error){ toast('Gagal menghapus: ' + error.message, true); return; }
+  logAudit(QCP_TABLE, id, before?.petak, before, {}, 'hapus'); // riwayat hapus QC By Proses
   toast('QC By Proses dihapus');
   renderQcpStaff();
 }
@@ -783,6 +787,7 @@ function openQcpDetailModal(id){
 }
 
 async function qcpVerify(id){
+  const before = (qcpState.rows || []).find(r => r.id === id) || null;
   const { error } = await supa.from(QCP_TABLE).update({
     status: QCP_STATUS.PENDING_SUPERINTENDENT,
     verified_by_id: currentUser.id,
@@ -791,11 +796,13 @@ async function qcpVerify(id){
     updated_at: new Date().toISOString(),
   }).eq('id', id);
   if(error){ toast('Gagal verifikasi: ' + error.message, true); return; }
+  logAudit(QCP_TABLE, id, before?.petak, before, { status: QCP_STATUS.PENDING_SUPERINTENDENT }, 'status');
   toast('QC By Proses diverifikasi, diteruskan ke Superintendent');
   closeModal();
   renderQcpAtasan('supervisor');
 }
 async function qcpApprove(id){
+  const before = (qcpState.rows || []).find(r => r.id === id) || null;
   const { error } = await supa.from(QCP_TABLE).update({
     status: QCP_STATUS.APPROVED,
     approved_by_id: currentUser.id,
@@ -804,6 +811,7 @@ async function qcpApprove(id){
     updated_at: new Date().toISOString(),
   }).eq('id', id);
   if(error){ toast('Gagal approve: ' + error.message, true); return; }
+  logAudit(QCP_TABLE, id, before?.petak, before, { status: QCP_STATUS.APPROVED }, 'status');
   toast('QC By Proses disetujui (final)');
   closeModal();
   renderQcpAtasan('superintendent');
@@ -828,6 +836,7 @@ function openQcpRejectModal(id, role){
 async function submitQcpReject(id, role){
   const reason = $('#qcpRejectReason').value.trim();
   if(!reason){ toast('Alasan penolakan wajib diisi', true); return; }
+  const before = (qcpState.rows || []).find(r => r.id === id) || null;
   const { error } = await supa.from(QCP_TABLE).update({
     status: QCP_STATUS.REJECTED,
     rejection_reason: reason,
@@ -836,6 +845,7 @@ async function submitQcpReject(id, role){
   }).eq('id', id);
   $('#qcpRejectOverlay')?.remove();
   if(error){ toast('Gagal menolak: ' + error.message, true); return; }
+  logAudit(QCP_TABLE, id, before?.petak, before, { status: QCP_STATUS.REJECTED, rejection_reason: reason }, 'status');
   toast('QC By Proses ditolak, staff akan merevisi');
   closeModal();
   renderQcpAtasan(role);

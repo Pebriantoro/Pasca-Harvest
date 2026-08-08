@@ -415,6 +415,7 @@ async function saveTebangBibit(id){
   const zonaRestrict = getUserZonaRestriction();
   if(zonaRestrict) payload.zona = zonaRestrict;
   payload.updated_by = currentUser.id;
+  const before = id ? (state[TB_TABLE].data.find(r => r.id === id) || null) : null;
   let res;
   if(id){
     res = await supa.from(TB_TABLE).update(payload).eq('id', id).select();
@@ -424,6 +425,7 @@ async function saveTebangBibit(id){
   }
   if(res.error){ toast('Gagal menyimpan: ' + res.error.message, true); return; }
   toast(id ? 'Data berhasil diperbarui' : 'Data baru berhasil ditambahkan');
+  logAudit(TB_TABLE, id || res.data?.[0]?.id, payload.petak, before, payload, 'form'); // riwayat tambah & edit Tebang Bibit
   await logNotification({ table: TB_TABLE, action: id ? 'edit' : 'tambah', petakList: [payload.petak], zona: payload.zona });
   closeModal();
   state[TB_TABLE].loaded = false;
@@ -452,6 +454,7 @@ async function doDeleteTebangBibit(id){
   $('#confirmOverlay')?.remove();
   if(error){ toast('Gagal menghapus: ' + error.message, true); return; }
   toast('Data berhasil dihapus');
+  logAudit(TB_TABLE, id, rec?.petak, rec || null, {}, 'hapus'); // riwayat hapus Tebang Bibit
   await logNotification({ table: TB_TABLE, action:'hapus', petakList: [rec?.petak], zona: rec?.zona });
   state[TB_TABLE].loaded = false;
   await ensureTebangBibitData();
@@ -573,14 +576,15 @@ async function handleImportTebangBibit(input){
       const updateResults = matched.length ? await Promise.all(matched.map(m => supa.from(TB_TABLE).update(m.payload).eq('id', m.id))) : [];
       const failedUpdate = updateResults.filter(r => r.error);
       const successUpdate = matched.length - failedUpdate.length;
+      matched.forEach((m, i) => { if(!updateResults[i].error) logAudit(TB_TABLE, m.id, m.payload.petak, existingRows.find(r=>r.id===m.id) || null, m.payload, 'import'); });
 
       let successInsert = 0, failedInsert = 0, insertErrorMsg = '';
       if(toInsert.length){
         const insertPayloads = toInsert.map(o => ({ ...o, created_by: currentUser.id, updated_by: currentUser.id }));
-        const insertResults = await Promise.all(insertPayloads.map(p => supa.from(TB_TABLE).insert(p)));
-        insertResults.forEach(r=>{
+        const insertResults = await Promise.all(insertPayloads.map(p => supa.from(TB_TABLE).insert(p).select()));
+        insertResults.forEach((r,i)=>{
           if(r.error){ failedInsert++; if(!insertErrorMsg) insertErrorMsg = r.error.message; }
-          else successInsert++;
+          else { successInsert++; logAudit(TB_TABLE, r.data?.[0]?.id, insertPayloads[i].petak, null, insertPayloads[i], 'import'); }
         });
       }
 

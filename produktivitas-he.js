@@ -532,6 +532,7 @@ async function savePHE(mode, id){
   if((payload.hm_ha_he2===null || payload.hm_ha_he2===undefined) && payload.luas_wo) payload.hm_ha_he2 = Math.round((payload.hm_hari_ini_he2/payload.luas_wo)*100)/100;
   if((payload.ltr_hm_he2===null || payload.ltr_hm_he2===undefined) && payload.jumlah_liter_he2 && payload.hm_hari_ini_he2) payload.ltr_hm_he2 = Math.round((payload.jumlah_liter_he2/payload.hm_hari_ini_he2)*100)/100;
   payload.updated_by = currentUser.id;
+  const before = id ? (state[PHE_TABLE].data.find(r => r.id === id) || null) : null;
   let res;
   if(id){
     res = await supa.from(PHE_TABLE).update(payload).eq('id', id).select();
@@ -541,6 +542,7 @@ async function savePHE(mode, id){
   }
   if(res.error){ toast('Gagal menyimpan: ' + res.error.message, true); return; }
   toast(id ? 'Data berhasil diperbarui' : 'Data baru berhasil ditambahkan');
+  logAudit(PHE_TABLE, id || res.data?.[0]?.id, payload.kode_unit_he, before, payload, 'form'); // riwayat tambah & edit Produktivitas HE
   await logNotification({ table: PHE_TABLE, action: id ? 'edit' : 'tambah', petakList: [payload.kode_unit_he] });
   closeModal();
   state[PHE_TABLE].loaded = false;
@@ -569,6 +571,7 @@ async function doDeletePHE(mode, id){
   $('#confirmOverlay')?.remove();
   if(error){ toast('Gagal menghapus: ' + error.message, true); return; }
   toast('Data berhasil dihapus');
+  logAudit(PHE_TABLE, id, rec?.kode_unit_he, rec || null, {}, 'hapus'); // riwayat hapus Produktivitas HE
   await logNotification({ table: PHE_TABLE, action:'hapus', petakList: [rec?.kode_unit_he] });
   state[PHE_TABLE].loaded = false;
   await ensurePHEData();
