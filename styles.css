@@ -1740,3 +1740,20 @@ body::before{
 
 .sidebar-footer{ padding:12px 14px 16px; margin:4px 14px 0; border-top:none; }
 .sidebar-footer:not(:empty){ background: var(--bg-elevated); border-radius:14px; padding:10px 12px; }
+
+/* --- sidebar jadi panel ngambang sendiri, lepas dari tepi & topbar --- */
+body{ background: var(--bg-elevated); }
+.sidebar{
+  top:14px; bottom:14px; left:14px; height:auto;
+  border-radius:20px; border:1px solid var(--border-soft); overflow:hidden;
+  box-shadow: var(--shadow-lift);
+}
+.sidebar-header{ border-bottom:1px solid var(--border-soft); }
+.sidebar-footer{ border-top:1px solid var(--border-soft); margin:0; border-radius:0; background:none; }
+.main-area{ margin-left:292px; background: var(--bg); border-radius:20px 0 0 0; min-height:100vh; }
+.topbar{ background: var(--bg); border-radius:20px 0 0 0; }
+@media (max-width:880px){
+  .sidebar{ top:0; bottom:0; left:0; border-radius:0; border:none; box-shadow:none; }
+  .main-area{ margin-left:0; border-radius:0; }
+  .topbar{ border-radius:0; }
+}
