@@ -1712,7 +1712,7 @@ body::before{
    ikut theme gold/dark yang sudah ada. Override selector lama di atas.
    ===================================================================== */
 .sidebar{ width:264px; padding-bottom:4px; }
-.sidebar-header{ padding:20px 18px 18px; }
+.sidebar-header{ height:64px; padding:0 18px; display:flex; align-items:center; }
 .sidebar-nav{ padding:12px 14px 16px; display:flex; flex-direction:column; }
 .nav-section{ margin-bottom:4px; }
 .nav-section-label{ padding:16px 8px 8px; font-size:10.5px; letter-spacing:.09em; }
