@@ -1747,21 +1747,27 @@ body{ background: var(--sidebar); }
 }
 .sidebar-header{ border-bottom:1px solid var(--border-soft); }
 .sidebar-footer{ border-top:1px solid var(--border-soft); margin:0; border-radius:0; background:none; }
-.main-area{ margin-left:292px; background: var(--bg); border-radius:20px 0 0 0; min-height:100vh; }
-.topbar{ background: var(--bg); margin-top:14px; top:14px; border-radius:20px 20px 0 0; position:sticky; }
-/* gap 14px di atas topbar itu di luar box sticky-nya, jadi pas discroll konten
-   (mis. gambar hero) numpang lewat di situ — "bocor". Tutup pakai pseudo-el
-   nempel ke topbar sendiri (radius sama, lebar sama) biar nyatu, bukan strip
-   lebar-penuh terpisah yang bikin sudut kotak di seam sidebar. */
-.topbar::before{
-  content:''; position:absolute; left:0; right:0; top:-14px; height:14px;
-  background: var(--sidebar); border-radius:20px 20px 0 0; z-index:-1;
+/* --- topbar & content jadi 2 card ngambang terpisah (bukan 1 panel nyatu) --- */
+.main-area{
+  margin-left:292px; min-height:100vh; background:transparent;
+  padding:14px 14px 14px 0; box-sizing:border-box;
+  display:flex; flex-direction:column; gap:14px;
+}
+.topbar{
+  background: color-mix(in srgb, var(--bg-card) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border:1px solid var(--border-soft); border-radius:20px;
+  box-shadow: var(--shadow-sm); position:sticky; top:14px; margin:0;
+}
+.content-pad{
+  background: var(--bg-card); border:1px solid var(--border-soft); border-radius:20px;
+  box-shadow: var(--shadow-sm); box-sizing:border-box; flex:1;
 }
 @media (max-width:880px){
   .sidebar{ top:0; bottom:0; left:0; border-radius:0; border:none; box-shadow:none; }
-  .main-area{ margin-left:0; border-radius:0; }
-  .topbar{ margin-top:0; top:0; border-radius:0; }
-  .topbar::before{ display:none; }
+  .main-area{ margin-left:0; padding:0; gap:0; }
+  .topbar{ top:0; border-radius:0; border:none; box-shadow:none; }
+  .content-pad{ border-radius:0; border:none; box-shadow:none; }
 }
 
 /* --- scrollbar utama (halaman/window) samain gaya sama slider sidebar --- */
