@@ -1716,8 +1716,8 @@ body::before{
 .nav-section + .nav-section{ padding-top:6px; }
 
 .nav-item{
-  border-left:none; border-radius:12px; padding:10px 12px; gap:12px;
-  margin-bottom:3px; font-size:13.5px;
+  border-left:none; border-radius:10px; padding:7px 12px; gap:12px;
+  margin-bottom:2px; font-size:13.5px;
 }
 .nav-item:hover{
   background: var(--bg-card-hover); color: var(--text-primary);
