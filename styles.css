@@ -1769,8 +1769,8 @@ body{ background: var(--sidebar); }
   box-shadow: var(--shadow-sm); position:sticky; top:14px; margin:0;
 }
 .content-pad{
-  background: transparent; border:none; box-shadow:none;
-  box-sizing:border-box; flex:1;
+  background: var(--bg-card); border:1px solid var(--border-soft); border-radius:20px;
+  box-shadow: var(--shadow-sm); box-sizing:border-box; flex:1;
 }
 @media (max-width:880px){
   .sidebar{ top:0; bottom:0; left:0; border-radius:0; border:none; box-shadow:none; gap:0; }
@@ -1778,6 +1778,7 @@ body{ background: var(--sidebar); }
   .sidebar-menu-panel{ border-radius:0; border:none; box-shadow:none; }
   .main-area{ margin-left:0; padding:0; gap:0; }
   .topbar{ top:0; border-radius:0; border:none; box-shadow:none; }
+  .content-pad{ border-radius:0; border:none; box-shadow:none; }
 }
 
 /* --- scrollbar utama (halaman/window) samain gaya sama slider sidebar --- */
