@@ -1781,3 +1781,19 @@ html{ scrollbar-width:thin; scrollbar-color: var(--border-soft) transparent; }
 .sidebar-nav::-webkit-scrollbar-thumb{ background: var(--border-soft); border-radius:10px; border:none; }
 .sidebar-nav:hover::-webkit-scrollbar-thumb{ background: var(--text-faint); }
 .sidebar-nav::-webkit-scrollbar-thumb:hover{ background: var(--accent-gold); }
+
+/* =====================================================================
+   PATCH PAKSA: samain tinggi SEMUA nav-item (termasuk "Beranda" yang
+   ada di luar nav-section). Sebelumnya kelas .nav-item sudah identik
+   utk semua item tapi kotak "Beranda" render lebih pendek di browser —
+   gak ketemu rule spesifik penyebabnya, jadi dipaksa eksplisit pakai
+   !important biar pasti menang dari rule manapun yang belum ketauan.
+   ===================================================================== */
+.sidebar-nav .nav-item{
+  min-height:48px !important;
+  padding:10px 12px !important;
+  box-sizing:border-box !important;
+}
+.sidebar-nav .nav-item svg{
+  width:17px !important; height:17px !important;
+}
