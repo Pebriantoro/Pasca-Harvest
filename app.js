@@ -4690,7 +4690,7 @@ async function ensureProduktivitasData(){
 
 async function renderProduktivitas(){
   $('#pageEyebrow').textContent = 'PRODUKTIVITAS HARIAN';
-  $('#pageTitle').textContent = 'Produktivitas Harian Plantation';
+  $('#pageTitle').textContent = 'Prod Harian Plantation';
   $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensureProduktivitasData();
   await ensureNormaOverrides();
@@ -7039,7 +7039,7 @@ async function ensureProduktivitasKontraktorData(){
 
 async function renderProduktivitasKontraktor(){
   $('#pageEyebrow').textContent = 'PRODUKTIVITAS';
-  $('#pageTitle').textContent = 'Produktivitas Kontraktor';
+  $('#pageTitle').textContent = 'Prod Kontraktor';
   $('#pageContent').innerHTML = skeletonPageHTML();
   const rows = await ensureProduktivitasKontraktorData();
   paintProduktivitasKontraktor(rows);
