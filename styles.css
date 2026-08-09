@@ -1113,10 +1113,6 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
     box-shadow: 0 10px 36px rgba(0,0,0,.4), 0 0 0 1px rgba(147,167,154,.12);
   }
   .input, select.input, .chat-textarea{ font-size:16px; }
-
-  /* Hilangkan tombol "Muat Ulang" di tampilan HP supaya topbar/sidebar
-     lebih ringkas & rapi sejak awal buka aplikasi. */
-  #btnMuatUlang{ display:none !important; }
 }
 
 @media (max-width: 420px){

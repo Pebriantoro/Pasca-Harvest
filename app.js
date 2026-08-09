@@ -8061,6 +8061,7 @@ async function submitOwnChangePassword(){
    --------------------------------------------------------------------- */
 const HARI_ID = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 const BULAN_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const BULAN_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 function initRealtimeClock(){
   const dateEl = document.getElementById('topbarClockDate');
@@ -8069,7 +8070,7 @@ function initRealtimeClock(){
 
   function tick(){
     const d = new Date();
-    dateEl.textContent = `${HARI_ID[d.getDay()]}, ${String(d.getDate()).padStart(2,'0')} ${BULAN_ID[d.getMonth()]} ${d.getFullYear()}`;
+    dateEl.textContent = `${HARI_ID[d.getDay()]}, ${String(d.getDate()).padStart(2,'0')} ${BULAN_SHORT[d.getMonth()]} ${d.getFullYear()}`;
     timeEl.textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
   }
   tick();
