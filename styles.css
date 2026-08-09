@@ -29,12 +29,12 @@
   --font-body: 'Inter', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 
-  --radius: 10px;
-  --radius-sm: 6px;
+  --radius: 16px;
+  --radius-sm: 10px;
 
-  --shadow-sm: 0 4px 14px rgba(0,0,0,0.28);
-  --shadow-md: 0 14px 34px rgba(0,0,0,0.36);
-  --shadow-lift: 0 10px 26px rgba(0,0,0,0.32), 0 2px 6px rgba(0,0,0,0.22);
+  --shadow-sm: 0 2px 10px rgba(0,0,0,0.16), 0 10px 28px -12px rgba(0,0,0,0.22);
+  --shadow-md: 0 10px 30px -6px rgba(0,0,0,0.30);
+  --shadow-lift: 0 16px 36px -10px rgba(0,0,0,0.34), 0 3px 8px rgba(0,0,0,0.16);
   --shadow-glow-gold: 0 0 0 1px rgba(217,169,74,0.28), 0 8px 22px rgba(217,169,74,0.12);
   --shadow-glow-red: 0 0 0 1px rgba(193,84,60,0.32), 0 8px 22px rgba(193,84,60,0.16);
   --shadow-glow-green: 0 0 0 1px rgba(95,174,125,0.28), 0 8px 22px rgba(95,174,125,0.12);
@@ -652,7 +652,7 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 .role-staff{ background: var(--accent-blue-soft); color: var(--accent-blue-text); }
 .role-viewer{ background: var(--bg-elevated); color: var(--text-muted); }
 
-.status-badge{ font-size:11px; font-weight:700; padding:2px 9px; border-radius:20px; white-space:nowrap; }
+.status-badge{ font-size:11px; font-weight:700; padding:3px 11px; border-radius:20px; white-space:nowrap; letter-spacing:.01em; }
 .status-badge.badge-green{ background: var(--accent-green-soft); color: var(--accent-green); }
 .status-badge.badge-red{ background: var(--accent-red-soft); color: var(--accent-red-text); }
 .status-badge.badge-gray{ background: var(--bg-elevated); color: var(--text-muted); }
@@ -681,7 +681,7 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 /* ===================== CARDS / KPI ===================== */
 .kpi-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:28px; }
 .kpi-card{
-  background: var(--bg-card); border:1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg-card); border:1px solid var(--border-soft); border-radius: var(--radius);
   padding:16px 18px; position:relative; overflow:hidden;
   box-shadow: var(--shadow-sm);
   transition: transform .2s var(--ease-out), box-shadow .2s var(--ease-out), border-color .2s var(--ease-out);
@@ -702,7 +702,7 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 .kpi-trend.down::before{ border-top:4px solid var(--accent-red-text); }
 
 .card{
-  background: var(--bg-card); border:1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg-card); border:1px solid var(--border-soft); border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   transition: box-shadow .2s var(--ease-out), border-color .2s var(--ease-out);
 }
@@ -777,7 +777,7 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
 .skeleton-chart{ height:100%; width:100%; border-radius: var(--radius-sm); }
 .petak-tag{ font-family: var(--font-mono); font-size:12px; padding:2px 8px; border-radius:5px; background: var(--bg-elevated); border-left:3px solid var(--accent-gold); }
 
-.badge{ display:inline-flex; align-items:center; gap:5px; padding:2px 9px; border-radius:20px; font-size:11px; font-weight:600; white-space:nowrap; }
+.badge{ display:inline-flex; align-items:center; gap:5px; padding:3px 11px; border-radius:20px; font-size:11px; font-weight:600; white-space:nowrap; letter-spacing:.01em; }
 .badge-done{ background: var(--accent-green-soft); color: var(--accent-green); }
 .badge-progress{ background: var(--accent-gold-soft); color: var(--accent-gold); }
 .badge-notyet{ background: var(--accent-red-soft); color: var(--accent-red-text); }

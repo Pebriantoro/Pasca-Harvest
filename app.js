@@ -3125,7 +3125,7 @@ function drawGroupedBar(canvasId, categories, seriesMap, colors, opts){
   const seriesNames = Object.keys(seriesMap);
   chartInstances[canvasId] = new Chart(ctx, {
     type:'bar',
-    data:{ labels: categories, datasets: seriesNames.map((s,i) => ({ label:s, data:seriesMap[s], backgroundColor: colors ? colors[i % colors.length] : colorForLabel(s), borderRadius:7, maxBarThickness:26 })) },
+    data:{ labels: categories, datasets: seriesNames.map((s,i) => ({ label:s, data:seriesMap[s], backgroundColor: colors ? colors[i % colors.length] : colorForLabel(s), borderRadius:10, maxBarThickness:26 })) },
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } },
       plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, font:{size:11} } },
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
@@ -3142,7 +3142,7 @@ function drawStatusBar(canvasId, dataMap){
   const colors = labels.map(colorForLabel);
   chartInstances[canvasId] = new Chart(ctx, {
     type:'bar',
-    data:{ labels, datasets:[{ data:values, backgroundColor:colors, borderRadius:7, maxBarThickness:70 }] },
+    data:{ labels, datasets:[{ data:values, backgroundColor:colors, borderRadius:10, maxBarThickness:70 }] },
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } }, plugins:{
         legend:{ display:true, position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, font:{size:11},
           generateLabels: chart => labels.map((l,i)=>({ text:l, fillStyle:colors[i], strokeStyle:colors[i], fontColor:CHART_TEXT })) } },
@@ -3206,7 +3206,7 @@ function drawBar(canvasId, dataMap, orderKeys, opts){
   const values = labels.map(l => dataMap[l]);
   chartInstances[canvasId] = new Chart(ctx, {
     type:'bar',
-    data:{ labels, datasets:[{ data:values, backgroundColor: labels.map((l,i)=>CHART_PALETTE[i % CHART_PALETTE.length]), borderRadius:7, maxBarThickness:34 }] },
+    data:{ labels, datasets:[{ data:values, backgroundColor: labels.map((l,i)=>CHART_PALETTE[i % CHART_PALETTE.length]), borderRadius:10, maxBarThickness:34 }] },
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } }, plugins:{legend:{display:false},
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
       scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ display: opts.hideYAxis ? false : true, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
@@ -3221,7 +3221,7 @@ function drawHBar(canvasId, dataMap, opts){
   const labels = Object.keys(dataMap), values = Object.values(dataMap);
   chartInstances[canvasId] = new Chart(ctx, {
     type:'bar',
-    data:{ labels, datasets:[{ data:values, backgroundColor: labels.map((l,i)=>CHART_PALETTE[i % CHART_PALETTE.length]), borderRadius:7, maxBarThickness:18, minBarLength:3 }] },
+    data:{ labels, datasets:[{ data:values, backgroundColor: labels.map((l,i)=>CHART_PALETTE[i % CHART_PALETTE.length]), borderRadius:10, maxBarThickness:18, minBarLength:3 }] },
     options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, layout:{ padding:{ right:34 } }, plugins:{legend:{display:false},
         datalabels:{ ...DL_STYLE, anchor:'end', align:'right', offset:4, formatter:(v)=> (v===null||v===undefined||isNaN(Number(v))) ? '' : fmtNum(Number(v),2) } },
       scales:{ x:{ display: opts.hideXAxis ? false : true, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
@@ -3237,7 +3237,7 @@ function drawStackedBar(canvasId, categories, seriesMap, stacked, colors, opts){
   const seriesNames = Object.keys(seriesMap);
   chartInstances[canvasId] = new Chart(ctx, {
     type:'bar',
-    data:{ labels: categories, datasets: seriesNames.map((s,i)=>({ label:s, data:seriesMap[s], backgroundColor: (colors ? colors[i%colors.length] : CHART_PALETTE[i%CHART_PALETTE.length]), borderRadius:7, maxBarThickness:40 })) },
+    data:{ labels: categories, datasets: seriesNames.map((s,i)=>({ label:s, data:seriesMap[s], backgroundColor: (colors ? colors[i%colors.length] : CHART_PALETTE[i%CHART_PALETTE.length]), borderRadius:10, maxBarThickness:40 })) },
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } },
       plugins:{ legend:{ position:'bottom', labels:{color:CHART_TEXT, boxWidth:11, font:{size:11}} },
         datalabels:{ ...DL_STYLE, anchor:'center', align:'center', formatter:dlValue } },
