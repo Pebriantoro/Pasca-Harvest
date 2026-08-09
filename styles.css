@@ -1735,14 +1735,22 @@ body::before{
 .sidebar-footer{ padding:12px 14px 16px; margin:4px 14px 0; border-top:none; }
 .sidebar-footer:not(:empty){ background: var(--bg-elevated); border-radius:14px; padding:10px 12px; }
 
-/* --- sidebar jadi panel ngambang sendiri, lepas dari tepi & topbar --- */
+/* --- sidebar jadi 2 card ngambang terpisah: header (logo SAMSAT) & panel menu --- */
 body{ background: var(--sidebar); }
 .sidebar{
   top:14px; bottom:14px; left:14px; height:auto;
-  border-radius:20px; border:1px solid var(--border-soft); overflow:hidden;
-  box-shadow: var(--shadow-lift);
+  border-radius:0; border:none; box-shadow:none; background:transparent;
+  overflow:visible; gap:14px;
 }
-.sidebar-header{ border-bottom:1px solid var(--border-soft); }
+.sidebar-header{
+  border-bottom:none; flex-shrink:0; background: var(--sidebar);
+  border-radius:20px; border:1px solid var(--border-soft); box-shadow: var(--shadow-lift);
+}
+.sidebar-menu-panel{
+  flex:1; min-height:0; display:flex; flex-direction:column;
+  background: var(--sidebar); border-radius:20px; border:1px solid var(--border-soft);
+  box-shadow: var(--shadow-lift); overflow:hidden;
+}
 .sidebar-footer{ border-top:1px solid var(--border-soft); margin:0; border-radius:0; background:none; }
 /* --- topbar & content jadi 2 card ngambang terpisah (bukan 1 panel nyatu) --- */
 .main-area{
@@ -1761,7 +1769,9 @@ body{ background: var(--sidebar); }
   box-shadow: var(--shadow-sm); box-sizing:border-box; flex:1;
 }
 @media (max-width:880px){
-  .sidebar{ top:0; bottom:0; left:0; border-radius:0; border:none; box-shadow:none; }
+  .sidebar{ top:0; bottom:0; left:0; border-radius:0; border:none; box-shadow:none; gap:0; }
+  .sidebar-header{ border-radius:0; border:none; box-shadow:none; border-bottom:1px solid var(--border-soft); }
+  .sidebar-menu-panel{ border-radius:0; border:none; box-shadow:none; }
   .main-area{ margin-left:0; padding:0; gap:0; }
   .topbar{ top:0; border-radius:0; border:none; box-shadow:none; }
   .content-pad{ border-radius:0; border:none; box-shadow:none; }
