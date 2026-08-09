@@ -89,7 +89,7 @@
 
 /* ---- Collapse/expand toggle button, docked to the sidebar's right edge ---- */
 .sidebar-collapse-toggle{
-  position:absolute; top:26px; right:-13px; z-index:41;
+  position:absolute; top:19px; right:14px; z-index:41;
   width:26px; height:26px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
   background: var(--bg-elevated, #1c2b22); color: var(--text-muted);
