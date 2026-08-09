@@ -665,6 +665,21 @@ function openMyProfileModal(){
         <div class="user-avatar" style="width:78px; height:78px; font-size:26px; position:absolute; left:50%; bottom:0; transform:translate(-50%, 50%); border:4px solid var(--bg-card); box-sizing:content-box; ${avatarBgStyle(p.avatar_url)}"></div>
       </div>
       <div class="modal-body" style="text-align:center; padding-top:46px;">
+        <div style="display:flex; justify-content:center; margin-bottom:14px;">
+          <div class="topbar-clock" id="topbarClock" title="Waktu saat ini">
+            <div class="topbar-clock-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            </div>
+            <div class="topbar-clock-text">
+              <span id="topbarClockDate">–</span>
+              <span class="topbar-clock-time" id="topbarClockTime">–</span>
+            </div>
+            <div class="topbar-weather hidden" id="topbarWeather" title="Cuaca saat ini">
+              <span class="topbar-weather-icon" id="topbarWeatherIcon"></span>
+              <span class="topbar-weather-temp" id="topbarWeatherTemp">–°</span>
+            </div>
+          </div>
+        </div>
         <div style="font-size:16px; font-weight:700;">${esc(name)}</div>
         <div style="margin-top:6px;">
           <span class="role-pill role-${esc(p.role||'')}">${esc(zonaRestrict ? `${p.role} · Zona ${zonaRestrict}` : (p.role || '–'))}</span>
@@ -680,11 +695,15 @@ function openMyProfileModal(){
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
         </button>
         <button class="btn btn-outline" style="height:30px; padding:0 14px; font-size:12.5px;" onclick="closeModal(); triggerAvatarUpload();">Ganti Foto</button>
-        ${!isAdminRole() ? `<button class="btn btn-primary" style="height:30px; padding:0 14px; font-size:12.5px;" onclick="closeModal(); openOwnChangePasswordModal();">Ubah Password</button>` : `<button class="btn btn-primary" style="height:30px; padding:0 14px; font-size:12.5px;" onclick="closeModal();">Tutup</button>`}
+        ${!isAdminRole() ? `<button class="btn btn-primary" style="height:30px; padding:0 14px; font-size:12.5px;" onclick="closeModal(); openOwnChangePasswordModal();">Ubah Password</button>` : ''}
       </div>
     </div>
   `;
   document.body.appendChild(overlay);
+  // Jam/tanggal & cuaca baru saja dipindah ke sini (dari topbar) — render
+  // langsung begitu modal terbuka, jangan nunggu tick/refresh interval berikutnya.
+  tickRealtimeClock();
+  if(weatherLastCoord) fetchAndRenderWeather(weatherLastCoord.lat, weatherLastCoord.lon);
 }
 
 /* ---------------------------------------------------------------------
@@ -2045,23 +2064,6 @@ function relocateSettingsAndLogout(){
 let _rslTimer = null;
 window.addEventListener('resize', function(){ clearTimeout(_rslTimer); _rslTimer = setTimeout(relocateSettingsAndLogout, 120); });
 relocateSettingsAndLogout();
-
-/* --- Pindahkan badge cuaca dari sebelah jam ke kartu profil (sebelah kanan,
-   bekas slot tombol Keluar yang udah dipindah ke icon-row) saat HP/tablet
-   kecil (<=880px), sekalian diperbesar lewat CSS. Balik ke sebelah jam lagi
-   kalau layar melebar. ------------------------------------------------- */
-function relocateWeatherWidget(){
-  const weather = document.getElementById('topbarWeather');
-  const clock = document.getElementById('topbarClock');
-  const chip = document.querySelector('.user-chip-topbar');
-  if(!weather || !clock || !chip) return;
-  const isMobile = window.innerWidth <= 880;
-  if(isMobile && weather.parentElement !== chip) chip.appendChild(weather);
-  else if(!isMobile && weather.parentElement !== clock) clock.appendChild(weather);
-}
-let _rwwTimer = null;
-window.addEventListener('resize', function(){ clearTimeout(_rwwTimer); _rwwTimer = setTimeout(relocateWeatherWidget, 120); });
-relocateWeatherWidget();
 
 /* --- Hide/Collapse Sub Menu per Section ---------------------------------
    Setiap section sidebar (Ringkasan, Komunikasi, Produktivitas, Menu Data,
@@ -8051,43 +8053,48 @@ async function submitOwnChangePassword(){
 }
 
 /* ---------------------------------------------------------------------
-   12d. PENANDA HARI & JAM REALTIME (TOPBAR)
+   12d. PENANDA HARI & JAM REALTIME (PROFIL SAYA)
    ---------------------------------------------------------------------
-   Mengisi chip #topbarClock (lihat index.html, di dalam .topbar) dengan
-   hari + tanggal + jam berjalan, format Indonesia, update tiap detik.
-   Chip ini hanya tampak setelah user login (topbar ada di dalam
-   #appShell), jadi cukup dijalankan sekali saat script dimuat — begitu
-   appShell ditampilkan, chip otomatis sudah berjalan.
+   Mengisi chip #topbarClock (sekarang ada di dalam modal "Profil Saya",
+   lihat openMyProfileModal()) dengan hari + tanggal + jam berjalan,
+   format Indonesia, update tiap detik. Karena modal ini dibuat/dibongkar
+   secara dinamis (cuma ada saat modal terbuka), tick() selalu mengambil
+   elemennya ulang tiap kali jalan — otomatis no-op saat modal tertutup,
+   dan otomatis jalan lagi begitu modal dibuka (dibantu juga oleh
+   pemanggilan langsung di openMyProfileModal()).
    --------------------------------------------------------------------- */
 const HARI_ID = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 const BULAN_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 const BULAN_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-function initRealtimeClock(){
+function tickRealtimeClock(){
   const dateEl = document.getElementById('topbarClockDate');
   const timeEl = document.getElementById('topbarClockTime');
-  if(!dateEl || !timeEl) return; // markup topbar belum ada di halaman ini
-
-  function tick(){
-    const d = new Date();
-    dateEl.textContent = `${HARI_ID[d.getDay()]}, ${String(d.getDate()).padStart(2,'0')} ${BULAN_SHORT[d.getMonth()]} ${d.getFullYear()}`;
-    timeEl.textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
-  }
-  tick();
-  setInterval(tick, 1000);
+  if(!dateEl || !timeEl) return; // modal Profil Saya sedang tertutup
+  const d = new Date();
+  dateEl.textContent = `${HARI_ID[d.getDay()]}, ${String(d.getDate()).padStart(2,'0')} ${BULAN_SHORT[d.getMonth()]} ${d.getFullYear()}`;
+  timeEl.textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+}
+function initRealtimeClock(){
+  tickRealtimeClock();
+  setInterval(tickRealtimeClock, 1000);
 }
 initRealtimeClock();
 
 /* ---------------------------------------------------------------------
-   12e. IKON CUACA (TOPBAR)
+   12e. IKON CUACA (PROFIL SAYA)
    ---------------------------------------------------------------------
-   Tampil di sebelah jam/tanggal (#topbarClock). Pakai Open-Meteo (gratis,
-   tanpa API key). Lokasi diambil dari geolocation browser; kalau user
-   tolak/gagal, fallback ke koordinat Bandar Lampung (basis PT Pratama
-   Nusantara Sakti). Update tiap 15 menit, tidak perlu tiap detik.
+   Tampil di sebelah jam/tanggal (#topbarClock, sekarang di dalam modal
+   "Profil Saya"). Pakai Open-Meteo (gratis, tanpa API key). Lokasi
+   diambil dari geolocation browser; kalau user tolak/gagal, fallback ke
+   koordinat Bandar Lampung (basis PT Pratama Nusantara Sakti). Update
+   tiap 15 menit di background; koordinat terakhir disimpan di
+   weatherLastCoord supaya openMyProfileModal() bisa langsung render
+   cuaca begitu modal dibuka, tanpa nunggu siklus refresh berikutnya.
    --------------------------------------------------------------------- */
 const WEATHER_FALLBACK_COORD = { lat: -5.45, lon: 105.27 }; // Bandar Lampung
 const WEATHER_REFRESH_MS = 15 * 60 * 1000;
+let weatherLastCoord = null;
 
 const WMO_ICON = {
   clearSun: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
@@ -8129,8 +8136,13 @@ async function fetchAndRenderWeather(lat, lon){
 }
 
 function initTopbarWeather(){
-  if(!document.getElementById('topbarWeather')) return;
+  // Catatan: #topbarWeather sekarang cuma ada di dalam modal "Profil Saya"
+  // (dibuat dinamis saat modal dibuka), jadi TIDAK bisa dipakai buat cek
+  // "apakah fitur ini aktif di halaman ini" kayak dulu waktu masih permanen
+  // di topbar. Geolocation & fetch cuaca tetap jalan dari awal supaya
+  // weatherLastCoord siap dipakai begitu modal dibuka pertama kali.
   function loadWithCoord(lat, lon){
+    weatherLastCoord = { lat, lon };
     fetchAndRenderWeather(lat, lon);
     setInterval(() => fetchAndRenderWeather(lat, lon), WEATHER_REFRESH_MS);
   }
@@ -9410,6 +9422,8 @@ async function bootstrap(){
   }
   supa.auth.onAuthStateChange((event, s)=>{
     if(event === 'SIGNED_OUT'){
+      closeModal(); // modal (mis. Profil Saya) numpang di document.body, bukan di dalam #appShell,
+                     // jadi kalau gak ditutup manual dia nyangkut nampang di atas layar login.
       $('#appShell').classList.add('hidden');
       $('#loginView').classList.remove('hidden');
     }
