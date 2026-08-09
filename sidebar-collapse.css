@@ -105,6 +105,12 @@
   width:14px; height:14px; transition: transform .28s cubic-bezier(.4,0,.2,1);
 }
 
+/* Collapsed: geser toggle ke bawah biar gak numpuk sama logo yang di-center */
+.sidebar.collapsed .sidebar-collapse-toggle{
+  top:auto; right:auto; left:50%; bottom:-13px; transform:translateX(-50%);
+}
+.sidebar.collapsed .sidebar-collapse-toggle:hover{ transform:translateX(-50%); }
+
 
 /* Hide the desktop collapse toggle on small/mobile widths, where the sidebar
    is already an off-canvas overlay controlled by the hamburger button */
