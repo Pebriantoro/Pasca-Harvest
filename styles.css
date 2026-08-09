@@ -511,10 +511,10 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 .topbar-clock{
   display:flex; align-items:center; gap:10px; white-space:nowrap;
   background: var(--bg-elevated); border:1px solid var(--border); border-radius:10px;
-  padding:8px 12px; color: var(--text-muted);
+  padding:0 12px; color: var(--text-muted); height:34px; box-sizing:border-box;
 }
 .topbar-clock-icon{
-  width:28px; height:28px; border-radius:7px; flex-shrink:0;
+  width:22px; height:22px; border-radius:6px; flex-shrink:0;
   background: var(--accent-gold-soft);
   display:flex; align-items:center; justify-content:center;
 }
@@ -559,6 +559,7 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 @media (max-width:640px){
   .topbar-icon-row .btn,
   .user-chip-topbar .btn-icon{ height:32px; }
+  .topbar-clock{ height:32px; }
 }
 
 /* ===================== MENU PENGATURAN (Tema + Suara) =====================
