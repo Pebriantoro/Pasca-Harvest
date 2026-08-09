@@ -665,24 +665,18 @@ function openMyProfileModal(){
         <div class="user-avatar" style="width:78px; height:78px; font-size:26px; position:absolute; left:50%; bottom:0; transform:translate(-50%, 50%); border:4px solid var(--bg-card); box-sizing:content-box; ${avatarBgStyle(p.avatar_url)}"></div>
       </div>
       <div class="modal-body" style="text-align:center; padding-top:46px;">
-        <div style="display:flex; justify-content:center; margin-bottom:14px;">
-          <div class="topbar-clock" id="topbarClock" title="Waktu saat ini">
-            <div class="topbar-clock-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-            </div>
-            <div class="topbar-clock-text">
-              <span id="topbarClockDate">–</span>
-              <span class="topbar-clock-time" id="topbarClockTime">–</span>
-            </div>
-            <div class="topbar-weather hidden" id="topbarWeather" title="Cuaca saat ini">
-              <span class="topbar-weather-icon" id="topbarWeatherIcon"></span>
-              <span class="topbar-weather-temp" id="topbarWeatherTemp">–°</span>
-            </div>
-          </div>
-        </div>
         <div style="font-size:16px; font-weight:700;">${esc(name)}</div>
         <div style="margin-top:6px;">
           <span class="role-pill role-${esc(p.role||'')}">${esc(zonaRestrict ? `${p.role} · Zona ${zonaRestrict}` : (p.role || '–'))}</span>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin-top:10px; color:var(--text-muted); font-size:12px;" id="topbarClock" title="Waktu saat ini">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent-gold); flex-shrink:0;"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          <span id="topbarClockDate">–</span>
+          <span id="topbarClockTime" style="font-family:var(--font-mono); font-weight:700; color:var(--accent-gold);">–</span>
+          <span class="hidden" id="topbarWeather" title="Cuaca saat ini" style="display:flex; align-items:center; gap:4px; padding-left:8px; margin-left:2px; border-left:1px solid var(--border-soft);">
+            <span id="topbarWeatherIcon" style="display:flex; width:13px; height:13px; color:var(--accent-gold);"></span>
+            <span id="topbarWeatherTemp" style="font-family:var(--font-mono); font-weight:600;">–°</span>
+          </span>
         </div>
         <div style="text-align:left; margin-top:20px; border-top:1px solid var(--border-soft); padding-top:16px; display:flex; flex-direction:column; gap:10px;">
           <div style="display:flex; justify-content:space-between; font-size:13px;"><span style="color:var(--text-faint);">Username</span><span style="font-weight:600;">${esc((p.email||'').split('@')[0] || '–')}</span></div>
