@@ -586,14 +586,27 @@ async function onAuthenticated(user){
   showUpdateReminderOnce();
 }
 
+function greetingByTime(){
+  const h = new Date().getHours();
+  if(h < 11) return 'Selamat pagi';
+  if(h < 15) return 'Selamat siang';
+  if(h < 18) return 'Selamat sore';
+  return 'Selamat malam';
+}
+
 function showUpdateReminderOnce(){
   if(sessionStorage.getItem('update_reminder_shown')) return;
   sessionStorage.setItem('update_reminder_shown', '1');
+  const name = currentProfile?.full_name || currentProfile?.email || 'Pengguna';
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.innerHTML = `
     <div class="modal-box" style="max-width:420px; text-align:center;">
       <div class="modal-body" style="padding-top:22px;">
+        <div style="font-size:34px; margin-bottom:10px;">👋</div>
+        <div class="card-title" style="margin-bottom:4px;">${greetingByTime()}, ${name}</div>
+        <p style="color:var(--text-muted); font-size:13px; margin-bottom:18px;">Selamat datang kembali!</p>
+        <hr style="border:none; border-top:1px solid var(--border-color, rgba(255,255,255,.1)); margin-bottom:18px;">
         <div style="font-size:34px; margin-bottom:10px;">⚠️</div>
         <div class="card-title" style="margin-bottom:8px;">Update Terbaru Tersedia</div>
         <p style="color:var(--text-muted); font-size:13px; line-height:1.6;">Harap melakukan hapus history browser untuk mendapatkan Update terbaru.</p>
