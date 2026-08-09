@@ -103,17 +103,17 @@ if(_cwPrevOpenDMConversation){
 function injectChatWallpaperButton(anchorId){
   // Chat Tim: taruh tombol di sebelah tombol Online (card-header).
   if(anchorId === 'chatOnlineWrap'){
-    const header = document.getElementById('chatOnlineWrap')?.parentElement;
-    if(header && !document.getElementById('chatWallpaperBtn')){
+    const wrap = document.getElementById('chatOnlineWrap');
+    if(wrap && !document.getElementById('chatWallpaperBtn')){
       const btn = document.createElement('button');
       btn.id = 'chatWallpaperBtn';
       btn.type = 'button';
       btn.className = 'btn btn-outline btn-sm';
       btn.title = 'Ganti wallpaper chat';
-      btn.style.marginLeft = '8px';
+      btn.style.marginRight = '8px';
       btn.innerHTML = '🎨 Wallpaper';
       btn.onclick = () => openChatWallpaperModal();
-      header.insertBefore(btn, document.getElementById('chatOnlineWrap'));
+      wrap.insertBefore(btn, wrap.firstChild);
     }
     return;
   }
