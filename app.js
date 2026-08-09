@@ -676,6 +676,9 @@ function openMyProfileModal(){
         </div>
       </div>
       <div class="modal-footer">
+        <button class="btn btn-outline btn-icon" style="width:30px; height:30px;" onclick="handleLogout()" title="Keluar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        </button>
         <button class="btn btn-outline" onclick="closeModal(); triggerAvatarUpload();">Ganti Foto</button>
         ${!isAdminRole() ? `<button class="btn btn-primary" onclick="closeModal(); openOwnChangePasswordModal();">Ubah Password</button>` : `<button class="btn btn-primary" onclick="closeModal();">Tutup</button>`}
       </div>
@@ -1044,6 +1047,7 @@ function toggleNotificationPanel(){
   const willOpen = panel.classList.contains('hidden');
   $('#onlinePanel')?.classList.add('hidden'); // tutup panel online kalau lagi terbuka
   $('#settingsPanel')?.classList.add('hidden');
+  $('#komunikasiPanel')?.classList.add('hidden');
   panel.classList.toggle('hidden');
   if(willOpen){ renderNotifPanel(); markAllNotificationsRead(); }
 }
@@ -1309,9 +1313,28 @@ function toggleSettingsPanel(){
   const willOpen = panel.classList.contains('hidden');
   $('#notifPanel')?.classList.add('hidden');
   $('#onlinePanel')?.classList.add('hidden');
+  $('#komunikasiPanel')?.classList.add('hidden');
   panel.classList.toggle('hidden');
   if(willOpen) syncSettingsPanelState();
 }
+
+/* ---- Menu Komunikasi (Chat Tim + Pesan Langsung), dipindah dari sidebar ke topbar ---- */
+function toggleKomunikasiPanel(){
+  const panel = $('#komunikasiPanel');
+  if(!panel) return;
+  portalPanelToBodyOnMobile(panel);
+  const willOpen = panel.classList.contains('hidden');
+  $('#notifPanel')?.classList.add('hidden');
+  $('#onlinePanel')?.classList.add('hidden');
+  $('#settingsPanel')?.classList.add('hidden');
+  panel.classList.toggle('hidden');
+}
+function closeKomunikasiPanel(){ $('#komunikasiPanel')?.classList.add('hidden'); }
+document.addEventListener('click', (e) => {
+  const wrap = document.getElementById('komunikasiWrap');
+  const panel = document.getElementById('komunikasiPanel');
+  if(wrap && panel && !wrap.contains(e.target) && !panel.contains(e.target)) panel.classList.add('hidden');
+});
 function syncSettingsPanelState(){
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
   const themeLabel = $('#themeStateLabel');
@@ -2015,20 +2038,9 @@ relocateTopbarUtility();
    dikembalikan ke posisi asal di topbar. -------------------------------- */
 function relocateSettingsAndLogout(){
   const settingsWrap = document.getElementById('settingsWrap');
-  const logoutBtn = document.getElementById('topbarLogoutBtn');
   const iconRow = document.querySelector('.topbar-icon-row');
-  const userChip = document.querySelector('.user-chip-topbar');
-  if(!settingsWrap || !logoutBtn || !iconRow || !userChip) return;
-  const isMobile = window.innerWidth <= 880;
-  if(isMobile){
-    // Keduanya ditaruh di icon-row, tepat di sebelah tombol notifikasi
-    // (bukan lagi dipisah ke bar bawah sidebar).
-    if(settingsWrap.parentElement !== iconRow) iconRow.appendChild(settingsWrap);
-    if(logoutBtn.parentElement !== iconRow) iconRow.appendChild(logoutBtn);
-  } else {
-    if(settingsWrap.parentElement !== iconRow) iconRow.appendChild(settingsWrap);
-    if(logoutBtn.parentElement !== userChip) userChip.appendChild(logoutBtn);
-  }
+  if(!settingsWrap || !iconRow) return;
+  if(settingsWrap.parentElement !== iconRow) iconRow.appendChild(settingsWrap);
 }
 let _rslTimer = null;
 window.addEventListener('resize', function(){ clearTimeout(_rslTimer); _rslTimer = setTimeout(relocateSettingsAndLogout, 120); });
