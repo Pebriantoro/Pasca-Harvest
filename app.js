@@ -664,7 +664,7 @@ function showUpdateReminderOnce(){
   if(sessionStorage.getItem('update_reminder_shown')) return;
   sessionStorage.setItem('update_reminder_shown', '1');
   const name = currentProfile?.full_name || currentProfile?.email || 'Pengguna';
-  const lokasi = (currentProfile?.zona || '').toString().trim() || 'Estate 2';
+  const lokasi = (currentProfile?.zona || '').toString().trim() || 'Ogan Komering Ilir';
   const scene = greetingSceneByTime();
   const tanggal = new Date().toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   const overlay = document.createElement('div');
@@ -684,7 +684,7 @@ function showUpdateReminderOnce(){
         <p style="color:var(--text-muted); font-size:13px; line-height:1.6;">Harap melakukan hapus history browser untuk mendapatkan Update terbaru.</p>
       </div>
       <div class="modal-footer" style="justify-content:center; padding-bottom:20px;">
-        <button class="btn btn-primary" onclick="this.closest('.modal-overlay').remove()">Tutup</button>
+        <button class="btn btn-primary" style="padding:6px 18px; font-size:13px;" onclick="this.closest('.modal-overlay').remove()">Tutup</button>
       </div>
     </div>`;
   document.body.appendChild(overlay);
