@@ -770,9 +770,6 @@ function openMyProfileModal(){
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-outline btn-icon" style="width:30px; height:30px;" onclick="handleLogout()" title="Keluar">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-        </button>
         <button class="btn btn-outline" style="height:30px; padding:0 14px; font-size:12.5px;" onclick="closeModal(); triggerAvatarUpload();">Ganti Foto</button>
         ${!isAdminRole() ? `<button class="btn btn-primary" style="height:30px; padding:0 14px; font-size:12.5px;" onclick="closeModal(); openOwnChangePasswordModal();">Ubah Password</button>` : ''}
       </div>
