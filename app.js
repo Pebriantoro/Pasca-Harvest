@@ -3027,9 +3027,11 @@ let CHART_BORDER = cssVar('--chart-border', '#1B2E25');
 
 // Aktifkan plugin data label (angka/persentase tampil langsung di atas grafik)
 if(typeof ChartDataLabels !== 'undefined'){ Chart.register(ChartDataLabels); }
-// Legend semua chart pakai bentuk bulat (bukan kotak default Chart.js)
+// Legend semua chart pakai bentuk bulat kecil (bukan kotak default Chart.js)
 Chart.defaults.plugins.legend.labels.usePointStyle = true;
 Chart.defaults.plugins.legend.labels.pointStyle = 'circle';
+Chart.defaults.plugins.legend.labels.boxWidth = 7;
+Chart.defaults.plugins.legend.labels.boxHeight = 7;
 // Paksa render chart di resolusi tinggi tetap (min. 2x), supaya tidak
 // buram saat browser di-zoom selain 100% (window.devicePixelRatio ikut
 // berubah nilainya kalau zoom browser diubah, bikin canvas under-render).
@@ -3129,7 +3131,7 @@ function drawDonut(canvasId, dataMap, semantic, customColors){
   chartInstances[canvasId] = new Chart(ctx, {
     type:'doughnut',
     data:{ labels, datasets:[{ data:values, backgroundColor:colors, borderColor:CHART_BORDER, borderWidth:2, borderRadius:4, spacing:2, hoverOffset:8, hoverBorderWidth:0 }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, usePointStyle:true, pointStyle:'circle', font:{size:11} } }, datalabels: dlPercentPlugin() }, cutout:'62%',
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:7, usePointStyle:true, pointStyle:'circle', font:{size:11} } }, datalabels: dlPercentPlugin() }, cutout:'62%',
       animation:{ animateRotate:true, animateScale:true } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawDonut", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
@@ -3167,7 +3169,7 @@ function drawStatusProgressBar(canvasId, dataMap){
       layout:{ padding:4 },
       scales:{ x:{ stacked:true, display:false, max: total || 1 }, y:{ stacked:true, display:false } },
       plugins:{
-        legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, font:{size:11},
+        legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:7, font:{size:11},
           generateLabels: chart => orderedLabels.map((l,i)=>({ text:l, fillStyle:colors[i], strokeStyle:colors[i], fontColor:CHART_TEXT })) } },
         datalabels:{ ...DL_STYLE, anchor:'center', align:'center', color:'#fff',
           font:{ weight:'800', size:12 }, textStrokeColor:'#000', textStrokeWidth:1,
@@ -3203,7 +3205,7 @@ function drawCategoryProgressBar(canvasId, dataMap, orderKeys){
       layout:{ padding:4 },
       scales:{ x:{ stacked:true, display:false, max: total || 1 }, y:{ stacked:true, display:false } },
       plugins:{
-        legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, font:{size:11},
+        legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:7, font:{size:11},
           generateLabels: chart => orderedLabels.map((l,i)=>({ text:l, fillStyle:colors[i], strokeStyle:colors[i], fontColor:CHART_TEXT })) } },
         tooltip:{ callbacks:{ label:(ctx)=> `${ctx.dataset.label}: ${ctx.raw}` } },
         datalabels:{ ...DL_STYLE, anchor:'center', align:'center', color:'#fff',
@@ -3224,7 +3226,7 @@ function drawGroupedBar(canvasId, categories, seriesMap, colors, opts){
     type:'bar',
     data:{ labels: categories, datasets: seriesNames.map((s,i) => ({ label:s, data:seriesMap[s], backgroundColor: colors ? colors[i % colors.length] : colorForLabel(s), borderRadius:10, maxBarThickness:26 })) },
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } },
-      plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, font:{size:11} } },
+      plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:7, font:{size:11} } },
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
       scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ display: opts.hideYAxis ? false : true, ticks:{color:CHART_TEXT, font:{size:10.5}, precision:0}, grid:{display:false} } } }
   });
@@ -3241,7 +3243,7 @@ function drawStatusBar(canvasId, dataMap){
     type:'bar',
     data:{ labels, datasets:[{ data:values, backgroundColor:colors, borderRadius:10, maxBarThickness:70 }] },
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } }, plugins:{
-        legend:{ display:true, position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, font:{size:11},
+        legend:{ display:true, position:'bottom', labels:{ color:CHART_TEXT, boxWidth:7, font:{size:11},
           generateLabels: chart => labels.map((l,i)=>({ text:l, fillStyle:colors[i], strokeStyle:colors[i], fontColor:CHART_TEXT })) } },
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
       scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
@@ -3336,7 +3338,7 @@ function drawStackedBar(canvasId, categories, seriesMap, stacked, colors, opts){
     type:'bar',
     data:{ labels: categories, datasets: seriesNames.map((s,i)=>({ label:s, data:seriesMap[s], backgroundColor: (colors ? colors[i%colors.length] : CHART_PALETTE[i%CHART_PALETTE.length]), borderRadius:10, maxBarThickness:40 })) },
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } },
-      plugins:{ legend:{ position:'bottom', labels:{color:CHART_TEXT, boxWidth:11, font:{size:11}} },
+      plugins:{ legend:{ position:'bottom', labels:{color:CHART_TEXT, boxWidth:7, font:{size:11}} },
         datalabels:{ ...DL_STYLE, anchor:'center', align:'center', formatter:dlValue } },
       scales:{ x:{ stacked, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ stacked, display: opts.hideYAxis ? false : true, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
@@ -3360,7 +3362,7 @@ function drawLineMulti(canvasId, categories, seriesMap, colors, showLabels, line
       datalabels: showLabels ? { anchor: i % 2 === 0 ? 'end' : 'start', align: i % 2 === 0 ? 'top' : 'bottom' } : { display:false },
     })) },
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22, bottom:14 } },
-      plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:11, font:{size:11} } },
+      plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:7, font:{size:11} } },
         datalabels: showLabels ? { ...DL_STYLE, offset:4, formatter:dlValue } : { display:false } },
       scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ display: hideYAxis ? false : true, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
@@ -3374,7 +3376,7 @@ function drawPie(canvasId, dataMap){
   chartInstances[canvasId] = new Chart(ctx, {
     type:'pie',
     data:{ labels, datasets:[{ data:values, backgroundColor:CHART_PALETTE, borderColor:CHART_BORDER, borderWidth:2 }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{color:CHART_TEXT, boxWidth:11, font:{size:11}} }, datalabels: dlPercentPlugin() },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{color:CHART_TEXT, boxWidth:7, font:{size:11}} }, datalabels: dlPercentPlugin() },
       animation:{ animateRotate:true, animateScale:true } }
   });
   }catch(e){ console.error("Chart render gagal:", "drawPie", e); const _el = document.getElementById(canvasId); if(_el && _el.parentElement) _el.parentElement.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--accent-red,#C1543C);text-align:center;padding:10px;">Grafik gagal dimuat, coba Muat Ulang</div>'); }
