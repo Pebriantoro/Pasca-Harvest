@@ -511,11 +511,12 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
             <span class="notif-badge hidden" id="notifBadge">0</span>
             <div class="notif-panel hidden" id="notifPanel"></div>
           </div>
-          <div class="settings-wrap" id="settingsWrap">
-            <button class="btn btn-outline btn-icon" title="Pengaturan" onclick="toggleSettingsPanel()">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
-            </button>
-            <div class="notif-panel settings-panel hidden" id="settingsPanel">
+          <div class="settings-logout-group" id="settingsLogoutGroup" style="display:flex; align-items:center; gap:8px;">
+            <div class="settings-wrap" id="settingsWrap">
+              <button class="btn btn-outline btn-icon" title="Pengaturan" onclick="toggleSettingsPanel()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+              </button>
+              <div class="notif-panel settings-panel hidden" id="settingsPanel">
               <div class="notif-panel-header"><span>Pengaturan</span></div>
               <button type="button" class="settings-row" id="btnMuatUlang" onclick="refreshCurrentView()">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6M3 22v-6h6M3.5 9a9 9 0 0 1 15-4l2.5 3M20.5 15a9 9 0 0 1-15 4l-2.5-3"/></svg>
@@ -568,6 +569,10 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
                 <span class="settings-row-label">Scan QR Login PC</span>
               </button>
             </div>
+          </div>
+          <button class="btn btn-outline btn-icon" id="topbarLogoutBtn" title="Keluar" onclick="if(confirm('Keluar dari akun ini?'))handleLogout();">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
           </div>
         </div>
         <div class="notif-wrap" id="komunikasiWrap">

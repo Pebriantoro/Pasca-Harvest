@@ -2136,13 +2136,13 @@ relocateTopbarUtility();
    bottom-nav lagi (slot bottom-nav dipakai tombol Keluar). Saat layar
    melebar lagi, tombol dikembalikan ke posisi asal di topbar. ---------- */
 function relocateSettingsAndLogout(){
-  const settingsWrap = document.getElementById('settingsWrap');
+  const group = document.getElementById('settingsLogoutGroup');
   const iconRow = document.querySelector('.topbar-icon-row');
   const sidebarBottom = document.getElementById('sidebarBottomUtility');
-  if(!settingsWrap || !iconRow || !sidebarBottom) return;
+  if(!group || !iconRow || !sidebarBottom) return;
   const isMobile = window.innerWidth <= 880;
   const target = isMobile ? sidebarBottom : iconRow;
-  if(settingsWrap.parentElement !== target) target.appendChild(settingsWrap);
+  if(group.parentElement !== target) target.appendChild(group);
 }
 let _rslTimer = null;
 window.addEventListener('resize', function(){ clearTimeout(_rslTimer); _rslTimer = setTimeout(relocateSettingsAndLogout, 120); });

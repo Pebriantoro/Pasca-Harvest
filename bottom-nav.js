@@ -25,10 +25,6 @@
         '<span class="bn-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></span>' +
         '<span class="bn-label">Menu</span>' +
       '</button>' +
-      '<button type="button" class="bottom-nav-item" id="bnavLogout" onclick="event.stopPropagation(); if(typeof handleLogout===\'function\' && confirm(\'Keluar dari akun ini?\'))handleLogout();">' +
-        '<span class="bn-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>' +
-        '<span class="bn-label">Keluar</span>' +
-      '</button>' +
       '<span class="bn-indicator" id="bnavIndicator"></span>';
     document.body.appendChild(bar);
   }
