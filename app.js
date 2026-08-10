@@ -2130,15 +2130,19 @@ let _rtuTimer = null;
 window.addEventListener('resize', function(){ clearTimeout(_rtuTimer); _rtuTimer = setTimeout(relocateTopbarUtility, 120); });
 relocateTopbarUtility();
 
-/* --- Pindahkan tombol Pengaturan & Keluar ke bagian paling bawah sidebar
-   saat HP/tablet kecil (<=880px), supaya cluster atas tetap ringkas (cuma
-   jam, muat ulang, notifikasi, profil). Saat layar melebar lagi, keduanya
-   dikembalikan ke posisi asal di topbar. -------------------------------- */
+/* --- Pindahkan tombol Pengaturan ke bagian paling bawah panel menu
+   (sidebar) saat HP/tablet kecil (<=880px), supaya cluster atas topbar
+   tetap ringkas. Sekarang akses Pengaturan di mobile lewat sidebar, bukan
+   bottom-nav lagi (slot bottom-nav dipakai tombol Keluar). Saat layar
+   melebar lagi, tombol dikembalikan ke posisi asal di topbar. ---------- */
 function relocateSettingsAndLogout(){
   const settingsWrap = document.getElementById('settingsWrap');
   const iconRow = document.querySelector('.topbar-icon-row');
-  if(!settingsWrap || !iconRow) return;
-  if(settingsWrap.parentElement !== iconRow) iconRow.appendChild(settingsWrap);
+  const sidebarBottom = document.getElementById('sidebarBottomUtility');
+  if(!settingsWrap || !iconRow || !sidebarBottom) return;
+  const isMobile = window.innerWidth <= 880;
+  const target = isMobile ? sidebarBottom : iconRow;
+  if(settingsWrap.parentElement !== target) target.appendChild(settingsWrap);
 }
 let _rslTimer = null;
 window.addEventListener('resize', function(){ clearTimeout(_rslTimer); _rslTimer = setTimeout(relocateSettingsAndLogout, 120); });

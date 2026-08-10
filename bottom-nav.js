@@ -25,9 +25,9 @@
         '<span class="bn-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></span>' +
         '<span class="bn-label">Menu</span>' +
       '</button>' +
-      '<button type="button" class="bottom-nav-item" id="bnavSettings" onclick="event.stopPropagation(); if(typeof toggleSettingsPanel===\'function\')toggleSettingsPanel();">' +
-        '<span class="bn-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></span>' +
-        '<span class="bn-label">Atur</span>' +
+      '<button type="button" class="bottom-nav-item" id="bnavLogout" onclick="event.stopPropagation(); if(typeof handleLogout===\'function\' && confirm(\'Keluar dari akun ini?\'))handleLogout();">' +
+        '<span class="bn-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>' +
+        '<span class="bn-label">Keluar</span>' +
       '</button>' +
       '<span class="bn-indicator" id="bnavIndicator"></span>';
     document.body.appendChild(bar);
@@ -64,30 +64,20 @@
     var dm = document.getElementById('bnavDM');
     var chat = document.getElementById('bnavChat');
     var menu = document.getElementById('bnavMenu');
-    var settings = document.getElementById('bnavSettings');
     var sidebar = document.getElementById('sidebar');
-    var settingsPanel = document.getElementById('settingsPanel');
-    if(!dm || !chat || !menu || !settings) return;
+    if(!dm || !chat || !menu) return;
     var menuOpen = !!(sidebar && sidebar.classList.contains('open'));
-    var settingsOpen = !!(settingsPanel && !settingsPanel.classList.contains('hidden'));
-    dm.classList.toggle('active', !menuOpen && !settingsOpen && lastView === 'dm');
-    chat.classList.toggle('active', !menuOpen && !settingsOpen && lastView === 'chat');
-    menu.classList.toggle('active', menuOpen && !settingsOpen);
-    settings.classList.toggle('active', settingsOpen);
+    dm.classList.toggle('active', !menuOpen && lastView === 'dm');
+    chat.classList.toggle('active', !menuOpen && lastView === 'chat');
+    menu.classList.toggle('active', menuOpen);
     var activeEl = bar_activeElement();
     slideIndicatorTo(activeEl);
     function bar_activeElement(){
-      if(settingsOpen) return settings;
       if(menuOpen) return menu;
       if(lastView === 'dm') return dm;
       if(lastView === 'chat') return chat;
       return null;
     }
-  }
-  function watchSettingsPanel(){
-    var panel = document.getElementById('settingsPanel');
-    if(!panel) return;
-    new MutationObserver(function(){ highlightActive(); }).observe(panel, { attributes:true, attributeFilter:['class'] });
   }
 
   function injectCloseButton(){
@@ -117,7 +107,6 @@
     buildBar();
     injectCloseButton();
     watchLoginState();
-    watchSettingsPanel();
     mirrorBadge('dmUnreadBadge', 'bnavDMBadge');
     mirrorBadge('chatUnreadBadge', 'bnavChatBadge');
     window.addEventListener('resize', function(){ highlightActive(); });
