@@ -594,25 +594,97 @@ function greetingByTime(){
   return 'Selamat malam';
 }
 
+function greetingSceneByTime(){
+  const h = new Date().getHours();
+  // { key, sky gradient, icon svg, label muted color }
+  if(h < 11) return {
+    key:'pagi',
+    sky:'linear-gradient(160deg,#ffd68a 0%,#ffb199 38%,#8ec9ea 100%)',
+    icon:`<svg viewBox="0 0 120 90" width="88" height="66">
+      <defs><radialGradient id="sunPagi" cx="35%" cy="35%" r="70%">
+        <stop offset="0%" stop-color="#fff3c4"/><stop offset="55%" stop-color="#ffcf5c"/><stop offset="100%" stop-color="#ffab3d"/>
+      </radialGradient></defs>
+      <circle cx="42" cy="42" r="24" fill="url(#sunPagi)"/>
+      <g stroke="#ffcf5c" stroke-width="4" stroke-linecap="round" opacity=".85">
+        <line x1="42" y1="4" x2="42" y2="12"/><line x1="10" y1="42" x2="2" y2="42"/>
+        <line x1="16" y1="16" x2="10" y2="10"/><line x1="68" y1="16" x2="74" y2="10"/>
+      </g>
+      <ellipse cx="66" cy="58" rx="34" ry="17" fill="#fff" opacity=".95"/>
+      <ellipse cx="48" cy="62" rx="20" ry="12" fill="#ffe9d6" opacity=".9"/>
+    </svg>`
+  };
+  if(h < 15) return {
+    key:'siang',
+    sky:'linear-gradient(160deg,#6fc3ff 0%,#3fa9f5 55%,#2c86d6 100%)',
+    icon:`<svg viewBox="0 0 120 90" width="88" height="66">
+      <defs><radialGradient id="sunSiang" cx="35%" cy="35%" r="70%">
+        <stop offset="0%" stop-color="#fffbe6"/><stop offset="50%" stop-color="#ffe066"/><stop offset="100%" stop-color="#ffb703"/>
+      </radialGradient></defs>
+      <circle cx="60" cy="38" r="28" fill="url(#sunSiang)"/>
+      <g stroke="#ffe066" stroke-width="5" stroke-linecap="round">
+        <line x1="60" y1="0" x2="60" y2="10"/><line x1="60" y1="66" x2="60" y2="76"/>
+        <line x1="20" y1="38" x2="10" y2="38"/><line x1="110" y1="38" x2="100" y2="38"/>
+        <line x1="31" y1="9" x2="24" y2="2"/><line x1="89" y1="9" x2="96" y2="2"/>
+        <line x1="31" y1="67" x2="24" y2="74"/><line x1="89" y1="67" x2="96" y2="74"/>
+      </g>
+    </svg>`
+  };
+  if(h < 18) return {
+    key:'sore',
+    sky:'linear-gradient(160deg,#ff9a76 0%,#ff6f91 45%,#5b4b8a 100%)',
+    icon:`<svg viewBox="0 0 120 90" width="88" height="66">
+      <defs><radialGradient id="sunSore" cx="35%" cy="35%" r="70%">
+        <stop offset="0%" stop-color="#ffe3b0"/><stop offset="55%" stop-color="#ff9457"/><stop offset="100%" stop-color="#ee5d5d"/>
+      </radialGradient></defs>
+      <circle cx="46" cy="50" r="22" fill="url(#sunSore)"/>
+      <ellipse cx="70" cy="55" rx="36" ry="16" fill="#fff" opacity=".9"/>
+      <ellipse cx="50" cy="60" rx="22" ry="11" fill="#ffd9c2" opacity=".85"/>
+      <rect x="8" y="76" width="104" height="3" rx="1.5" fill="#fff" opacity=".5"/>
+    </svg>`
+  };
+  return {
+    key:'malam',
+    sky:'linear-gradient(160deg,#2b2f6b 0%,#1c2150 55%,#0d1030 100%)',
+    icon:`<svg viewBox="0 0 120 90" width="88" height="66">
+      <defs><radialGradient id="moonMalam" cx="35%" cy="35%" r="70%">
+        <stop offset="0%" stop-color="#fdfdfd"/><stop offset="60%" stop-color="#e3e6f0"/><stop offset="100%" stop-color="#b9c0d6"/>
+      </radialGradient></defs>
+      <circle cx="52" cy="42" r="26" fill="url(#moonMalam)"/>
+      <circle cx="66" cy="34" r="26" fill="#1c2150"/>
+      <g fill="#ffe9a8">
+        <circle cx="18" cy="18" r="2"/><circle cx="32" cy="10" r="1.6"/>
+        <circle cx="96" cy="16" r="2"/><circle cx="104" cy="30" r="1.6"/>
+        <circle cx="12" cy="46" r="1.6"/>
+      </g>
+    </svg>`
+  };
+}
+
 function showUpdateReminderOnce(){
   if(sessionStorage.getItem('update_reminder_shown')) return;
   sessionStorage.setItem('update_reminder_shown', '1');
   const name = currentProfile?.full_name || currentProfile?.email || 'Pengguna';
+  const lokasi = (currentProfile?.zona || '').toString().trim() || 'Estate 2';
+  const scene = greetingSceneByTime();
+  const tanggal = new Date().toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.innerHTML = `
-    <div class="modal-box" style="max-width:420px; text-align:center;">
-      <div class="modal-body" style="padding-top:22px;">
-        <div style="font-size:34px; margin-bottom:10px;">👋</div>
-        <div class="card-title" style="margin-bottom:4px;">${greetingByTime()}, ${name}</div>
-        <p style="color:var(--text-muted); font-size:13px; margin-bottom:18px;">Selamat datang kembali!</p>
-        <hr style="border:none; border-top:1px solid var(--border-color, rgba(255,255,255,.1)); margin-bottom:18px;">
-        <div style="font-size:34px; margin-bottom:10px;">⚠️</div>
+    <div class="modal-box" style="max-width:380px; padding:0; overflow:hidden; text-align:center; border-radius:22px;">
+      <div style="background:${scene.sky}; padding:26px 20px 22px; color:#fff;">
+        <div style="font-size:12px; letter-spacing:.5px; opacity:.85; text-transform:uppercase;">${lokasi}</div>
+        <div style="font-size:22px; font-weight:700; margin-top:4px;">${greetingByTime()}, ${name}</div>
+        <div style="margin:10px 0 4px; display:flex; justify-content:center;">${scene.icon}</div>
+        <div style="font-size:13px; opacity:.9;">Selamat datang kembali!</div>
+        <div style="font-size:11px; opacity:.7; margin-top:2px;">${tanggal}</div>
+      </div>
+      <div class="modal-body" style="padding:18px 20px 4px;">
+        <div style="font-size:30px; margin-bottom:8px;">⚠️</div>
         <div class="card-title" style="margin-bottom:8px;">Update Terbaru Tersedia</div>
         <p style="color:var(--text-muted); font-size:13px; line-height:1.6;">Harap melakukan hapus history browser untuk mendapatkan Update terbaru.</p>
       </div>
-      <div class="modal-footer" style="justify-content:center;">
-        <button class="btn btn-primary" onclick="this.closest('.modal-overlay').remove()">Mengerti</button>
+      <div class="modal-footer" style="justify-content:center; padding-bottom:20px;">
+        <button class="btn btn-primary" onclick="this.closest('.modal-overlay').remove()">Tutup</button>
       </div>
     </div>`;
   document.body.appendChild(overlay);
