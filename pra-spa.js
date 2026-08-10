@@ -502,6 +502,30 @@ async function renderPraSpaAtasan(role){
   `;
 }
 
+function praSpaTimelineHTML(rows, limit){
+  const list = limit ? rows.slice(0, limit) : rows;
+  if(!list.length) return `<div class="empty-state">Belum ada Pengecekan Pra SPA.</div>`;
+  return `<div class="rkh-timeline">${list.map(r => `
+    <div class="rkh-timeline-item">
+      <div class="rkh-timeline-dot"></div>
+      <div class="rkh-timeline-content">
+        <div style="display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+          <b>${esc(r.no_petak||'-')}</b>
+          ${praSpaBadge(r.status)}
+        </div>
+        <div style="color:var(--text-primary); margin-top:-2px; line-height:1.3;">${esc(r.kegiatan||'-')}</div>
+        <div style="color:var(--text-muted); margin-top:2px;">
+          ${esc(r.staff_name||'-')} · Kontraktor ${esc(r.kontraktor||'-')}
+          ${r.resume ? ' · ' + r.resume.persen.toFixed(2) + '% lulus' : ''}
+        </div>
+        <div style="color:var(--text-faint); font-size:11px; margin-top:2px;">
+          ${esc(fmtTanggalRKH(r.tanggal))} · dibuat ${esc(fmtJamRKH(r.created_at))}
+        </div>
+      </div>
+    </div>
+  `).join('')}</div>`;
+}
+
 /* --- 6c. ADMIN / MANAGER (hanya ringkasan) ------------------------------ */
 async function renderPraSpaSummaryOnly(){
   const rows = await praSpaFetchRows({ dateFrom: praSpaState.filterDate, dateTo: praSpaState.filterDate });
@@ -543,6 +567,10 @@ async function renderPraSpaSummaryOnly(){
           </tbody>
         </table>
       </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <div class="card-header"><span class="card-title">Aktivitas Terbaru</span></div>
+      <div class="card-body">${praSpaTimelineHTML(rows, 20)}</div>
     </div>
   `;
 }
