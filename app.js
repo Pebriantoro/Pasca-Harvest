@@ -3027,6 +3027,9 @@ let CHART_BORDER = cssVar('--chart-border', '#1B2E25');
 
 // Aktifkan plugin data label (angka/persentase tampil langsung di atas grafik)
 if(typeof ChartDataLabels !== 'undefined'){ Chart.register(ChartDataLabels); }
+// Legend semua chart pakai bentuk bulat (bukan kotak default Chart.js)
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+Chart.defaults.plugins.legend.labels.pointStyle = 'circle';
 // Paksa render chart di resolusi tinggi tetap (min. 2x), supaya tidak
 // buram saat browser di-zoom selain 100% (window.devicePixelRatio ikut
 // berubah nilainya kalau zoom browser diubah, bikin canvas under-render).
