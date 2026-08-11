@@ -106,17 +106,11 @@
   /* Kasih jarak biar konten paling bawah nggak ketutup bar mengambang */
   .content-pad{ padding-bottom:calc(82px + env(safe-area-inset-bottom,0px)); }
 
-  /* Pengaturan udah pindah jadi tab "Atur" di bottom-nav, jadi tombol
-     gear lama di topbar-icon-row disembunyikan biar gak dobel. Cuma
-     tombolnya yang disembunyikan, bukan #settingsWrap-nya, soalnya
-     panel pengaturan (#settingsPanel) masih anak elemen situ — kalau
-     wrap-nya ikut disembunyikan, panel ikut nggak kebuka. */
-  #settingsWrap > button{ display:none !important; }
+  /* Tombol Atur (gear) & Keluar udah satu grup di sidebar-footer
+     (relocateSettingsAndLogout, app.js). Sejajarkan di baris sama,
+     Atur di kiri - Keluar di kanan (beda sisi). */
+  #settingsLogoutGroup{ width:100%; justify-content:space-between; }
 
-  /* Panel Atur (.notif-panel, z-index:200) & bottom-nav bar sama-sama
-     fixed di bottom:14px — kalau dibiarin, panel numpuk PERSIS di atas
-     bar & nutupin tab Menu/Langsung/Chat (gak keklik selama panel
-     kebuka). Naikin posisi panel biar float DI ATAS bar, bukan nutupin. */
   #settingsPanel{
     bottom: calc(100px + env(safe-area-inset-bottom,0px)) !important;
     max-height: min(55vh, 380px) !important;
