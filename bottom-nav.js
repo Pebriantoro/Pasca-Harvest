@@ -19,19 +19,6 @@
     document.body.appendChild(bar);
   }
 
-  function highlightActive(){
-    var menu = document.getElementById('bnavMenu');
-    var bar = document.getElementById('bottomNav');
-    var sidebar = document.getElementById('sidebar');
-    if(!menu || !bar) return;
-    var menuOpen = !!(sidebar && sidebar.classList.contains('open'));
-    menu.classList.toggle('active', menuOpen);
-    // Sidebar-footer (tombol Keluar dkk) ada di bawah, ketutup bar
-    // mengambang ini kalau dibiarin nyala pas menu kebuka — sembunyiin
-    // biar tombol di bawah sidebar bisa keklik.
-    bar.classList.toggle('menu-open', menuOpen);
-  }
-
   function injectCloseButton(){
     var header = document.querySelector('.sidebar-header');
     if(!header || document.getElementById('bnavCloseMenu')) return;
@@ -55,24 +42,29 @@
     new MutationObserver(sync).observe(shell, { attributes:true, attributeFilter:['class'] });
   }
 
+  // Pantau langsung class "open" di elemen sidebar (bukan wrap fungsi
+  // toggleSidebar) — soalnya navigate() juga bisa nutup sidebar dengan
+  // classList.remove('open') langsung, gak lewat toggleSidebar(). Kalau
+  // cuma wrap toggleSidebar, jalur itu kelewat & bar nyangkut ke-hide.
+  function watchSidebarState(){
+    var sidebar = document.getElementById('sidebar');
+    var bar = document.getElementById('bottomNav');
+    var menu = document.getElementById('bnavMenu');
+    if(!sidebar || !bar) return;
+    var sync = function(){
+      var open = sidebar.classList.contains('open');
+      bar.classList.toggle('menu-open', open);
+      if(menu) menu.classList.toggle('active', open);
+    };
+    sync();
+    new MutationObserver(sync).observe(sidebar, { attributes:true, attributeFilter:['class'] });
+  }
+
   function init(){
     buildBar();
     injectCloseButton();
     watchLoginState();
-    window.addEventListener('resize', function(){ highlightActive(); });
-
-    // Bungkus toggleSidebar() punya app.js supaya tombol Menu ikut
-    // ke-update, tanpa ubah file aslinya.
-    var origToggle = window.toggleSidebar;
-    if(typeof origToggle === 'function' && !origToggle.__bnavWrapped){
-      var wrappedToggle = function(){
-        var r = origToggle();
-        highlightActive();
-        return r;
-      };
-      wrappedToggle.__bnavWrapped = true;
-      window.toggleSidebar = wrappedToggle;
-    }
+    watchSidebarState();
   }
 
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
