@@ -107,8 +107,11 @@
   .content-pad{ padding-bottom:calc(82px + env(safe-area-inset-bottom,0px)); }
 
   /* Pengaturan udah pindah jadi tab "Atur" di bottom-nav, jadi tombol
-     gear lama di topbar-icon-row disembunyikan biar gak dobel. */
-  #settingsWrap{ display:none !important; }
+     gear lama di topbar-icon-row disembunyikan biar gak dobel. Cuma
+     tombolnya yang disembunyikan, bukan #settingsWrap-nya, soalnya
+     panel pengaturan (#settingsPanel) masih anak elemen situ — kalau
+     wrap-nya ikut disembunyikan, panel ikut nggak kebuka. */
+  #settingsWrap > button{ display:none !important; }
 
   /* Panel Atur (.notif-panel, z-index:200) & bottom-nav bar sama-sama
      fixed di bottom:14px — kalau dibiarin, panel numpuk PERSIS di atas
