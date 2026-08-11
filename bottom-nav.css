@@ -1,11 +1,13 @@
 /* =====================================================================
    BOTTOM NAV MENGAMBANG (mode HP, gaya mirip WhatsApp)
-   Ganti hamburger topbar di layar <=880px jadi 3 tombol mengambang di
-   bawah: Langsung, Chat Tim, Menu. Tombol Menu buka ulang sidebar yang
-   sudah ada (isinya sudah semua menu) — jadi nggak ada markup menu dobel.
+   Ganti hamburger topbar di layar <=880px jadi 1 tombol mengambang di
+   bawah: Menu. Tombol Menu buka ulang sidebar yang sudah ada (isinya
+   sudah semua menu, termasuk Langsung & Chat Tim) — jadi nggak ada
+   markup menu dobel.
    ===================================================================== */
 .bottom-nav{ display:none; }
 .bottom-nav.is-hidden{ display:none !important; }
+.bottom-nav.menu-open{ display:none !important; }
 
 @media (max-width:880px){
   .menu-toggle{ display:none !important; }
@@ -78,30 +80,12 @@
   .bottom-nav-item.active .bn-label{ transform:translateY(-4px); }
 
   .bottom-nav-item:active .bn-icon-wrap{ transform:scale(.88); }
-  .bottom-nav-item.active:active .bn-icon-wrap{ transform:translateY(-13px) scale(1.02); }
 
   @keyframes bnavPop{
     0%{ transform:translateY(0) scale(1); }
     55%{ transform:translateY(-17px) scale(1.22); }
     100%{ transform:translateY(-13px) scale(1.14); }
   }
-
-  /* Titik indikator kecil yang geser mengikuti tab aktif di bawah bubble */
-  .bn-indicator{
-    position:absolute; left:0; bottom:5px; width:4px; height:4px; border-radius:999px;
-    background:var(--accent-green); opacity:0; pointer-events:none;
-    transition:transform .38s cubic-bezier(.34,1.56,.64,1), opacity .2s var(--ease-out);
-    transform:translateX(-999px);
-  }
-  .bn-indicator.show{ opacity:1; margin-left:-2px; }
-
-  .bottom-nav-badge{
-    position:absolute; top:2px; right:6px; min-width:15px; height:15px; padding:0 4px;
-    border-radius:999px; background:var(--accent-red); color:#fff; font-size:9.5px; font-weight:700;
-    display:flex; align-items:center; justify-content:center; line-height:1;
-    transition:transform .2s var(--ease-out);
-  }
-  .bottom-nav-badge.hidden{ display:none; }
 
   /* Kasih jarak biar konten paling bawah nggak ketutup bar mengambang */
   .content-pad{ padding-bottom:calc(82px + env(safe-area-inset-bottom,0px)); }
@@ -122,8 +106,5 @@
   .bottom-nav-item svg{ width:18px; height:18px; }
 }
 
-/* Chat Tim & Pesan Langsung sudah bisa diakses lewat bottom-nav, jadi
-   nggak usah ditampilkan dobel di sidebar saat mode HP. */
-@media (max-width:880px){
-  #navSection_komunikasi{ display:none; }
-}
+/* Chat Tim & Pesan Langsung dicabut dari bottom-nav, jadi menu ini
+   di sidebar yang jadi satu-satunya jalan ke sana lagi di mode HP. */
