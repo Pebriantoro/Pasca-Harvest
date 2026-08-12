@@ -294,32 +294,6 @@ input,select,textarea{ font-family: inherit; }
 @media (prefers-reduced-motion: reduce){ .login-card::after{ animation:none; } }
 .login-card > *{ position:relative; z-index:1; }
 
-/* staggered entrance untuk isi kartu login — masuk berurutan, bukan sekaligus */
-.login-stagger{ opacity:0; animation: loginStaggerIn .5s var(--ease-out) both; animation-delay: var(--d, 0s); }
-@keyframes loginStaggerIn{ from{ opacity:0; transform: translateY(8px); } to{ opacity:1; transform: translateY(0); } }
-@media (prefers-reduced-motion: reduce){ .login-stagger{ animation:none; opacity:1; } }
-
-/* tombol masuk: state loading (titik berdenyut) & sukses (centang muncul) */
-.login-card .btn-primary.btn-loading{ color:transparent; pointer-events:none; }
-.login-card .btn-primary.btn-loading::before{
-  content:''; position:absolute; left:50%; top:50%; width:16px; height:16px; margin:-8px 0 0 -8px;
-  border-radius:50%; border:2px solid rgba(58,39,5,0.28); border-top-color:#3A2705;
-  animation: btnSpin .7s linear infinite;
-}
-@keyframes btnSpin{ to{ transform: rotate(360deg); } }
-.login-card .btn-primary.btn-success{ background: linear-gradient(155deg, #B9E6C6 0%, #6FBE86 100%); animation: btnSuccessPulse .4s var(--ease-out); }
-@keyframes btnSuccessPulse{ 0%{ transform:scale(1); } 40%{ transform:scale(1.03); } 100%{ transform:scale(1); } }
-
-/* kartu login bergetar halus saat gagal masuk — feedback taktil tanpa alert() */
-.login-shake{ animation: loginCardShake .42s var(--ease-out); }
-@keyframes loginCardShake{
-  10%,90%{ transform: translateX(-1px); }
-  20%,80%{ transform: translateX(2px); }
-  30%,50%,70%{ transform: translateX(-4px); }
-  40%,60%{ transform: translateX(4px); }
-}
-@media (prefers-reduced-motion: reduce){ .login-shake, .login-card .btn-primary.btn-loading::before, .login-card .btn-primary.btn-success{ animation:none; } }
-
 /* blob warna lembut di belakang kartu, ikut mengambang, menghasilkan pantulan warna khas liquid glass */
 .login-wrap::before,
 .login-wrap::after{
@@ -821,38 +795,9 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
 .rkh-timeline-content{ flex:1; font-size:12.5px; min-width:0; }
 .rkh-tabs{ display:flex; gap:8px; padding-bottom:14px; flex-wrap:wrap; }
 
-.pagination{ display:flex; align-items:center; justify-content:space-between; padding:12px 18px; border-top:1px solid var(--border-soft); font-size:12.5px; color: var(--text-muted); flex-wrap:wrap; gap:10px; }
+.pagination{ display:flex; align-items:center; justify-content:space-between; padding:12px 18px; border-top:1px solid var(--border-soft); font-size:12.5px; color: var(--text-muted); }
 .page-btns{ display:flex; gap:6px; }
 .page-btns .btn{ border-radius:999px; }
-
-/* ===================== PILLS PAGINATION ===================== */
-.pagination-pills{ display:flex; align-items:center; gap:4px; }
-.pill-nav, .pill-page{
-  display:inline-flex; align-items:center; justify-content:center;
-  min-width:30px; height:30px; padding:0 6px;
-  border-radius:999px; border:1px solid transparent;
-  background:transparent; color:var(--text-muted);
-  font-family: var(--font-mono); font-size:12px; font-weight:600;
-  cursor:pointer; user-select:none;
-  transition: background .18s var(--ease-out), color .18s var(--ease-out), border-color .18s var(--ease-out), transform .15s var(--ease-out), box-shadow .18s var(--ease-out);
-}
-.pill-nav{ color:var(--text-primary); border-color:var(--border); font-family:var(--font-body); font-size:14px; }
-.pill-nav:hover:not(:disabled){ border-color:var(--accent-gold); color:var(--accent-gold); background:var(--accent-gold-soft); transform:translateY(-1px); }
-.pill-nav:active:not(:disabled){ transform: scale(.92); }
-.pill-nav:disabled{ opacity:.35; cursor:not-allowed; }
-.pill-page:hover:not(.active){ background:var(--bg-card-hover); color:var(--text-primary); transform:translateY(-1px); }
-.pill-page:active{ transform: scale(.9); }
-.pill-page.active{
-  background: var(--accent-gold); color:#1B1405; font-weight:700;
-  box-shadow: var(--shadow-glow-gold);
-  animation: pillPopIn .22s var(--ease-out);
-}
-@keyframes pillPopIn{ from{ transform:scale(.7); } to{ transform:scale(1); } }
-.pill-ellipsis{ min-width:20px; text-align:center; color:var(--text-faint); font-size:12px; letter-spacing:1px; user-select:none; }
-@media(max-width:640px){
-  .pill-nav, .pill-page{ min-width:26px; height:26px; font-size:11.5px; }
-}
-@media (prefers-reduced-motion: reduce){ .pill-page.active{ animation:none; } }
 
 /* ===================== MODAL ===================== */
 .modal-overlay{

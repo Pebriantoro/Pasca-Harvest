@@ -146,29 +146,29 @@
     </video>
   </div>
   <div class="login-card anim-scale-in">
-    <div class="cane-mark login-stagger" style="--d:.05s">
+    <div class="cane-mark">
       <img src="logo.png" alt="Pratama Nusantara Sakti" class="brand-logo brand-logo-lg">
       <div>
         <div class="font-display" style="font-size:14px; font-weight:700; line-height:1.3;">Sistem Administrasi Manunggal Satu Aplikasi Terpadu</div>
       </div>
     </div>
 
-    <div class="tab-toggle login-stagger" style="--d:.14s">
+    <div class="tab-toggle">
       <button id="tabLogin" class="active" onclick="setAuthTab('login')">Masuk</button>
       <button id="tabPasscode" onclick="setAuthTab('passcode')">Passcode</button>
     </div>
 
     <form id="loginForm" onsubmit="return handleLogin(event)">
-      <div class="login-stagger" style="--d:.22s; margin-bottom:14px;">
+      <div style="margin-bottom:14px;">
         <label class="field-label">Username</label>
         <input class="input" type="text" id="loginUsername" placeholder="nama.pengguna" autocomplete="username" required>
       </div>
-      <div class="login-stagger" style="--d:.30s; margin-bottom:18px;">
+      <div style="margin-bottom:18px;">
         <label class="field-label">Kata Sandi</label>
         <input class="input" type="password" id="loginPassword" placeholder="••••••••" required>
       </div>
       <div id="loginError" class="hidden" style="background:var(--accent-red-soft); color:var(--accent-red-text); padding:9px 12px; border-radius:8px; font-size:12.5px; margin-bottom:14px;"></div>
-      <button class="btn btn-primary login-stagger" style="--d:.38s; width:100%;" type="submit" id="loginBtn">Masuk ke Dashboard</button>
+      <button class="btn btn-primary" style="width:100%;" type="submit" id="loginBtn">Masuk ke Dashboard</button>
     </form>
 
     <form id="passcodeForm" class="hidden" onsubmit="return handlePasscodeFormSubmit(event)">
