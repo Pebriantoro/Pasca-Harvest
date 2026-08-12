@@ -13,7 +13,7 @@
    ===================================================================== */
 (function(){
   const AP_AUTOHIDE_MS = 6000;
-  const AP_LOC_UPSERT_MIN_GAP_MS = 20000;
+  const AP_LOC_UPSERT_MIN_GAP_MS = 8000;
   const AP_LOC_TABLE = 'user_locations';
   const AP_PIN_KEY = 'activityPanelPinned';
   const AP_MAX_ROWS = 8;
@@ -553,7 +553,7 @@
       seen.add(uid);
       const isSelf = uid === (typeof currentUser !== 'undefined' && currentUser?.id);
       const icon = L.divIcon({ className: '', html: `<div class="ap-leaflet-pin ${isSelf ? 'self' : ''}"></div>`, iconSize: [20,20], iconAnchor: [10,20] });
-      if(apMarkers[uid]) apMarkers[uid].setLatLng([loc.lat, loc.lng]);
+      if(apMarkers[uid]) apAnimateMarkerTo(apMarkers[uid], loc.lat, loc.lng);
       else apMarkers[uid] = L.marker([loc.lat, loc.lng], { icon }).addTo(apMap);
       const name = apState.profilesById[uid]?.full_name || 'Pengguna';
       apMarkers[uid].bindTooltip(apEsc(name));
@@ -562,6 +562,24 @@
 
     const pts = Object.values(apMarkers).map(m => m.getLatLng());
     if(pts.length) apMap.fitBounds(L.latLngBounds(pts), { padding: [18,18], maxZoom: 13 });
+  }
+
+  function apAnimateMarkerTo(marker, lat, lng, duration){
+    if(!marker) return;
+    const from = marker.getLatLng();
+    if(from.lat === lat && from.lng === lng) return;
+    const start = performance.now();
+    const dur = duration || 700;
+    function step(now){
+      const t = Math.min(1, (now - start) / dur);
+      const ease = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      marker.setLatLng([
+        from.lat + (lat - from.lat) * ease,
+        from.lng + (lng - from.lng) * ease
+      ]);
+      if(t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
   }
 
   window.apFocusOnMap = function(uid){
@@ -630,7 +648,7 @@
       const isSelf = uid === (typeof currentUser !== 'undefined' && currentUser?.id);
       const name = apState.profilesById[uid]?.full_name || 'Pengguna';
       const icon = L.divIcon({ className: '', html: `<div class="ap-leaflet-pin ${isSelf ? 'self' : ''}"></div>`, iconSize: [22,22], iconAnchor: [11,22] });
-      if(apFullMarkers[uid]) apFullMarkers[uid].setLatLng([loc.lat, loc.lng]);
+      if(apFullMarkers[uid]) apAnimateMarkerTo(apFullMarkers[uid], loc.lat, loc.lng);
       else apFullMarkers[uid] = L.marker([loc.lat, loc.lng], { icon }).addTo(apFullMap);
       apFullMarkers[uid].bindPopup(`<b>${apEsc(name)}${isSelf ? ' (Anda)' : ''}</b><br>${apEsc(apTimeAgo(loc.updated_at))}`);
     });
