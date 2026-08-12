@@ -466,7 +466,15 @@ async function handleLogin(e){
     return false;
   }
   btn.textContent = 'Berhasil ✓'; btn.classList.add('btn-success');
-  await onAuthenticated(data.user);
+  try{
+    await onAuthenticated(data.user);
+  }catch(err){
+    console.error('onAuthenticated gagal:', err);
+    btn.classList.remove('btn-success');
+    btn.disabled = false; btn.textContent = 'Masuk ke Dashboard';
+    $('#loginError').textContent = 'Berhasil masuk tapi gagal memuat aplikasi. Silakan coba lagi.';
+    $('#loginError').classList.remove('hidden');
+  }
   return false;
 }
 
