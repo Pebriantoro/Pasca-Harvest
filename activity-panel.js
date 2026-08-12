@@ -63,7 +63,9 @@
     apRefreshTimer = setInterval(() => { if(apState.open || apState.pinned) apRefreshMessages(); }, 4000);
 
     if(apState.pinned) apShow();
-    else { apShow(); apScheduleHide(1800); } // peek sebentar pas baru login, lalu sembunyi
+    // Kalau tidak di-pin, panel tidak langsung muncul pas baru login --
+    // cukup tunggu diklik lewat handle, atau muncul otomatis kalau ada
+    // pesan baru (lihat apRenderBadges).
   }
 
   /* ---------------------------------------------------------------
