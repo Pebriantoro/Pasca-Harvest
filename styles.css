@@ -795,9 +795,23 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
 .rkh-timeline-content{ flex:1; font-size:12.5px; min-width:0; }
 .rkh-tabs{ display:flex; gap:8px; padding-bottom:14px; flex-wrap:wrap; }
 
-.pagination{ display:flex; align-items:center; justify-content:space-between; padding:12px 18px; border-top:1px solid var(--border-soft); font-size:12.5px; color: var(--text-muted); }
+.pagination{ display:flex; align-items:center; justify-content:space-between; padding:12px 18px; border-top:1px solid var(--border-soft); font-size:12.5px; color: var(--text-muted); flex-wrap: wrap; gap: 10px; }
 .page-btns{ display:flex; gap:6px; }
 .page-btns .btn{ border-radius:999px; }
+
+/* Pills pagination -- angka halaman berbentuk pill, dipakai di semua tabel */
+.pager-pills{ display:flex; align-items:center; gap:5px; flex-wrap: wrap; }
+.pill-btn{
+  min-width: 28px; height: 28px; padding: 0 8px; border-radius: 999px;
+  border: 1px solid var(--border-soft); background: var(--bg-card); color: var(--text-muted);
+  font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex;
+  align-items: center; justify-content: center; transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.pill-btn:hover:not(:disabled){ background: var(--bg-card-hover); color: var(--text-primary); }
+.pill-btn.active{ background: var(--accent-gold); border-color: var(--accent-gold); color: #1B140A; cursor: default; }
+.pill-btn.pill-nav{ color: var(--text-primary); font-weight: 700; }
+.pill-btn:disabled{ opacity: .4; cursor: default; }
+.pill-ellipsis{ padding: 0 3px; color: var(--text-faint); font-size: 12px; user-select: none; }
 
 /* ===================== MODAL ===================== */
 .modal-overlay{

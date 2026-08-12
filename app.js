@@ -2925,10 +2925,7 @@ function paintTablePage(table, allRows){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? ((st.page-1)*st.pageSize+1) : 0}–${(st.page-1)*st.pageSize+pageRows.length} dari ${rows.length} baris</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changePage('${table}', -1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changePage('${table}', 1)">Berikutnya ›</button>
-        </div>
+${renderPagerPills(st.page, totalPages, d => `changePage('${table}', ${d})`)}
       </div>
     </div>
   `;
@@ -2993,6 +2990,46 @@ function sortTable(table, key){
 function changePage(table, delta){
   state[table].page += delta;
   paintTablePage(table, state[table].data);
+}
+
+/* ---------------------------------------------------------------------
+   7b. PILLS PAGINATION -- angka halaman berbentuk pill (1 2 3 … n),
+   dipakai di semua tabel yang punya paginasi. callBuilder(delta) harus
+   mengembalikan string pemanggilan fungsi ganti-halaman yang sudah ada
+   (mis. changePage('tbl', delta)) -- delta dihitung relatif ke halaman
+   aktif supaya tidak perlu ubah fungsi ganti-halaman yang sudah ada.
+   --------------------------------------------------------------------- */
+function pagerPillRange(current, total){
+  const spread = 1; // tetangga kiri/kanan halaman aktif yang ditampilkan
+  const keep = [];
+  for(let i=1;i<=total;i++){
+    if(i===1 || i===total || (i>=current-spread && i<=current+spread)) keep.push(i);
+  }
+  const out = [];
+  let last;
+  keep.forEach(i => {
+    if(last != null){
+      if(i-last===2) out.push(last+1);
+      else if(i-last!==1) out.push('…');
+    }
+    out.push(i);
+    last = i;
+  });
+  return out;
+}
+
+function renderPagerPills(current, total, callBuilder){
+  if(total <= 1) return '';
+  const pages = pagerPillRange(current, total);
+  return `
+    <div class="pager-pills">
+      <button class="pill-btn pill-nav" ${current<=1?'disabled':''} onclick="${callBuilder(-1)}" title="Sebelumnya" aria-label="Halaman sebelumnya">‹</button>
+      ${pages.map(p => p === '…'
+        ? `<span class="pill-ellipsis">…</span>`
+        : `<button class="pill-btn ${p===current?'active':''}" ${p===current?'disabled':''} onclick="${callBuilder(p-current)}">${p}</button>`
+      ).join('')}
+      <button class="pill-btn pill-nav" ${current>=total?'disabled':''} onclick="${callBuilder(1)}" title="Berikutnya" aria-label="Halaman berikutnya">›</button>
+    </div>`;
 }
 
 /* ---------------------------------------------------------------------
@@ -5007,10 +5044,7 @@ function paintProduktivitas(allRows){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? ((st.page-1)*st.pageSize+1) : 0}–${(st.page-1)*st.pageSize+pageRows.length} dari ${rows.length} baris</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changeProduktivitasPage(-1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changeProduktivitasPage(1)">Berikutnya ›</button>
-        </div>
+${renderPagerPills(st.page, totalPages, d => `changeProduktivitasPage(${d})`)}
       </div>
     </div>
   `;
@@ -5498,10 +5532,7 @@ function paintMonitoringMotor(allRows){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? (startNo+1) : 0}–${startNo+pageRows.length} dari ${rows.length} unit</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changeMonitoringMotorPage(-1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changeMonitoringMotorPage(1)">Berikutnya ›</button>
-        </div>
+${renderPagerPills(st.page, totalPages, d => `changeMonitoringMotorPage(${d})`)}
       </div>
     </div>
   `;
@@ -5782,10 +5813,7 @@ function paintMonitoringAset(allRows){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? (startNo+1) : 0}–${startNo+pageRows.length} dari ${rows.length} unit</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changeMonitoringAsetPage(-1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changeMonitoringAsetPage(1)">Berikutnya ›</button>
-        </div>
+${renderPagerPills(st.page, totalPages, d => `changeMonitoringAsetPage(${d})`)}
       </div>
     </div>
   `;
@@ -6074,10 +6102,7 @@ function paintHeImplement(allRows){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? (startNo+1) : 0}–${startNo+pageRows.length} dari ${rows.length} unit</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changeHeImplementPage(-1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changeHeImplementPage(1)">Berikutnya ›</button>
-        </div>
+${renderPagerPills(st.page, totalPages, d => `changeHeImplementPage(${d})`)}
       </div>
     </div>
   `;
@@ -6341,10 +6366,7 @@ function paintActualTK(allRows){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? (startNo+1) : 0}–${startNo+pageRows.length} dari ${rows.length} baris</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changeActualTKPage(-1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changeActualTKPage(1)">Berikutnya ›</button>
-        </div>
+${renderPagerPills(st.page, totalPages, d => `changeActualTKPage(${d})`)}
       </div>
     </div>
   `;
@@ -6601,10 +6623,7 @@ function paintPlanKedatanganTK(allRows){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? (startNo+1) : 0}–${startNo+pageRows.length} dari ${rows.length} baris</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changePlanKedatanganPage(-1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changePlanKedatanganPage(1)">Berikutnya ›</button>
-        </div>
+${renderPagerPills(st.page, totalPages, d => `changePlanKedatanganPage(${d})`)}
       </div>
     </div>
   `;
@@ -6964,10 +6983,7 @@ function paintJustifikasiTCH(allRows){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? (startNo+1) : 0}–${startNo+pageRows.length} dari ${rows.length} petak</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changeJustifikasiPage(-1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changeJustifikasiPage(1)">Berikutnya ›</button>
-        </div>
+${renderPagerPills(st.page, totalPages, d => `changeJustifikasiPage(${d})`)}
       </div>
     </div>
   `;
@@ -7346,10 +7362,7 @@ function paintProduktivitasKontraktor(allRows){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? ((st.page-1)*st.pageSize+1) : 0}–${(st.page-1)*st.pageSize+pageRows.length} dari ${rows.length} baris</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changePKPage(-1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changePKPage(1)">Berikutnya ›</button>
-        </div>
+${renderPagerPills(st.page, totalPages, d => `changePKPage(${d})`)}
       </div>
     </div>
   `;
@@ -8675,10 +8688,7 @@ function paintMaintenance(allRows){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? ((st.page-1)*st.pageSize+1) : 0}–${(st.page-1)*st.pageSize+pageRows.length} dari ${rows.length} baris</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changeMaintenancePage(-1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changeMaintenancePage(1)">Berikutnya ›</button>
-        </div>
+${renderPagerPills(st.page, totalPages, d => `changeMaintenancePage(${d})`)}
       </div>
     </div>
   `;
@@ -9242,10 +9252,7 @@ function paintPcRpc(allRows){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? ((st.page-1)*st.pageSize+1) : 0}–${(st.page-1)*st.pageSize+pageRows.length} dari ${rows.length} baris</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changePcRpcPage(-1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changePcRpcPage(1)">Berikutnya ›</button>
-        </div>
+${renderPagerPills(st.page, totalPages, d => `changePcRpcPage(${d})`)}
       </div>
     </div>
   `;
