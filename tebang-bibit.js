@@ -352,10 +352,7 @@ function paintTebangBibit(allRows){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? ((st.page-1)*st.pageSize+1) : 0}–${(st.page-1)*st.pageSize+pageRows.length} dari ${rows.length} baris</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changeTebangBibitPage(-1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changeTebangBibitPage(1)">Berikutnya ›</button>
-        </div>
+        ${paginationPillsHtml('changeTebangBibitPage', st.page, totalPages)}
       </div>
     </div>
   `;

@@ -459,10 +459,7 @@ function paintProduktivitasHE(allRowsRaw, mode){
       </div>
       <div class="pagination">
         <span>Menampilkan ${pageRows.length ? ((st.page-1)*st.pageSize+1) : 0}–${(st.page-1)*st.pageSize+pageRows.length} dari ${rows.length} baris</span>
-        <div class="page-btns">
-          <button class="btn btn-outline btn-sm" ${st.page<=1?'disabled':''} onclick="changePHEPage('${mode}',-1)">‹ Sebelumnya</button>
-          <button class="btn btn-outline btn-sm" ${st.page>=totalPages?'disabled':''} onclick="changePHEPage('${mode}',1)">Berikutnya ›</button>
-        </div>
+        ${paginationPillsHtml('changePHEPage', st.page, totalPages, mode)}
       </div>
     </div>
   `;
