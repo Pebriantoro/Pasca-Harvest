@@ -552,6 +552,50 @@
     }).join('');
   }
 
+  /* ---------------------------------------------------------------
+     4c. LABEL PETAK di marker Live Location -- reuse boundary geojson
+     & cache yang sama dipakai menu Peta (peta-gis.js), gak fetch ulang.
+     Leaflet gak punya point-in-polygon bawaan, jadi ray-casting manual
+     (cukup buat ring terluar, lubang polygon diabaikan -- kasus jarang
+     di petak kebun). Async & non-blocking: marker langsung muncul,
+     label petak nyusul begitu ketemu.
+     --------------------------------------------------------------- */
+  function apPointInRing(lat, lng, ring){
+    let inside = false;
+    for(let i = 0, j = ring.length - 1; i < ring.length; j = i++){
+      const [xi, yi] = ring[i], [xj, yj] = ring[j];
+      const hit = ((yi > lat) !== (yj > lat)) && (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi);
+      if(hit) inside = !inside;
+    }
+    return inside;
+  }
+
+  function apPointInGeometry(lat, lng, geom){
+    if(!geom) return false;
+    const polys = geom.type === 'Polygon' ? [geom.coordinates]
+      : geom.type === 'MultiPolygon' ? geom.coordinates : [];
+    return polys.some(rings => rings[0] && apPointInRing(lat, lng, rings[0]));
+  }
+
+  const apPetakCache = {}; // uid -> { lat, lng, petak } -- skip lookup ulang kalau lokasi gak berubah
+
+  async function apPetakAtCached(uid, lat, lng){
+    const c = apPetakCache[uid];
+    if(c && c.lat === lat && c.lng === lng) return c.petak;
+    const petak = await apPetakAt(lat, lng);
+    apPetakCache[uid] = { lat, lng, petak };
+    return petak;
+  }
+
+  async function apPetakAt(lat, lng){
+    if(typeof loadPetaGeoJson !== 'function') return null; // peta-gis.js belum ke-load
+    try{
+      const geojson = await loadPetaGeoJson();
+      const f = geojson.features.find(f => apPointInGeometry(lat, lng, f.geometry));
+      return f?.properties?.petak || null;
+    }catch(e){ return null; } // offline/gagal load boundary -- skip label, jangan ganggu marker
+  }
+
   function apRenderMap(entries){
     if(typeof L === 'undefined') return;
     const container = document.getElementById('apMap');
@@ -573,6 +617,9 @@
       else apMarkers[uid] = L.marker([loc.lat, loc.lng], { icon }).addTo(apMap);
       const name = apState.profilesById[uid]?.full_name || 'Pengguna';
       apMarkers[uid].bindTooltip(apEsc(name));
+      apPetakAtCached(uid, loc.lat, loc.lng).then(petak => {
+        if(petak) apMarkers[uid]?.setTooltipContent(`${apEsc(name)} — Petak ${apEsc(petak)}`);
+      });
     });
     Object.keys(apMarkers).forEach(uid => { if(!seen.has(uid)){ apMap.removeLayer(apMarkers[uid]); delete apMarkers[uid]; } });
 
@@ -666,7 +713,15 @@
       const icon = L.divIcon({ className: '', html: `<div class="ap-leaflet-pin ${isSelf ? 'self' : ''}"></div>`, iconSize: [22,22], iconAnchor: [11,22] });
       if(apFullMarkers[uid]) apAnimateMarkerTo(apFullMarkers[uid], loc.lat, loc.lng);
       else apFullMarkers[uid] = L.marker([loc.lat, loc.lng], { icon }).addTo(apFullMap);
-      apFullMarkers[uid].bindPopup(`<b>${apEsc(name)}${isSelf ? ' (Anda)' : ''}</b><br>${apEsc(apTimeAgo(loc.updated_at))}`);
+      const popupBase = `<b>${apEsc(name)}${isSelf ? ' (Anda)' : ''}</b><br>${apEsc(apTimeAgo(loc.updated_at))}`;
+      const cached = apPetakCache[uid];
+      const knownPetak = (cached && cached.lat === loc.lat && cached.lng === loc.lng) ? cached.petak : undefined;
+      apFullMarkers[uid].bindPopup(`${popupBase}<br>Petak: <b>${knownPetak !== undefined ? (knownPetak || '–') : '…'}</b>`);
+      if(knownPetak === undefined){
+        apPetakAtCached(uid, loc.lat, loc.lng).then(petak => {
+          apFullMarkers[uid]?.setPopupContent(`${popupBase}<br>Petak: <b>${petak ? apEsc(petak) : '–'}</b>`);
+        });
+      }
     });
     Object.keys(apFullMarkers).forEach(uid => { if(!seen.has(uid)){ apFullMap.removeLayer(apFullMarkers[uid]); delete apFullMarkers[uid]; } });
 
