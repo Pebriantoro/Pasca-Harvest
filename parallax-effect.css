@@ -1,0 +1,11 @@
+/* Pendukung parallax-effect.js -- transisi halus antar frame supaya
+   gerakannya tidak patah-patah, dan will-change biar GPU-accelerated. */
+.card, .kpi-card{ transition: transform .12s linear, box-shadow .2s ease, border-color .2s ease; }
+.wf-slide-media img{ will-change: transform; }
+
+@media (prefers-reduced-motion: reduce){
+  .card, .kpi-card, .wf-slide-media img{ transition: none !important; transform: none !important; }
+}
+@media (max-width: 720px){
+  .card, .kpi-card{ transition: box-shadow .2s ease, border-color .2s ease; }
+}
