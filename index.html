@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="activity-panel.css?v=1.0.0">
 <link rel="stylesheet" href="parallax-effect.css?v=1.0.0">
 <link rel="stylesheet" href="menu-transitions.css?v=1.0.0">
+<link rel="stylesheet" href="theme-palettes.css?v=1.0.0">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 
 <!-- Tailwind CSS (Play CDN) — utility class siap dipakai buat komponen/fitur BARU.
@@ -110,6 +111,8 @@
     try{
       var t = localStorage.getItem('theme') || 'dark';
       document.documentElement.setAttribute('data-theme', t);
+      var p = localStorage.getItem('appPalette');
+      if(p && p !== 'default') document.documentElement.setAttribute('data-palette', p);
     }catch(e){}
   })();
 </script>
@@ -540,6 +543,8 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
                 <span class="settings-row-state hidden" id="themeStateLabel">Gelap</span>
                 <span class="ui-switch" id="themeSwitch" role="switch" aria-checked="false" aria-label="Mode gelap"></span>
               </button>
+              <div class="settings-section-label">Warna Tema</div>
+              <div class="palette-swatch-grid" id="paletteSwatchGrid"></div>
               <button type="button" class="settings-row" id="notifSoundToggle" title="Matikan/aktifkan suara notifikasi" onclick="toggleNotifSound()">
                 <span id="notifSoundIcon" style="display:inline-flex;">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
@@ -684,5 +689,6 @@ function toggleAppLanguage(){
 <script src="activity-panel.js?v=1.0.0"></script>
 <script src="parallax-effect.js?v=1.0.0"></script>
 <script src="menu-transitions.js?v=1.0.0"></script>
+<script src="theme-palettes.js?v=1.0.0"></script>
 </body>
 </html>

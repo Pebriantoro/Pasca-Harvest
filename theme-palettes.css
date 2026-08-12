@@ -1,0 +1,70 @@
+/* =====================================================================
+   THEME PALETTES — ganti warna aksen (2 warna: primary + secondary)
+   Additif -- cuma override --accent-gold (primary) & --accent-blue
+   (secondary) lewat atribut [data-palette] di <html>. Warna semantik
+   sukses/gagal (--accent-green / --accent-red) SENGAJA tidak disentuh
+   biar makna status tetap konsisten di semua palet.
+   ===================================================================== */
+
+:root[data-palette="royal"]{
+  --accent-gold: #6C63FF;
+  --accent-gold-soft: color-mix(in srgb, var(--accent-gold) 14%, transparent);
+  --shadow-glow-gold: 0 0 0 1px color-mix(in srgb, var(--accent-gold) 28%, transparent), 0 8px 22px color-mix(in srgb, var(--accent-gold) 12%, transparent);
+  --accent-blue: #3F8EFD;
+  --accent-blue-soft: color-mix(in srgb, var(--accent-blue) 14%, transparent);
+  --accent-blue-text: color-mix(in srgb, var(--accent-blue) 78%, black);
+}
+:root[data-palette="sunset"]{
+  --accent-gold: #E8794A;
+  --accent-gold-soft: color-mix(in srgb, var(--accent-gold) 14%, transparent);
+  --shadow-glow-gold: 0 0 0 1px color-mix(in srgb, var(--accent-gold) 28%, transparent), 0 8px 22px color-mix(in srgb, var(--accent-gold) 12%, transparent);
+  --accent-blue: #F2B84B;
+  --accent-blue-soft: color-mix(in srgb, var(--accent-blue) 14%, transparent);
+  --accent-blue-text: color-mix(in srgb, var(--accent-blue) 78%, black);
+}
+:root[data-palette="rose"]{
+  --accent-gold: #D6698A;
+  --accent-gold-soft: color-mix(in srgb, var(--accent-gold) 14%, transparent);
+  --shadow-glow-gold: 0 0 0 1px color-mix(in srgb, var(--accent-gold) 28%, transparent), 0 8px 22px color-mix(in srgb, var(--accent-gold) 12%, transparent);
+  --accent-blue: #8A6FD1;
+  --accent-blue-soft: color-mix(in srgb, var(--accent-blue) 14%, transparent);
+  --accent-blue-text: color-mix(in srgb, var(--accent-blue) 78%, black);
+}
+:root[data-palette="ocean"]{
+  --accent-gold: #2FA8A0;
+  --accent-gold-soft: color-mix(in srgb, var(--accent-gold) 14%, transparent);
+  --shadow-glow-gold: 0 0 0 1px color-mix(in srgb, var(--accent-gold) 28%, transparent), 0 8px 22px color-mix(in srgb, var(--accent-gold) 12%, transparent);
+  --accent-blue: #3C6E9E;
+  --accent-blue-soft: color-mix(in srgb, var(--accent-blue) 14%, transparent);
+  --accent-blue-text: color-mix(in srgb, var(--accent-blue) 78%, black);
+}
+:root[data-palette="copper"]{
+  --accent-gold: #C97B4A;
+  --accent-gold-soft: color-mix(in srgb, var(--accent-gold) 14%, transparent);
+  --shadow-glow-gold: 0 0 0 1px color-mix(in srgb, var(--accent-gold) 28%, transparent), 0 8px 22px color-mix(in srgb, var(--accent-gold) 12%, transparent);
+  --accent-blue: #7C8B6F;
+  --accent-blue-soft: color-mix(in srgb, var(--accent-blue) 14%, transparent);
+  --accent-blue-text: color-mix(in srgb, var(--accent-blue) 78%, black);
+}
+:root[data-palette="mono"]{
+  --accent-gold: #A8A29E;
+  --accent-gold-soft: color-mix(in srgb, var(--accent-gold) 16%, transparent);
+  --shadow-glow-gold: 0 0 0 1px color-mix(in srgb, var(--accent-gold) 30%, transparent), 0 8px 22px color-mix(in srgb, var(--accent-gold) 14%, transparent);
+  --accent-blue: #78716C;
+  --accent-blue-soft: color-mix(in srgb, var(--accent-blue) 16%, transparent);
+  --accent-blue-text: color-mix(in srgb, var(--accent-blue) 78%, black);
+}
+
+/* ---------- Swatch picker di panel Pengaturan ---------- */
+.settings-section-label{
+  padding: 10px 14px 4px; font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--text-faint);
+}
+.palette-swatch-grid{ display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; padding: 2px 14px 12px; }
+.palette-swatch{
+  width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; padding: 0; cursor: pointer;
+  background: conic-gradient(from 45deg, var(--sw-primary) 0 50%, var(--sw-secondary) 50% 100%);
+  transition: transform .15s var(--ease-out), border-color .15s ease, box-shadow .15s ease;
+}
+.palette-swatch:hover{ transform: scale(1.12); }
+.palette-swatch.active{ border-color: var(--bg-card); box-shadow: 0 0 0 2px var(--text-primary); }
