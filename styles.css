@@ -1006,7 +1006,6 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
 /* Bel notifikasi & pesan digeser jadi satu baris sama avatar, nempel
    di ujung kanan (bukan baris terpisah di atas avatar lagi). */
 #topbarUtilityCluster.in-sidebar .topbar-icon-row{ width:auto; flex-wrap:nowrap; gap:8px; flex-shrink:0; order:2; }
-#topbarUtilityCluster.in-sidebar #komunikasiWrap{ flex-shrink:0; order:2; }
 #topbarUtilityCluster.in-sidebar .user-chip{ order:1; flex:1 1 auto; width:auto; flex-basis:auto; min-width:0; }
 #topbarUtilityCluster.in-sidebar .user-chip > div:nth-child(2){ flex:1; min-width:0; }
 #topbarUtilityCluster.in-sidebar .user-chip #userName{ max-width:none !important; }

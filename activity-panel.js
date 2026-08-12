@@ -27,6 +27,7 @@
     profilesById: {},      // user_id -> profile-ish { full_name, avatar_url }
     locTableMissing: false,
     lastLocSentAt: 0,
+    dmThreadUserId: null,  // percakapan DM yang sedang dibuka inline di panel (null = tampil daftar)
   };
   let apHideTimer = null;
   let apRefreshTimer = null;
@@ -106,6 +107,14 @@
 
       <div class="ap-list" id="apList"></div>
 
+      <form class="ap-composer" id="apComposer" onsubmit="return false;">
+        <textarea class="ap-composer-input" id="apComposerInput" rows="1" placeholder="Tulis pesan…"></textarea>
+        <button type="button" class="ap-composer-send" id="apComposerSend" title="Kirim">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+        </button>
+      </form>
+      <div class="ap-composer-hint" id="apComposerHint">Pilih percakapan untuk mengirim pesan.</div>
+
       <div class="ap-loc-section" id="apLocSection" style="display:none;">
         <div class="ap-loc-header">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -129,10 +138,21 @@
       if(typeof navigate === 'function' && document.getElementById('menuPetaLink')) navigate('peta');
     });
 
+    const composerInput = document.getElementById('apComposerInput');
+    document.getElementById('apComposerSend').addEventListener('click', apComposerSubmit);
+    composerInput.addEventListener('keydown', e => {
+      if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); apComposerSubmit(); }
+    });
+    composerInput.addEventListener('input', () => {
+      composerInput.style.height = '';
+      composerInput.style.height = Math.min(composerInput.scrollHeight, 90) + 'px';
+    });
+
+    // Panel hanya terbuka lewat klik pada tab/pegangan -- tidak lagi
+    // otomatis muncul cuma karena kursor lewat di dekatnya.
     ['mousemove', 'click', 'scroll', 'keydown'].forEach(evt => {
       panel.addEventListener(evt, () => { if(apState.open) apScheduleHide(); }, { passive: true });
     });
-    handle.addEventListener('mouseenter', apShow);
 
     apApplyPinUI();
   }
@@ -176,6 +196,7 @@
      --------------------------------------------------------------- */
   function apSetTab(tab, opts){
     apState.tab = tab;
+    apState.dmThreadUserId = null; // pindah tab -> balik ke tampilan daftar
     document.querySelectorAll('.ap-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
     apRenderMessages();
     if(!opts || !opts.silent) apScheduleHide();
@@ -209,9 +230,15 @@
   function apRenderMessages(){
     const wrap = document.getElementById('apList');
     if(!wrap) return;
-    if(apState.tab === 'dm') apRenderDMList(wrap);
-    else apRenderTeamList(wrap);
+    if(apState.tab === 'dm'){
+      if(apState.dmThreadUserId) apRenderDMThread(wrap, apState.dmThreadUserId);
+      else apRenderDMList(wrap);
+    } else {
+      apRenderTeamList(wrap);
+    }
+    apUpdateComposerVisibility();
   }
+  window.apRefreshMessages = apRefreshMessages;
 
   function apRenderDMList(wrap){
     const dir = (typeof dmDirectory !== 'undefined' && dmDirectory) || [];
@@ -234,7 +261,7 @@
       const preview = u.lastMsg ? apEsc(prefix + u.lastMsg.message) : 'Belum ada pesan';
       const time = u.lastMsg ? apTimeAgo(u.lastMsg.created_at) : '';
       return `
-        <div class="ap-row" onclick="apOpenDM('${u.id}')">
+        <div class="ap-row" onclick="apOpenDMThread('${u.id}')">
           <div class="ap-avatar-wrap">
             <div class="ap-avatar" style="${apAvatarStyle(u.avatar_url)}"></div>
             <span class="ap-online-dot ${online ? 'live' : ''}"></span>
@@ -250,6 +277,47 @@
         </div>`;
     }).join('');
   }
+
+  // Percakapan DM dibuka inline di dalam panel (tanpa pindah halaman)
+  // supaya bisa langsung balas dari sini.
+  function apRenderDMThread(wrap, userId){
+    const dir = (typeof dmDirectory !== 'undefined' && dmDirectory) || [];
+    const user = dir.find(u => u.id === userId);
+    const msgs = ((typeof dmMessagesCache !== 'undefined' && dmMessagesCache) || {})[userId] || [];
+    const meId = typeof currentUser !== 'undefined' && currentUser?.id;
+    const bubbles = msgs.slice(-30).map(m => {
+      const mine = m.sender_id === meId;
+      return `
+        <div class="ap-msg ${mine ? 'mine' : ''}">
+          <div class="ap-msg-bubble">${apEsc(m.message)}</div>
+          <div class="ap-msg-time">${apTimeAgo(m.created_at)}</div>
+        </div>`;
+    }).join('');
+
+    wrap.innerHTML = `
+      <div class="ap-thread-header">
+        <button type="button" class="ap-icon-btn" onclick="apCloseDMThread()" title="Kembali ke daftar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="ap-avatar" style="${apAvatarStyle(user?.avatar_url)}"></div>
+        <div class="ap-thread-name">${apEsc(user?.full_name || user?.email || 'Pengguna')}</div>
+        <span class="ap-thread-open-full" onclick="apOpenDM('${userId}')">Buka penuh</span>
+      </div>
+      <div class="ap-thread-msgs" id="apThreadMsgs">${bubbles || '<div class="ap-empty">Belum ada pesan.</div>'}</div>
+    `;
+    const box = document.getElementById('apThreadMsgs');
+    if(box) box.scrollTop = box.scrollHeight;
+    if(typeof markDMConversationRead === 'function') markDMConversationRead(userId);
+  }
+
+  window.apOpenDMThread = function(userId){
+    apState.dmThreadUserId = userId;
+    apRenderMessages();
+  };
+  window.apCloseDMThread = function(){
+    apState.dmThreadUserId = null;
+    apRenderMessages();
+  };
 
   function apRenderTeamList(wrap){
     const msgs = (typeof chatMessagesCache !== 'undefined' && chatMessagesCache) || [];
@@ -291,6 +359,61 @@
     if(typeof navigate === 'function') navigate('chat');
     apHide(true);
   };
+
+  /* ---------------------------------------------------------------
+     3b. KOMPOSER -- kirim pesan langsung dari dalam panel, tanpa
+     perlu pindah ke halaman Chat Tim / Pesan Langsung.
+     --------------------------------------------------------------- */
+  function apUpdateComposerVisibility(){
+    const form = document.getElementById('apComposer');
+    const hint = document.getElementById('apComposerHint');
+    if(!form || !hint) return;
+    const canSend = apState.tab === 'team' || (apState.tab === 'dm' && apState.dmThreadUserId);
+    form.style.display = canSend ? '' : 'none';
+    hint.style.display = canSend ? 'none' : '';
+  }
+
+  async function apComposerSubmit(){
+    const input = document.getElementById('apComposerInput');
+    const text = (input?.value || '').trim();
+    if(!text) return;
+    input.value = '';
+    input.style.height = '';
+
+    if(apState.tab === 'team') await apSendTeamMessage(text);
+    else if(apState.tab === 'dm' && apState.dmThreadUserId) await apSendDMMessage(apState.dmThreadUserId, text);
+    apRenderMessages();
+  }
+
+  async function apSendTeamMessage(text){
+    if(typeof supa === 'undefined' || typeof currentUser === 'undefined' || !currentUser) return;
+    const { error } = await supa.from('chat_messages').insert({
+      sender_id: currentUser.id,
+      sender_name: (typeof currentProfile !== 'undefined' && currentProfile?.full_name) || currentUser.email || 'Pengguna',
+      sender_role: (typeof currentProfile !== 'undefined' && currentProfile?.role) || null,
+      message: text,
+    });
+    if(error) apToast('Gagal mengirim pesan: ' + error.message, true);
+  }
+
+  async function apSendDMMessage(userId, text){
+    if(typeof supa === 'undefined' || typeof currentUser === 'undefined' || !currentUser) return;
+    const dir = (typeof dmDirectory !== 'undefined' && dmDirectory) || [];
+    const recipient = dir.find(u => u.id === userId);
+    const { error } = await supa.from('direct_messages').insert({
+      sender_id: currentUser.id,
+      recipient_id: userId,
+      sender_name: (typeof currentProfile !== 'undefined' && currentProfile?.full_name) || currentUser.email || 'Pengguna',
+      recipient_name: recipient?.full_name || recipient?.email || 'Pengguna',
+      message: text,
+    });
+    if(error) apToast('Gagal mengirim pesan: ' + error.message, true);
+  }
+
+  function apToast(msg, isError){
+    if(typeof toast === 'function') toast(msg, isError);
+    else console.error(msg);
+  }
 
   /* ---------------------------------------------------------------
      4. LIVE LOCATION -- tabel user_locations (opsional, lihat .sql)

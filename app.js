@@ -1142,7 +1142,6 @@ function toggleNotificationPanel(){
   const willOpen = panel.classList.contains('hidden');
   $('#onlinePanel')?.classList.add('hidden'); // tutup panel online kalau lagi terbuka
   $('#settingsPanel')?.classList.add('hidden');
-  $('#komunikasiPanel')?.classList.add('hidden');
   panel.classList.toggle('hidden');
   if(willOpen){ renderNotifPanel(); markAllNotificationsRead(); }
 }
@@ -1408,28 +1407,10 @@ function toggleSettingsPanel(){
   const willOpen = panel.classList.contains('hidden');
   $('#notifPanel')?.classList.add('hidden');
   $('#onlinePanel')?.classList.add('hidden');
-  $('#komunikasiPanel')?.classList.add('hidden');
   panel.classList.toggle('hidden');
   if(willOpen) syncSettingsPanelState();
 }
 
-/* ---- Menu Komunikasi (Chat Tim + Pesan Langsung), dipindah dari sidebar ke topbar ---- */
-function toggleKomunikasiPanel(){
-  const panel = $('#komunikasiPanel');
-  if(!panel) return;
-  portalPanelToBodyOnMobile(panel);
-  const willOpen = panel.classList.contains('hidden');
-  $('#notifPanel')?.classList.add('hidden');
-  $('#onlinePanel')?.classList.add('hidden');
-  $('#settingsPanel')?.classList.add('hidden');
-  panel.classList.toggle('hidden');
-}
-function closeKomunikasiPanel(){ $('#komunikasiPanel')?.classList.add('hidden'); }
-document.addEventListener('click', (e) => {
-  const wrap = document.getElementById('komunikasiWrap');
-  const panel = document.getElementById('komunikasiPanel');
-  if(wrap && panel && !wrap.contains(e.target) && !panel.contains(e.target)) panel.classList.add('hidden');
-});
 function syncSettingsPanelState(){
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
   const themeLabel = $('#themeStateLabel');
@@ -1468,6 +1449,7 @@ async function loadChatMessages(){
 
 function updateChatBadge(){
   const el = $('#chatUnreadBadge');
+  if(typeof apRefreshMessages === 'function') apRefreshMessages();
   if(!el) return;
   if(chatUnreadCount > 0){ el.textContent = chatUnreadCount > 99 ? '99+' : chatUnreadCount; el.classList.remove('hidden'); }
   else { el.classList.add('hidden'); }
@@ -1674,6 +1656,7 @@ function handleDMUpdate(msg){
 
 function updateDMBadge(){
   const el = $('#dmUnreadBadge');
+  if(typeof apRefreshMessages === 'function') apRefreshMessages();
   if(!el) return;
   const total = Object.values(dmUnreadByUser).reduce((a,b)=>a+b, 0);
   if(total > 0){ el.textContent = total > 99 ? '99+' : total; el.classList.remove('hidden'); }
