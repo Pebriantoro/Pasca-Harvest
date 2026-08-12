@@ -28,6 +28,7 @@
     locTableMissing: false,
     lastLocSentAt: 0,
     dmThreadUserId: null,  // percakapan DM yang sedang dibuka inline di panel (null = tampil daftar)
+    fullMapOpen: false,    // modal peta live location (full) lagi terbuka?
   };
   let apHideTimer = null;
   let apRefreshTimer = null;
@@ -35,6 +36,8 @@
   let apGeoWatchId = null;
   let apMap = null;
   let apMarkers = {};
+  let apFullMap = null;
+  let apFullMarkers = {};
 
   /* ---------------------------------------------------------------
      0. BOOTSTRAP -- tunggu app shell + login siap, baru pasang panel
@@ -136,9 +139,7 @@
     });
     document.getElementById('apCloseBtn').addEventListener('click', () => apHide(true));
     document.getElementById('apPinBtn').addEventListener('click', apTogglePin);
-    document.getElementById('apLocViewAll').addEventListener('click', () => {
-      if(typeof navigate === 'function') navigate('peta');
-    });
+    document.getElementById('apLocViewAll').addEventListener('click', apOpenFullMap);
 
     const composerInput = document.getElementById('apComposerInput');
     document.getElementById('apComposerSend').addEventListener('click', apComposerSubmit);
@@ -512,6 +513,7 @@
     section.style.display = '';
     apRenderLocationList(entries);
     apRenderMap(entries);
+    if(apState.fullMapOpen) apRenderFullMap(entries);
   }
 
   function apRenderLocationList(entries){
@@ -565,6 +567,106 @@
   window.apFocusOnMap = function(uid){
     const loc = apState.locations[uid];
     if(loc && apMap) apMap.setView([loc.lat, loc.lng], 14);
+  };
+
+  /* ---------------------------------------------------------------
+     4b. MODAL PETA LIVE LOCATION (full) -- dibuka lewat "Lihat semua".
+     Beda sama menu Peta biasa (petak GIS statis): ini nampilin posisi
+     akun real-time dari tabel user_locations, kayak apMap tapi gede.
+     --------------------------------------------------------------- */
+  function apBuildFullMapDOM(){
+    if(document.getElementById('apFullMapModal')) return;
+    const modal = document.createElement('div');
+    modal.id = 'apFullMapModal';
+    modal.className = 'ap-fullmap-modal';
+    modal.innerHTML = `
+      <div class="ap-fullmap-backdrop" id="apFullMapBackdrop"></div>
+      <div class="ap-fullmap-panel">
+        <div class="ap-fullmap-header">
+          <span>Live Location — Semua Akun</span>
+          <button type="button" class="ap-icon-btn" id="apFullMapClose" title="Tutup">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+        <div class="ap-fullmap-body">
+          <div class="ap-fullmap-map" id="apFullMap"></div>
+          <div class="ap-fullmap-list" id="apFullMapList"></div>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    document.getElementById('apFullMapClose').addEventListener('click', apCloseFullMap);
+    document.getElementById('apFullMapBackdrop').addEventListener('click', apCloseFullMap);
+  }
+
+  function apOpenFullMap(){
+    apBuildFullMapDOM();
+    apState.fullMapOpen = true;
+    document.getElementById('apFullMapModal')?.classList.add('ap-open');
+    const entries = Object.entries(apState.locations);
+    apRenderFullMap(entries);
+    setTimeout(() => apFullMap && apFullMap.invalidateSize(), 60);
+  }
+
+  function apCloseFullMap(){
+    apState.fullMapOpen = false;
+    document.getElementById('apFullMapModal')?.classList.remove('ap-open');
+  }
+
+  function apRenderFullMap(entries){
+    if(typeof L === 'undefined') return;
+    const container = document.getElementById('apFullMap');
+    if(!container) return;
+
+    if(!apFullMap){
+      apFullMap = L.map(container, { zoomControl: true });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(apFullMap);
+      apFullMap.setView([-2.5, 118], 4);
+    }
+
+    const seen = new Set();
+    entries.forEach(([uid, loc]) => {
+      if(loc.lat == null || loc.lng == null) return;
+      seen.add(uid);
+      const isSelf = uid === (typeof currentUser !== 'undefined' && currentUser?.id);
+      const name = apState.profilesById[uid]?.full_name || 'Pengguna';
+      const icon = L.divIcon({ className: '', html: `<div class="ap-leaflet-pin ${isSelf ? 'self' : ''}"></div>`, iconSize: [22,22], iconAnchor: [11,22] });
+      if(apFullMarkers[uid]) apFullMarkers[uid].setLatLng([loc.lat, loc.lng]);
+      else apFullMarkers[uid] = L.marker([loc.lat, loc.lng], { icon }).addTo(apFullMap);
+      apFullMarkers[uid].bindPopup(`<b>${apEsc(name)}${isSelf ? ' (Anda)' : ''}</b><br>${apEsc(apTimeAgo(loc.updated_at))}`);
+    });
+    Object.keys(apFullMarkers).forEach(uid => { if(!seen.has(uid)){ apFullMap.removeLayer(apFullMarkers[uid]); delete apFullMarkers[uid]; } });
+
+    const pts = Object.values(apFullMarkers).map(m => m.getLatLng());
+    if(pts.length) apFullMap.fitBounds(L.latLngBounds(pts), { padding: [30,30], maxZoom: 15 });
+
+    apRenderFullMapList(entries);
+  }
+
+  function apRenderFullMapList(entries){
+    const wrap = document.getElementById('apFullMapList');
+    if(!wrap) return;
+    const rows = entries
+      .filter(([,loc]) => loc.lat != null && loc.lng != null)
+      .map(([uid, loc]) => ({ uid, loc, profile: apState.profilesById[uid] }))
+      .sort((a,b) => new Date(b.loc.updated_at) - new Date(a.loc.updated_at));
+
+    if(!rows.length){ wrap.innerHTML = `<div class="ap-loc-hint">Belum ada akun yang membagikan lokasi.</div>`; return; }
+
+    wrap.innerHTML = rows.map(r => {
+      const name = r.profile?.full_name || 'Pengguna';
+      const isSelf = r.uid === (typeof currentUser !== 'undefined' && currentUser?.id);
+      return `
+        <div class="ap-loc-row" onclick="apFocusOnFullMap('${r.uid}')">
+          <div class="ap-avatar" style="${apAvatarStyle(r.profile?.avatar_url)}"></div>
+          <div class="ap-loc-name">${apEsc(name)}${isSelf ? ' (Anda)' : ''}</div>
+          <span class="ap-loc-time">${apTimeAgo(r.loc.updated_at)}</span>
+        </div>`;
+    }).join('');
+  }
+
+  window.apFocusOnFullMap = function(uid){
+    const loc = apState.locations[uid];
+    if(loc && apFullMap){ apFullMap.setView([loc.lat, loc.lng], 15); apFullMarkers[uid]?.openPopup(); }
   };
 
   /* ---------------------------------------------------------------

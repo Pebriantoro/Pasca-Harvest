@@ -157,6 +157,27 @@
 .ap-loc-time{ font-size: 10px; color: var(--text-faint); margin-left: auto; flex-shrink: 0; }
 .ap-loc-hint{ padding: 8px 14px 12px; font-size: 11px; color: var(--text-faint); line-height: 1.5; }
 
+/* Modal peta live location full (tombol "Lihat semua") */
+.ap-fullmap-modal{ position: fixed; inset: 0; z-index: 300; display: none; align-items: center; justify-content: center; }
+.ap-fullmap-modal.ap-open{ display: flex; }
+.ap-fullmap-backdrop{ position: absolute; inset: 0; background: rgba(0,0,0,.55); backdrop-filter: blur(2px); }
+.ap-fullmap-panel{
+  position: relative; width: min(1080px, 94vw); height: min(720px, 88vh);
+  background: var(--bg-card); border: 1px solid var(--border-soft); border-radius: var(--radius);
+  box-shadow: var(--shadow-lift); display: flex; flex-direction: column; overflow: hidden;
+}
+.ap-fullmap-header{
+  display: flex; align-items: center; justify-content: space-between; padding: 14px 16px;
+  border-bottom: 1px solid var(--border-soft); font-size: 14px; font-weight: 600; color: var(--text-primary); flex-shrink: 0;
+}
+.ap-fullmap-body{ flex: 1; min-height: 0; display: flex; }
+.ap-fullmap-map{ flex: 1; min-width: 0; background: var(--bg-elevated); }
+.ap-fullmap-list{ width: 240px; flex-shrink: 0; overflow-y: auto; padding: 10px 8px; border-left: 1px solid var(--border-soft); }
+@media (max-width: 720px){
+  .ap-fullmap-body{ flex-direction: column; }
+  .ap-fullmap-list{ width: auto; max-height: 160px; border-left: none; border-top: 1px solid var(--border-soft); }
+}
+
 .ap-marker-self{ background: var(--accent-gold); }
 .ap-leaflet-pin{
   width: 20px; height: 20px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
