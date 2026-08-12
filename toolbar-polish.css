@@ -1,0 +1,40 @@
+/* =====================================================================
+   TOOLBAR POLISH — samain ukuran kotak cari & tanggal dgn tombol
+   Additif -- kotak cari (.search-box .input), input tanggal filter, dan
+   select filter di table-toolbar/filter-panel-row selama ini pakai
+   padding/font-size beda-beda (inline, warisan lama per menu) jadi
+   gak ngepasin tinggi sama tombol .btn-sm di sebelahnya. Diseragamkan
+   ke tinggi 32px di sini, dipasang !important biar menang dari inline
+   style yang sudah ada (tidak mengubah app.js).
+   ===================================================================== */
+.table-toolbar,
+.filter-panel-row{ align-items: center !important; }
+
+.table-toolbar .search-box .input,
+.filter-panel-row input.input[type="date"],
+.filter-panel-row select.input,
+select.input.filter-select{
+  height: 32px !important; box-sizing: border-box !important;
+  padding-top: 0 !important; padding-bottom: 0 !important;
+  font-size: 12.5px !important; border-radius: var(--radius-sm) !important;
+  border: 1px solid var(--border) !important;
+}
+.table-toolbar .search-box .input{ padding-left: 32px !important; padding-right: 12px !important; }
+.filter-panel-row input.input[type="date"]{ padding-left: 10px !important; padding-right: 10px !important; }
+select.input.filter-select{
+  padding-left: 10px !important; padding-right: 26px !important;
+  background-position: right 8px center !important; background-size: 12px !important;
+}
+.table-toolbar .search-box svg{ left: 11px !important; }
+.table-toolbar .btn.btn-sm{ height: 32px; box-sizing: border-box; }
+
+/* HP: font tetap 16px biar iOS gak auto-zoom pas fokus input, tinggi ikut naik dikit */
+@media (max-width: 640px){
+  .table-toolbar .search-box .input,
+  .filter-panel-row input.input[type="date"],
+  .filter-panel-row select.input,
+  select.input.filter-select{
+    height: 36px !important; font-size: 16px !important;
+  }
+  .table-toolbar .btn.btn-sm{ height: 36px; }
+}
