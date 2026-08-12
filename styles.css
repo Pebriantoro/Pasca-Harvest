@@ -808,7 +808,7 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
   align-items: center; justify-content: center; transition: background .15s ease, color .15s ease, border-color .15s ease;
 }
 .pill-btn:hover:not(:disabled){ background: var(--bg-card-hover); color: var(--text-primary); }
-.pill-btn.active{ background: #FFC94D; border-color: #FFC94D; color: #1B1405; cursor: default; box-shadow: 0 0 0 1px rgba(255,201,77,0.35); }
+.pill-btn.active{ background: #FFC94D; border-color: #FFC94D; color: #1B1405; cursor: default; font-weight: 800; }
 .pill-btn.pill-nav{ color: var(--text-primary); font-weight: 700; }
 .pill-btn:disabled{ opacity: .4; cursor: default; }
 .pill-ellipsis{ padding: 0 3px; color: var(--text-faint); font-size: 12px; user-select: none; }
