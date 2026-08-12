@@ -4962,8 +4962,9 @@ function paintProduktivitas(allRows){
                   <td>${fmtNum(r.hasil)}</td>
                   <td>${fmtNum(r.hk)}</td>
                   <td>${isAdminRole() ? `
-                    <div style="display:flex; align-items:center; gap:6px;">
-                      <input type="number" step="0.001" id="normaInput_${i}" class="input" style="width:90px; padding:4px 6px; font-size:12px;" value="${r.norma===null?'':r.norma}" placeholder="belum diset">
+                    <div style="display:flex; align-items:center; gap:8px; min-width:190px;">
+                      <input type="range" id="normaSlider_${i}" min="0" max="1" step="0.001" value="${r.norma===null?0:r.norma}" oninput="document.getElementById('normaInput_${i}').value=this.value;" style="flex:1; accent-color:var(--accent-gold);">
+                      <input type="number" step="0.001" id="normaInput_${i}" class="input" style="width:66px; padding:4px 6px; font-size:12px;" value="${r.norma===null?'':r.norma}" placeholder="–" oninput="const s=document.getElementById('normaSlider_${i}'); if(this.value!=='') s.value=this.value;">
                       <button class="btn btn-outline btn-sm" onclick="saveNormaKegiatan(${i})">Simpan</button>
                     </div>
                   ` : (r.norma===null ? '<span style="color:var(--text-faint)">belum diset</span>' : fmtNum(r.norma,3))}</td>
