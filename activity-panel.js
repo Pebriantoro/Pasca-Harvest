@@ -40,7 +40,7 @@
      --------------------------------------------------------------- */
   function appIsLive(){
     const shell = document.getElementById('appShell');
-    return !!(shell && !shell.classList.contains('hidden') && window.currentUser);
+    return !!(shell && !shell.classList.contains('hidden') && typeof currentUser !== 'undefined' && currentUser);
   }
 
   const bootPoll = setInterval(() => {
@@ -187,8 +187,8 @@
   }
 
   function apRenderBadges(){
-    const dmTotal = Object.values(window.dmUnreadByUser || {}).reduce((a,b)=>a+b, 0);
-    const teamTotal = window.chatUnreadCount || 0;
+    const dmTotal = Object.values((typeof dmUnreadByUser !== 'undefined' && dmUnreadByUser) || {}).reduce((a,b)=>a+b, 0);
+    const teamTotal = (typeof chatUnreadCount !== 'undefined' && chatUnreadCount) || 0;
     const total = dmTotal + teamTotal;
 
     const dmEl = document.getElementById('apDmCount');
@@ -214,13 +214,13 @@
   }
 
   function apRenderDMList(wrap){
-    const dir = window.dmDirectory || [];
+    const dir = (typeof dmDirectory !== 'undefined' && dmDirectory) || [];
     if(!dir.length){
       wrap.innerHTML = `<div class="ap-empty">Belum ada rekan kerja terdaftar.</div>`;
       return;
     }
-    const cache = window.dmMessagesCache || {};
-    const unread = window.dmUnreadByUser || {};
+    const cache = (typeof dmMessagesCache !== 'undefined' && dmMessagesCache) || {};
+    const unread = (typeof dmUnreadByUser !== 'undefined' && dmUnreadByUser) || {};
     const list = dir.map(u => {
       const msgs = cache[u.id] || [];
       const last = msgs[msgs.length - 1];
@@ -230,7 +230,7 @@
 
     wrap.innerHTML = list.map(u => {
       const online = typeof isUserOnline === 'function' ? isUserOnline(u.id) : false;
-      const prefix = u.lastMsg ? (u.lastMsg.sender_id === window.currentUser?.id ? 'Anda: ' : '') : '';
+      const prefix = u.lastMsg ? (u.lastMsg.sender_id === (typeof currentUser !== 'undefined' && currentUser?.id) ? 'Anda: ' : '') : '';
       const preview = u.lastMsg ? apEsc(prefix + u.lastMsg.message) : 'Belum ada pesan';
       const time = u.lastMsg ? apTimeAgo(u.lastMsg.created_at) : '';
       return `
@@ -252,7 +252,7 @@
   }
 
   function apRenderTeamList(wrap){
-    const msgs = window.chatMessagesCache || [];
+    const msgs = (typeof chatMessagesCache !== 'undefined' && chatMessagesCache) || [];
     if(!msgs.length){
       wrap.innerHTML = `<div class="ap-empty">Belum ada obrolan tim.</div>`;
       return;
@@ -266,7 +266,7 @@
 
     wrap.innerHTML = list.map(m => {
       const online = typeof isUserOnline === 'function' ? isUserOnline(m.sender_id) : false;
-      const mine = m.sender_id === window.currentUser?.id;
+      const mine = m.sender_id === (typeof currentUser !== 'undefined' && currentUser?.id);
       return `
         <div class="ap-row" onclick="apOpenTeamChat()">
           <div class="ap-avatar-wrap">
@@ -310,13 +310,13 @@
       }
     }catch(_e){ /* fallback di bawah */ }
     const map = {};
-    (window.dmDirectory || []).forEach(u => map[u.id] = u);
-    if(window.currentUser && window.currentProfile) map[window.currentUser.id] = window.currentProfile;
+    ((typeof dmDirectory !== 'undefined' && dmDirectory) || []).forEach(u => map[u.id] = u);
+    if(typeof currentUser !== 'undefined' && currentUser && typeof currentProfile !== 'undefined' && currentProfile) map[currentUser.id] = currentProfile;
     apState.profilesById = map;
   }
 
   async function apLoadLocations(){
-    if(!window.supa || apState.locTableMissing) return;
+    if(typeof supa === 'undefined' || apState.locTableMissing) return;
     try{
       const { data, error } = await supa.from(AP_LOC_TABLE).select('*').limit(500);
       if(error){
@@ -334,7 +334,7 @@
   }
 
   function apSubscribeLocations(){
-    if(!window.supa || apState.locTableMissing || apLocChannel) return;
+    if(typeof supa === 'undefined' || apState.locTableMissing || apLocChannel) return;
     apLocChannel = supa.channel('user_locations_stream')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: AP_LOC_TABLE }, p => apOnLocationRow(p.new))
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: AP_LOC_TABLE }, p => apOnLocationRow(p.new))
@@ -349,7 +349,7 @@
   // Ditolak user / tidak didukung browser -> section lokasi akun lain
   // tetap jalan, cuma akun ini saja yang tidak ikut terlacak.
   function apStartGeoWatch(){
-    if(!navigator.geolocation || !window.currentUser || apState.locTableMissing) return;
+    if(!navigator.geolocation || typeof currentUser === 'undefined' || !currentUser || apState.locTableMissing) return;
     apGeoWatchId = navigator.geolocation.watchPosition(
       pos => apMaybeSendLocation(pos),
       () => { /* izin ditolak / gagal -- diam saja */ },
@@ -360,9 +360,9 @@
     const now = Date.now();
     if(now - apState.lastLocSentAt < AP_LOC_UPSERT_MIN_GAP_MS) return;
     apState.lastLocSentAt = now;
-    if(!window.supa || !window.currentUser || apState.locTableMissing) return;
+    if(typeof supa === 'undefined' || typeof currentUser === 'undefined' || !currentUser || apState.locTableMissing) return;
     const row = {
-      user_id: window.currentUser.id,
+      user_id: currentUser.id,
       lat: pos.coords.latitude,
       lng: pos.coords.longitude,
       accuracy_m: pos.coords.accuracy || null,
@@ -399,7 +399,7 @@
 
     wrap.innerHTML = rows.map(r => {
       const name = r.profile?.full_name || 'Pengguna';
-      const isSelf = r.uid === window.currentUser?.id;
+      const isSelf = r.uid === (typeof currentUser !== 'undefined' && currentUser?.id);
       return `
         <div class="ap-loc-row" onclick="apFocusOnMap('${r.uid}')">
           <div class="ap-avatar" style="${apAvatarStyle(r.profile?.avatar_url)}"></div>
@@ -424,7 +424,7 @@
     entries.forEach(([uid, loc]) => {
       if(loc.lat == null || loc.lng == null) return;
       seen.add(uid);
-      const isSelf = uid === window.currentUser?.id;
+      const isSelf = uid === (typeof currentUser !== 'undefined' && currentUser?.id);
       const icon = L.divIcon({ className: '', html: `<div class="ap-leaflet-pin ${isSelf ? 'self' : ''}"></div>`, iconSize: [20,20], iconAnchor: [10,20] });
       if(apMarkers[uid]) apMarkers[uid].setLatLng([loc.lat, loc.lng]);
       else apMarkers[uid] = L.marker([loc.lat, loc.lng], { icon }).addTo(apMap);
