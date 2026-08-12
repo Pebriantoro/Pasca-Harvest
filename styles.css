@@ -574,7 +574,7 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
    kepanjangan (Mode TV nambah 1 baris lagi lewat JS). ============ */
 .settings-wrap{ position:relative; display:inline-flex; }
 .settings-wrap .settings-panel{
-  width:258px; padding:6px 0; max-height:min(72vh, 480px); overflow-y:auto;
+  width:258px; padding:6px 0; max-height:min(85vh, 560px); overflow-y:auto;
 }
 .sidebar-footer .settings-wrap .settings-panel{ top:auto; bottom:calc(100% + 10px); }
 .settings-row{
