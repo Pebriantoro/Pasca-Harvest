@@ -1,0 +1,85 @@
+/* =====================================================================
+   MENU TRANSITIONS — animasi tiap menu diklik (semua halaman)
+   Additif -- tidak mengubah styling/komponen yang sudah ada, cuma nambah
+   lapisan animasi: progress bar loading di atas, transisi masuk halaman
+   & kartu (stagger), efek ripple di tombol/menu, dan indikator aktif
+   sidebar yang lebih hidup. Otomatis mati kalau prefers-reduced-motion.
+   ===================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ---------- 1. Top loading bar (progress bar ala YouTube/GitHub) --- */
+  #mtTopLoader{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background: linear-gradient(90deg, var(--accent-gold), var(--accent-green), var(--accent-blue));
+    background-size:200% 100%;
+    z-index:9999; pointer-events:none; opacity:0;
+    box-shadow: 0 0 10px rgba(217,169,74,.55);
+    transition: width .32s cubic-bezier(.4,0,.2,1), opacity .25s ease;
+    border-radius: 0 3px 3px 0;
+  }
+  #mtTopLoader.mt-active{ opacity:1; animation: mtLoaderShimmer 1.1s linear infinite; }
+  #mtTopLoader.mt-done{ width:100% !important; opacity:0; transition: width .2s ease, opacity .4s ease .1s; }
+  @keyframes mtLoaderShimmer{ 0%{ background-position:0% 0; } 100%{ background-position:-200% 0; } }
+
+  /* ---------- 2. Page content entrance ------------------------------- */
+  #pageContent.mt-fade-in{
+    animation: mtPageIn .38s cubic-bezier(.22,.68,.35,1) both;
+  }
+  @keyframes mtPageIn{
+    from{ opacity:0; transform: translateY(10px) scale(.995); filter: blur(2px); }
+    to{ opacity:1; transform: translateY(0) scale(1); filter: blur(0); }
+  }
+
+  /* ---------- 3. Card / KPI stagger entrance -------------------------- */
+  .mt-item-in{
+    animation: mtItemIn .46s cubic-bezier(.22,.68,.35,1) both;
+    will-change: transform, opacity;
+  }
+  @keyframes mtItemIn{
+    from{ opacity:0; transform: translateY(16px) scale(.97); }
+    to{ opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  /* ---------- 4. Ripple effect (tombol & menu sidebar) ---------------- */
+  .btn, .nav-item, .btn-icon{ position:relative; overflow:hidden; -webkit-tap-highlight-color:transparent; }
+  .mt-ripple{
+    position:absolute; border-radius:50%; pointer-events:none;
+    background: radial-gradient(circle, rgba(217,169,74,.45) 0%, rgba(217,169,74,0) 72%);
+    transform: scale(0); opacity:.9;
+    animation: mtRipple .55s ease-out forwards;
+  }
+  @keyframes mtRipple{ to{ transform: scale(1); opacity:0; } }
+
+  /* ---------- 5. Sidebar active indicator — hidup & smooth ----------- */
+  .nav-item{ transition: background .18s var(--ease-out,ease), color .18s var(--ease-out,ease), border-color .18s var(--ease-out,ease), box-shadow .22s var(--ease-out,ease), transform .18s var(--ease-out,ease); }
+  .nav-item.active{ animation: mtNavActivate .35s cubic-bezier(.22,.68,.35,1); }
+  @keyframes mtNavActivate{
+    0%{ transform: translateX(-3px); }
+    60%{ transform: translateX(1px); }
+    100%{ transform: translateX(0); }
+  }
+  .nav-item.active svg{ animation: mtIconPop .35s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes mtIconPop{ 0%{ transform: scale(.8); } 60%{ transform: scale(1.15); } 100%{ transform: scale(1); } }
+
+  /* ---------- 6. Tabel: baris muncul halus (dipakai ringan) ---------- */
+  #pageContent.mt-fade-in table tbody tr{
+    animation: mtRowIn .32s ease both;
+  }
+  #pageContent.mt-fade-in table tbody tr:nth-child(n+16){ animation-duration: 0s; } /* batasi biar tabel besar tetap ringan */
+  @keyframes mtRowIn{ from{ opacity:0; transform: translateY(4px); } to{ opacity:1; transform: translateY(0); } }
+
+  /* ---------- 7. Skeleton shimmer (kalau skeletonPageHTML dipakai) --- */
+  .skeleton, [class*="skeleton-"]{ position:relative; overflow:hidden; }
+  .skeleton::after, [class*="skeleton-"]::after{
+    content:''; position:absolute; inset:0; transform:translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(217,169,74,.12), transparent);
+    animation: mtShimmer 1.4s ease-in-out infinite;
+  }
+  @keyframes mtShimmer{ 100%{ transform:translateX(100%); } }
+}
+
+/* Bar tetap harus ada elemen walau reduced-motion, cukup disembunyikan total */
+@media (prefers-reduced-motion: reduce){
+  #mtTopLoader{ display:none; }
+}
