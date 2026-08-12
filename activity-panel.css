@@ -43,6 +43,11 @@
   display: flex; align-items: center; gap: 10px; padding: 14px 14px 10px;
   border-bottom: 1px solid var(--border-soft); flex-shrink: 0;
 }
+.ap-header-online{
+  display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600;
+  color: var(--text-muted); background: var(--bg-elevated); border: 1px solid var(--border-soft);
+  padding: 3px 8px; border-radius: 20px;
+}
 .ap-header-title{ font-family: var(--font-display); font-weight: 600; font-size: 14.5px; color: var(--text-primary); }
 .ap-header-actions{ margin-left: auto; display: flex; align-items: center; gap: 4px; }
 .ap-icon-btn{
@@ -185,6 +190,15 @@
 }
 .ap-leaflet-pin.self{ background: var(--accent-gold); }
 
+.ap-mobile-trigger{ display: none; }
+
 @media (max-width: 880px){
-  .activity-panel, .ap-handle{ display: none; } /* fokus ke layout mobile yang sudah ada (bottom-nav) */
+  .ap-handle{ display: none; } /* tab tepi layar diganti tombol di topbar sebelah notif */
+  .ap-mobile-trigger{ display: inline-flex; }
+  .activity-panel{
+    top: 0; right: 0; left: 0; bottom: 0; width: auto; max-height: none;
+    border-radius: 0; border: none;
+    transform: translateY(100%);
+  }
+  .activity-panel.ap-open{ transform: translateY(0); }
 }

@@ -95,6 +95,10 @@
     panel.innerHTML = `
       <div class="ap-header">
         <span class="ap-header-title">Aktivitas</span>
+        <span class="ap-header-online" id="apOnlineBadge" title="Pengguna online sekarang">
+          <span class="online-dot" id="apOnlineDot"></span>
+          <span id="apOnlineCount">0</span> Online
+        </span>
         <div class="ap-header-actions">
           <button type="button" class="ap-icon-btn" id="apPinBtn" title="Sematkan panel">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 3h6l-1 6 3 3v2H7v-2l3-3-1-6z"/></svg>
@@ -208,6 +212,16 @@
   function apRefreshMessages(){
     apRenderMessages();
     apRenderBadges();
+    apUpdateOnlineBadge();
+  }
+
+  function apUpdateOnlineBadge(){
+    const dot = document.getElementById('apOnlineDot');
+    const label = document.getElementById('apOnlineCount');
+    if(!dot || !label) return;
+    const n = typeof getOnlineUsersList === 'function' ? getOnlineUsersList().length : 0;
+    label.textContent = n;
+    dot.classList.toggle('online-dot-live', n > 0);
   }
 
   function apRenderBadges(){
@@ -222,6 +236,8 @@
 
     const handleBadge = document.getElementById('apHandleBadge');
     if(handleBadge){ handleBadge.textContent = total > 99 ? '99+' : total; handleBadge.classList.toggle('hidden', !total); }
+    const mobileBadge = document.getElementById('apMobileBadge');
+    if(mobileBadge){ mobileBadge.textContent = total > 99 ? '99+' : total; mobileBadge.classList.toggle('hidden', !total); }
 
     // Ping otomatis: kalau ada pesan baru & panel lagi disembunyikan, sembulkan sebentar.
     if(total > 0 && !apState.open && !apState.pinned && apState._lastTotal !== total){
@@ -685,6 +701,11 @@
   window.apFocusOnFullMap = function(uid){
     const loc = apState.locations[uid];
     if(loc && apFullMap){ apFullMap.setView([loc.lat, loc.lng], 15); apFullMarkers[uid]?.openPopup(); }
+  };
+
+  // Dipanggil dari tombol chat di topbar mobile (di samping tombol notif)
+  window.apToggleMobile = function(){
+    apState.open ? apHide(true) : apShow();
   };
 
   /* ---------------------------------------------------------------
