@@ -28,6 +28,21 @@ select.input.filter-select{
 .table-toolbar .search-box svg{ left: 11px !important; }
 .table-toolbar .btn.btn-sm{ height: 32px; box-sizing: border-box; }
 
+/* Input tanggal: browser render kotak & kalender pop-up-nya sendiri
+   (putih) kalau color-scheme gak kebaca. Dipaksa disini biar nyatu
+   sama tema gelap/terang aplikasi. */
+input[type="date"].input{
+  background: var(--bg-elevated) !important; color: var(--text-primary) !important;
+  color-scheme: dark;
+}
+input[type="date"].input::-webkit-calendar-picker-indicator{
+  filter: invert(1) brightness(1.5); opacity: .75; cursor: pointer;
+  transition: opacity .15s ease;
+}
+input[type="date"].input::-webkit-calendar-picker-indicator:hover{ opacity: 1; }
+:root[data-theme="light"] input[type="date"].input{ color-scheme: light; }
+:root[data-theme="light"] input[type="date"].input::-webkit-calendar-picker-indicator{ filter: none; opacity: .6; }
+
 /* HP: font tetap 16px biar iOS gak auto-zoom pas fokus input, tinggi ikut naik dikit */
 @media (max-width: 640px){
   .table-toolbar .search-box .input,
