@@ -135,7 +135,7 @@
     document.getElementById('apCloseBtn').addEventListener('click', () => apHide(true));
     document.getElementById('apPinBtn').addEventListener('click', apTogglePin);
     document.getElementById('apLocViewAll').addEventListener('click', () => {
-      if(typeof navigate === 'function' && document.getElementById('menuPetaLink')) navigate('peta');
+      if(typeof navigate === 'function') navigate('peta');
     });
 
     const composerInput = document.getElementById('apComposerInput');
