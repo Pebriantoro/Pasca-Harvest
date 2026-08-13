@@ -390,7 +390,6 @@ async function renderPuSummaryOnly(){
 
   $('#pageContent').innerHTML = `
     <div class="card" style="margin-bottom:16px;"><div class="card-header"><span class="card-title">Ringkasan Data Posisi Unit${zonaLabel}</span><div style="display:flex; gap:8px;"><input class="input" type="date" style="width:auto; padding:6px 12px; font-size:12.5px;" value="${esc(puState.filters.tanggal)}" onchange="puState.filters.tanggal=this.value; renderPuSummaryOnly();">${puExportBtnHTML()}</div></div></div>
-    ${puFilterBarHTML(allRows, 'renderPuSummaryOnly()', {hideTanggal:true})}
     ${puSummaryCards(s)}
     <div class="card" style="margin-top:16px;">
       <div class="card-header"><span class="card-title">Ringkasan per Zona</span></div>
