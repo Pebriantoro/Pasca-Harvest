@@ -93,36 +93,38 @@
     panel.id = 'activityPanel';
     panel.className = 'activity-panel';
     panel.innerHTML = `
-      <div class="ap-header">
-        <span class="ap-header-title">Aktivitas</span>
-        <span class="ap-header-online" id="apOnlineBadge" title="Pengguna online sekarang">
-          <span class="online-dot" id="apOnlineDot"></span>
-          <span id="apOnlineCount">0</span> Online
-        </span>
-        <div class="ap-header-actions">
-          <button type="button" class="ap-icon-btn" id="apPinBtn" title="Sematkan panel">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 3h6l-1 6 3 3v2H7v-2l3-3-1-6z"/></svg>
-          </button>
-          <button type="button" class="ap-icon-btn" id="apCloseBtn" title="Sembunyikan">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-          </button>
+      <div class="ap-chat-card">
+        <div class="ap-header">
+          <span class="ap-header-title">Aktivitas</span>
+          <span class="ap-header-online" id="apOnlineBadge" title="Pengguna online sekarang">
+            <span class="online-dot" id="apOnlineDot"></span>
+            <span id="apOnlineCount">0</span> Online
+          </span>
+          <div class="ap-header-actions">
+            <button type="button" class="ap-icon-btn" id="apPinBtn" title="Sematkan panel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 3h6l-1 6 3 3v2H7v-2l3-3-1-6z"/></svg>
+            </button>
+            <button type="button" class="ap-icon-btn" id="apCloseBtn" title="Sembunyikan">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+          </div>
         </div>
+
+        <div class="ap-tabs">
+          <button type="button" class="ap-tab active" data-tab="dm">Chat Langsung <span class="count-badge hidden" id="apDmCount">0</span></button>
+          <button type="button" class="ap-tab" data-tab="team">Chat Tim <span class="count-badge hidden" id="apTeamCount">0</span></button>
+        </div>
+
+        <div class="ap-list" id="apList"></div>
+
+        <form class="ap-composer" id="apComposer" onsubmit="return false;">
+          <textarea class="ap-composer-input" id="apComposerInput" rows="1" placeholder="Tulis pesan…"></textarea>
+          <button type="button" class="ap-composer-send" id="apComposerSend" title="Kirim">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          </button>
+        </form>
+        <div class="ap-composer-hint" id="apComposerHint">Pilih percakapan untuk mengirim pesan.</div>
       </div>
-
-      <div class="ap-tabs">
-        <button type="button" class="ap-tab active" data-tab="dm">Chat Langsung <span class="count-badge hidden" id="apDmCount">0</span></button>
-        <button type="button" class="ap-tab" data-tab="team">Chat Tim <span class="count-badge hidden" id="apTeamCount">0</span></button>
-      </div>
-
-      <div class="ap-list" id="apList"></div>
-
-      <form class="ap-composer" id="apComposer" onsubmit="return false;">
-        <textarea class="ap-composer-input" id="apComposerInput" rows="1" placeholder="Tulis pesan…"></textarea>
-        <button type="button" class="ap-composer-send" id="apComposerSend" title="Kirim">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
-        </button>
-      </form>
-      <div class="ap-composer-hint" id="apComposerHint">Pilih percakapan untuk mengirim pesan.</div>
 
       <div class="ap-loc-section" id="apLocSection" style="display:none;">
         <div class="ap-loc-header">

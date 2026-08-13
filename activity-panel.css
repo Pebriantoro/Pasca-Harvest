@@ -10,14 +10,21 @@
 .activity-panel{
   position: fixed; top: 78px; right: 14px; bottom: 14px;
   width: var(--ap-w); max-height: calc(100vh - 92px);
-  background: var(--bg-card); border: 1px solid var(--border-soft);
-  border-radius: var(--radius); box-shadow: var(--shadow-lift);
-  display: flex; flex-direction: column; z-index: 40;
+  background: transparent; border: none; box-shadow: none;
+  display: flex; flex-direction: column; gap: 14px; z-index: 40;
   transform: translateX(calc(100% + 14px));
   transition: transform .32s var(--ease-out), opacity .32s var(--ease-out);
   opacity: 0;
 }
 .activity-panel.ap-open{ transform: translateX(0); opacity: 1; }
+
+/* Card 1: Chat (header + tabs + list + composer) */
+.ap-chat-card{
+  background: var(--bg-card); border: 1px solid var(--border-soft);
+  border-radius: var(--radius); box-shadow: var(--shadow-lift);
+  display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0;
+  overflow: hidden;
+}
 
 /* Tab pegangan yang selalu kelihatan di tepi kanan layar saat panel disembunyikan */
 .ap-handle{
@@ -146,7 +153,12 @@
 .ap-composer-send svg{ width: 14px; height: 14px; }
 .ap-composer-hint{ padding: 0 14px 10px; font-size: 11px; color: var(--text-faint); text-align: center; flex-shrink: 0; }
 
-.ap-loc-section{ border-top: 1px solid var(--border-soft); flex-shrink: 0; }
+/* Card 2: Live Location — kartu terpisah, jaraknya dari gap flex parent (.activity-panel) */
+.ap-loc-section{
+  background: var(--bg-card); border: 1px solid var(--border-soft);
+  border-radius: var(--radius); box-shadow: var(--shadow-lift);
+  flex-shrink: 0; max-height: 45%; overflow-y: auto;
+}
 .ap-loc-header{
   display: flex; align-items: center; gap: 6px; padding: 10px 14px 6px; font-size: 12px;
   font-weight: 600; color: var(--text-muted);
@@ -197,7 +209,7 @@
   .ap-mobile-trigger{ display: inline-flex; }
   .activity-panel{
     top: 0; right: 0; left: 0; bottom: 0; width: auto; max-height: none;
-    border-radius: 0; border: none;
+    padding: 10px; box-sizing: border-box;
     transform: translateY(100%);
   }
   .activity-panel.ap-open{ transform: translateY(0); }
