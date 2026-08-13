@@ -192,6 +192,65 @@ input,select,textarea{ font-family: inherit; }
   opacity:0.55;
 }
 
+/* ---- Login weather widget (card di atas form login, gaya iOS weather) ---- */
+.login-weather-widget{
+  position:relative; width:100%; max-width:340px; padding:22px 20px 20px; text-align:center;
+  border-radius:26px; overflow:hidden; z-index:1;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.25);
+  background: linear-gradient(180deg, #4FA3DE 0%, #7FC0EA 42%, #BFE1F2 100%);
+  transition: background .5s ease;
+}
+.login-weather-widget.wx-clear-day{ background: linear-gradient(180deg, #4FA3DE 0%, #7FC0EA 42%, #BFE1F2 100%); }
+.login-weather-widget.wx-clear-night{ background: linear-gradient(180deg, #0A1530 0%, #16234A 55%, #253763 100%); }
+.login-weather-widget.wx-cloudy{ background: linear-gradient(180deg, #7C90A3 0%, #A6B7C4 55%, #CBD6DD 100%); }
+.login-weather-widget.wx-rain{ background: linear-gradient(180deg, #46586B 0%, #61738A 55%, #82929F 100%); }
+.login-weather-widget.wx-storm{ background: linear-gradient(180deg, #262B36 0%, #3B4353 55%, #565F6E 100%); }
+.login-weather-widget.wx-fog{ background: linear-gradient(180deg, #8A9099 0%, #B5BAC0 55%, #D6D9DB 100%); }
+
+.lw-label{
+  position:relative; z-index:1;
+  font-family: var(--font-display); font-size:11px; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:rgba(255,255,255,0.85);
+  text-shadow:0 1px 10px rgba(0,0,0,0.3);
+}
+.lw-city{
+  position:relative; z-index:1;
+  font-family: var(--font-display); font-weight:500; font-size:21px; line-height:1.25;
+  color:#fff; text-shadow:0 2px 14px rgba(0,0,0,0.28); margin-top:2px;
+}
+.lw-temp{
+  position:relative; z-index:1;
+  font-family: var(--font-display); font-weight:200; font-size:60px; line-height:1;
+  color:#fff; text-shadow:0 4px 22px rgba(0,0,0,0.25); margin-top:4px;
+}
+.lw-cond{
+  position:relative; z-index:1;
+  font-family: var(--font-display); font-weight:600; font-size:14.5px;
+  color:#fff; text-shadow:0 2px 12px rgba(0,0,0,0.25); margin-top:6px;
+}
+.lw-hilo{
+  position:relative; z-index:1;
+  font-family: var(--font-display); font-weight:600; font-size:13px;
+  color:rgba(255,255,255,0.92); text-shadow:0 2px 12px rgba(0,0,0,0.25); margin-top:2px;
+}
+.login-weather-widget.lw-night .lw-city,
+.login-weather-widget.lw-night .lw-temp,
+.login-weather-widget.lw-night .lw-cond,
+.login-weather-widget.lw-night .lw-hilo{ color:#EAF0FF; }
+
+.lw-sun{
+  position:absolute; top:-30px; left:-10px; width:140px; height:140px; border-radius:50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.35) 40%, transparent 72%);
+  filter: blur(2px); opacity:0.9; z-index:0;
+}
+.login-weather-widget:not(.wx-clear-day) .lw-sun{ display:none; }
+.lw-cloud{
+  position:absolute; border-radius:999px; background:rgba(255,255,255,0.5); filter: blur(12px); z-index:0;
+}
+.lw-cloud-a{ width:140px; height:40px; top:14%; right:-10px; }
+.lw-cloud-b{ width:100px; height:30px; top:30%; left:-14px; opacity:0.75; }
+.login-weather-widget.wx-clear-day .lw-cloud, .login-weather-widget.wx-clear-night .lw-cloud{ display:none; }
+
 
 .cane-sway{ transform-origin: 50% 100%; }
 .cane-sway-a{ animation: caneSway 5s ease-in-out infinite alternate; }
