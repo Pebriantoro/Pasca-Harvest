@@ -164,14 +164,14 @@ function puSummaryCards(s){
 /* ---------------------------------------------------------------------
    3. FILTER BAR
    --------------------------------------------------------------------- */
-function puFilterBarHTML(rows, rerenderFn){
+function puFilterBarHTML(rows, rerenderFn, opts){
+  opts = opts || {};
   const staffOpts = Array.from(new Map(rows.filter(r=>r.staff_id).map(r => [r.staff_id, r.staff_name])).entries());
   const svOpts = Array.from(new Map(rows.filter(r=>r.supervisor_id).map(r => [r.supervisor_id, r.supervisor_name])).entries());
   const f = puState.filters;
   return `
     <div class="card" style="display:flex; gap:8px; flex-wrap:wrap; align-items:end; padding:12px 14px; margin-bottom:14px;">
-      <div style="display:flex; flex-direction:column; gap:4px; min-width:140px;"><label class="field-label">Tanggal</label><input class="input" type="date" value="${esc(f.tanggal)}" onchange="puState.filters.tanggal=this.value; ${rerenderFn}"></div>
-      <div style="display:flex; flex-direction:column; gap:4px; min-width:140px;"><label class="field-label">Petak</label><input class="input" placeholder="Cari petak…" value="${esc(f.petak)}" oninput="puState.filters.petak=this.value; ${rerenderFn}"></div>
+      ${opts.hideTanggal ? '' : `<div style="display:flex; flex-direction:column; gap:4px; min-width:140px;"><label class="field-label">Tanggal</label><input class="input" type="date" value="${esc(f.tanggal)}" onchange="puState.filters.tanggal=this.value; ${rerenderFn}"></div>`}
       <div style="display:flex; flex-direction:column; gap:4px; min-width:140px;"><label class="field-label">Jenis Unit</label><select class="input" onchange="puState.filters.jenisUnit=this.value; ${rerenderFn}">
         <option value="">Semua Jenis Unit</option>
         ${PU_JENIS_UNIT.map(j => `<option value="${esc(j)}" ${f.jenisUnit===j?'selected':''}>${esc(j)}</option>`).join('')}
@@ -389,8 +389,8 @@ async function renderPuSummaryOnly(){
   const zonaLabel = (currentProfile?.role === 'superintendent' && currentProfile.zona) ? ` — Zona ${esc(currentProfile.zona)}` : ' — Semua Zona';
 
   $('#pageContent').innerHTML = `
-    <div class="card" style="margin-bottom:16px;"><div class="card-header"><span class="card-title">Ringkasan Data Posisi Unit${zonaLabel}</span>${puExportBtnHTML()}</div></div>
-    ${puFilterBarHTML(allRows, 'renderPuSummaryOnly()')}
+    <div class="card" style="margin-bottom:16px;"><div class="card-header"><span class="card-title">Ringkasan Data Posisi Unit${zonaLabel}</span><div style="display:flex; gap:8px;"><input class="input" type="date" style="width:auto; padding:6px 12px; font-size:12.5px;" value="${esc(puState.filters.tanggal)}" onchange="puState.filters.tanggal=this.value; renderPuSummaryOnly();">${puExportBtnHTML()}</div></div></div>
+    ${puFilterBarHTML(allRows, 'renderPuSummaryOnly()', {hideTanggal:true})}
     ${puSummaryCards(s)}
     <div class="card" style="margin-top:16px;">
       <div class="card-header"><span class="card-title">Ringkasan per Zona</span></div>
