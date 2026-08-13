@@ -96,9 +96,10 @@
       <div class="ap-chat-card">
         <div class="ap-header">
           <span class="ap-header-title">Aktivitas</span>
-          <span class="ap-header-online" id="apOnlineBadge" title="Pengguna online sekarang">
+          <span class="ap-header-online" id="apOnlineBadge" title="Klik untuk lihat siapa online" style="cursor:pointer; position:relative;">
             <span class="online-dot" id="apOnlineDot"></span>
             <span id="apOnlineCount">0</span> Online
+            <div class="notif-panel online-panel hidden" id="apOnlinePanel" style="top:calc(100% + 6px);"></div>
           </span>
           <div class="ap-header-actions">
             <button type="button" class="ap-icon-btn" id="apPinBtn" title="Sematkan panel">
@@ -146,6 +147,12 @@
     document.getElementById('apCloseBtn').addEventListener('click', () => apHide(true));
     document.getElementById('apPinBtn').addEventListener('click', apTogglePin);
     document.getElementById('apLocViewAll').addEventListener('click', apOpenFullMap);
+    document.getElementById('apOnlineBadge').addEventListener('click', (e) => { e.stopPropagation(); apToggleOnlinePanel(); });
+    document.addEventListener('click', (e) => {
+      const badge = document.getElementById('apOnlineBadge');
+      const pop = document.getElementById('apOnlinePanel');
+      if(badge && pop && !badge.contains(e.target)) pop.classList.add('hidden');
+    });
 
     const composerInput = document.getElementById('apComposerInput');
     document.getElementById('apComposerSend').addEventListener('click', apComposerSubmit);
@@ -224,6 +231,37 @@
     const n = typeof getOnlineUsersList === 'function' ? getOnlineUsersList().length : 0;
     label.textContent = n;
     dot.classList.toggle('online-dot-live', n > 0);
+    if(!document.getElementById('apOnlinePanel')?.classList.contains('hidden')) apRenderOnlinePanel();
+  }
+
+  function apToggleOnlinePanel(){
+    const pop = document.getElementById('apOnlinePanel');
+    if(!pop) return;
+    const willOpen = pop.classList.contains('hidden');
+    pop.classList.toggle('hidden');
+    if(willOpen) apRenderOnlinePanel();
+  }
+
+  function apRenderOnlinePanel(){
+    const pop = document.getElementById('apOnlinePanel');
+    if(!pop) return;
+    const me = (typeof currentUser !== 'undefined' && currentUser) || null;
+    const list = typeof getOnlineUsersList === 'function' ? getOnlineUsersList() : [];
+    list.sort((a,b) => (a.id === me?.id ? -1 : b.id === me?.id ? 1 : (a.full_name||'').localeCompare(b.full_name||'')));
+    pop.innerHTML = `
+      <div class="notif-panel-header"><span>Pengguna Online (${list.length})</span></div>
+      <div class="notif-list">
+        ${list.length ? list.map(u => `
+          <div class="notif-item">
+            <span class="online-dot online-dot-live" style="margin-top:4px;"></span>
+            <div class="notif-body">
+              <div class="notif-msg">${apEsc(u.full_name)}${u.id === me?.id ? ' <span style="color:var(--text-faint);">(Anda)</span>' : ''}</div>
+              <div class="notif-meta">${apEsc(u.role)}</div>
+            </div>
+          </div>
+        `).join('') : `<div class="notif-empty">Tidak ada pengguna lain yang online.</div>`}
+      </div>
+    `;
   }
 
   function apRenderBadges(){
