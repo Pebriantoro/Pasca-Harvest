@@ -6878,13 +6878,6 @@ function paintJustifikasiTCH(allRows){
   const sortArrow = (key) => st.sortKey===key ? (st.sortDir==='asc' ? ' ▲' : ' ▼') : '';
 
   $('#pageContent').innerHTML = `
-    <div class="card" style="margin-bottom:16px; border-left:3px solid var(--accent-red);">
-      <div class="card-body" style="padding:12px 18px; font-size:13px; color:var(--text-muted); line-height:1.6;">
-        Daftar petak dari menu <b>Pasca Harvest</b> dengan <b style="color:var(--accent-red);">TCH Nett BAPP 2026 &lt; 70</b> (nilai 0/kosong tidak ditampilkan, karena biasanya berarti petak belum tebang/belum ada data BAPP).
-        Daftar ini otomatis diperbarui setiap kali data Pasca Harvest diimpor/ditambah/diedit — isi kolom
-        <b>Keterangan</b> di bawah untuk mencatat justifikasi/alasan rendahnya TCH pada petak tersebut.
-      </div>
-    </div>
     <div class="kpi-grid anim-stagger">
       ${kpiCard('Total Petak Under 70', totalPetak, filterActive ? 'petak (sesuai filter)' : 'petak TCH < 70', 'var(--accent-red)', 'petak')}
       ${kpiCard('Total Luas Terkait', fmtNum(totalLuas)+' Ha', 'size RKT petak terkait', 'var(--accent-gold)', 'luas')}
@@ -7246,13 +7239,6 @@ function paintProduktivitasKontraktor(allRows){
   const pageStartNo = (st.page-1)*st.pageSize;
 
   $('#pageContent').innerHTML = `
-    <div class="card" style="margin-bottom:16px; border-left:3px solid var(--accent-gold);">
-      <div class="card-body" style="padding:12px 18px; font-size:13px; color:var(--text-muted);">
-        Data mengikuti struktur sheet <b>Rekap WO</b>: Kontraktor, Kegiatan, Luas BAPP, dan Ket Hasil.
-        Tambah data, edit, hapus, serta import/export XLSX pada menu ini hanya menggunakan keempat kolom tersebut.
-      </div>
-    </div>
-
     <div class="kpi-grid anim-stagger">
       ${kpiCard('Total WO', totalWO, filterActive ? 'WO (sesuai filter)' : 'WO tercatat', 'var(--accent-gold)', 'truk')}
       ${kpiCard('Total Luas BAPP', fmtNum(totalLuasBAPP,2)+' Ha', 'akumulasi luas terealisasi', 'var(--accent-green)', 'luas')}

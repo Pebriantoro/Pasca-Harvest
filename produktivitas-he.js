@@ -305,14 +305,6 @@ function paintProduktivitasHE(allRowsRaw, mode){
   const idPrefix = mode === 'rental' ? 'pher' : 'phei';
 
   $('#pageContent').innerHTML = `
-    <div class="card" style="margin-bottom:16px; border-left:3px solid var(--accent-gold);">
-      <div class="card-body" style="padding:12px 18px; font-size:13px; color:var(--text-muted);">
-        Data mengikuti struktur sheet <b>Report</b> (Daily Report Alat Berat), 1 baris = 1 unit / 1 hari / 1 kegiatan.
-        Modul ini menampilkan baris dengan Kontraktor <b>${mode==='rental' ? 'PT. HKL & PT. PRN (Rental)' : 'INTERNAL'}</b> saja.
-        Analisa per unit (Target HM/Hari, HK, HM Actual, Balance, % Avaibility, % Utility, HM/Ha${mode==='internal' ? ', Ltr/HM' : ''}) dihitung otomatis dari log harian, meniru sheet "Mont. HM".
-      </div>
-    </div>
-
     <div class="kpi-grid">
       ${kpiCard('Jumlah Unit', totalUnit, filterActive ? 'unit (sesuai filter)' : 'unit tercatat', 'var(--accent-gold)')}
       ${kpiCard('Total HM Actual', fmtNum(totalHmActual,2), 'akumulasi HM hari ini', 'var(--accent-blue)')}
