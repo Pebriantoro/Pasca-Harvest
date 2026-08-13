@@ -192,7 +192,7 @@ input,select,textarea{ font-family: inherit; }
   opacity:0.55;
 }
 
-/* ---- Login weather widget (card di atas form login, gaya iOS weather) ---- */
+/* ---- Weather widget card (login + beranda), gaya iOS weather ---- */
 .login-weather-widget{
   position:relative; width:100%; max-width:340px; padding:22px 20px 20px; text-align:center;
   border-radius:26px; overflow:hidden; z-index:1;
@@ -250,6 +250,11 @@ input,select,textarea{ font-family: inherit; }
 .lw-cloud-a{ width:140px; height:40px; top:14%; right:-10px; }
 .lw-cloud-b{ width:100px; height:30px; top:30%; left:-14px; opacity:0.75; }
 .login-weather-widget.wx-clear-day .lw-cloud, .login-weather-widget.wx-clear-night .lw-cloud{ display:none; }
+
+.beranda-weather-widget{ max-width:100%; margin:0 0 16px; padding:22px 22px 20px; text-align:left; }
+.beranda-weather-widget .lw-sun{ top:-50px; left:auto; right:-30px; width:180px; height:180px; }
+.beranda-weather-widget .lw-cloud-a{ top:10%; right:12%; }
+.beranda-weather-widget .lw-cloud-b{ top:auto; bottom:14%; left:8%; }
 
 
 .cane-sway{ transform-origin: 50% 100%; }
