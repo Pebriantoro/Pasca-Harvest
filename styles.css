@@ -256,6 +256,75 @@ input,select,textarea{ font-family: inherit; }
 .beranda-weather-widget .lw-cloud-a{ top:10%; right:12%; }
 .beranda-weather-widget .lw-cloud-b{ top:auto; bottom:14%; left:8%; }
 
+/* ---- Realistic animated sky FX (dipakai widget cuaca login/beranda/modal) ---- */
+.lw-rays{
+  position:absolute; top:-60%; right:-60%; width:220%; height:220%; z-index:0; pointer-events:none;
+  background: conic-gradient(from 0deg, rgba(255,255,255,.22) 0deg, transparent 16deg, transparent 55deg,
+    rgba(255,255,255,.14) 72deg, transparent 110deg, transparent 165deg, rgba(255,255,255,.18) 185deg,
+    transparent 225deg, transparent 295deg, rgba(255,255,255,.12) 315deg, transparent 355deg);
+  animation: lwRaysSpin 50s linear infinite;
+}
+.login-weather-widget:not(.wx-clear-day):not(.wx-clear-night) .lw-rays{ display:none; }
+.login-weather-widget.wx-clear-night .lw-rays{ opacity:.3; }
+@keyframes lwRaysSpin{ to{ transform:rotate(360deg); } }
+
+.lw-sun{ animation: lwSunPulse 4.5s ease-in-out infinite; }
+@keyframes lwSunPulse{ 0%,100%{ opacity:.85; transform:scale(1); } 50%{ opacity:1; transform:scale(1.06); } }
+
+.lw-cloud{ animation: lwCloudDrift 22s ease-in-out infinite alternate; }
+.lw-cloud-b{ animation-duration:28s; animation-direction:alternate-reverse; }
+@keyframes lwCloudDrift{ from{ transform:translateX(0); } to{ transform:translateX(-18px); } }
+.login-weather-widget.wx-fog .lw-cloud{ display:block; filter:blur(18px); opacity:.55; animation-duration:34s; }
+
+.lw-stars{ position:absolute; inset:0; z-index:0; opacity:0; pointer-events:none; }
+.login-weather-widget.wx-clear-night .lw-stars{
+  opacity:1;
+  background-image:
+    radial-gradient(1.6px 1.6px at 20% 22%, #fff 100%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 68% 14%, #fff 100%, transparent 100%),
+    radial-gradient(1.4px 1.4px at 82% 30%, #fff 100%, transparent 100%),
+    radial-gradient(1px 1px at 40% 10%, #fff 100%, transparent 100%),
+    radial-gradient(1.3px 1.3px at 12% 40%, #fff 100%, transparent 100%),
+    radial-gradient(1px 1px at 90% 48%, #fff 100%, transparent 100%);
+  animation: lwStarTwinkle 3s ease-in-out infinite alternate;
+}
+@keyframes lwStarTwinkle{ from{ opacity:.55; } to{ opacity:1; } }
+
+.lw-rain{ position:absolute; inset:0; z-index:0; opacity:0; pointer-events:none; }
+.login-weather-widget.wx-rain .lw-rain, .login-weather-widget.wx-storm .lw-rain{
+  opacity:.5;
+  background-image: repeating-linear-gradient(115deg, rgba(255,255,255,.55) 0px, rgba(255,255,255,.55) 1px, transparent 1px, transparent 12px);
+  background-size:100% 200%;
+  animation: lwRainFall .5s linear infinite;
+}
+.login-weather-widget.wx-storm .lw-rain{ opacity:.65; }
+@keyframes lwRainFall{ from{ background-position:0 0; } to{ background-position:-20px 40px; } }
+
+.lw-flash{ position:absolute; inset:0; z-index:0; background:#fff; opacity:0; pointer-events:none; }
+.login-weather-widget.wx-storm .lw-flash{ animation: lwLightning 6.5s ease-in-out infinite; }
+@keyframes lwLightning{ 0%,92%,100%{ opacity:0; } 93%{ opacity:.5; } 94%{ opacity:0; } 95%{ opacity:.35; } 96%{ opacity:0; } }
+
+/* ---- Hero variant: widget cuaca dominan di modal welcome ---- */
+.wm-hero{ max-width:none; width:100%; padding:28px 22px 22px; border-radius:22px 22px 0 0; box-shadow:none; }
+.wm-hero .lw-sun{ top:-70px; left:auto; right:-40px; width:200px; height:200px; }
+.wm-hero .lw-cloud-a{ top:8%; right:-16px; }
+.wm-hero .lw-cloud-b{ top:auto; bottom:10%; left:-18px; }
+.wm-hero .lw-eyebrow{
+  position:relative; z-index:1; font-family:var(--font-display); font-size:12px; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.85); text-shadow:0 1px 10px rgba(0,0,0,.3);
+}
+.wm-hero .lw-city{ font-size:23px; margin-top:2px; }
+.wm-hero .lw-temp{ font-size:76px; }
+.wm-hero .lw-caption{
+  position:relative; z-index:1; font-size:12px; font-weight:600; color:rgba(255,255,255,.88);
+  text-shadow:0 1px 8px rgba(0,0,0,.25); margin-top:12px;
+}
+.wm-hero .lw-caption .lw-date{ display:block; font-size:10.5px; font-weight:500; opacity:.75; margin-top:2px; }
+
+@media (prefers-reduced-motion: reduce){
+  .lw-rays, .lw-sun, .lw-cloud, .lw-stars, .lw-rain, .lw-flash{ animation:none !important; }
+}
+
 
 .cane-sway{ transform-origin: 50% 100%; }
 .cane-sway-a{ animation: caneSway 5s ease-in-out infinite alternate; }

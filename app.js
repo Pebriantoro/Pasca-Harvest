@@ -594,70 +594,23 @@ function greetingByTime(){
   return 'Selamat malam';
 }
 
-function greetingSceneByTime(){
-  const h = new Date().getHours();
-  // { key, sky gradient, icon svg, label muted color }
-  if(h < 11) return {
-    key:'pagi',
-    sky:'linear-gradient(160deg,#ffd68a 0%,#ffb199 38%,#8ec9ea 100%)',
-    icon:`<svg viewBox="0 0 120 90" width="88" height="66">
-      <defs><radialGradient id="sunPagi" cx="35%" cy="35%" r="70%">
-        <stop offset="0%" stop-color="#fff3c4"/><stop offset="55%" stop-color="#ffcf5c"/><stop offset="100%" stop-color="#ffab3d"/>
-      </radialGradient></defs>
-      <circle cx="42" cy="42" r="24" fill="url(#sunPagi)"/>
-      <g stroke="#ffcf5c" stroke-width="4" stroke-linecap="round" opacity=".85">
-        <line x1="42" y1="4" x2="42" y2="12"/><line x1="10" y1="42" x2="2" y2="42"/>
-        <line x1="16" y1="16" x2="10" y2="10"/><line x1="68" y1="16" x2="74" y2="10"/>
-      </g>
-      <ellipse cx="66" cy="58" rx="34" ry="17" fill="#fff" opacity=".95"/>
-      <ellipse cx="48" cy="62" rx="20" ry="12" fill="#ffe9d6" opacity=".9"/>
-    </svg>`
-  };
-  if(h < 15) return {
-    key:'siang',
-    sky:'linear-gradient(160deg,#6fc3ff 0%,#3fa9f5 55%,#2c86d6 100%)',
-    icon:`<svg viewBox="0 0 120 90" width="88" height="66">
-      <defs><radialGradient id="sunSiang" cx="35%" cy="35%" r="70%">
-        <stop offset="0%" stop-color="#fffbe6"/><stop offset="50%" stop-color="#ffe066"/><stop offset="100%" stop-color="#ffb703"/>
-      </radialGradient></defs>
-      <circle cx="60" cy="38" r="28" fill="url(#sunSiang)"/>
-      <g stroke="#ffe066" stroke-width="5" stroke-linecap="round">
-        <line x1="60" y1="0" x2="60" y2="10"/><line x1="60" y1="66" x2="60" y2="76"/>
-        <line x1="20" y1="38" x2="10" y2="38"/><line x1="110" y1="38" x2="100" y2="38"/>
-        <line x1="31" y1="9" x2="24" y2="2"/><line x1="89" y1="9" x2="96" y2="2"/>
-        <line x1="31" y1="67" x2="24" y2="74"/><line x1="89" y1="67" x2="96" y2="74"/>
-      </g>
-    </svg>`
-  };
-  if(h < 18) return {
-    key:'sore',
-    sky:'linear-gradient(160deg,#ff9a76 0%,#ff6f91 45%,#5b4b8a 100%)',
-    icon:`<svg viewBox="0 0 120 90" width="88" height="66">
-      <defs><radialGradient id="sunSore" cx="35%" cy="35%" r="70%">
-        <stop offset="0%" stop-color="#ffe3b0"/><stop offset="55%" stop-color="#ff9457"/><stop offset="100%" stop-color="#ee5d5d"/>
-      </radialGradient></defs>
-      <circle cx="46" cy="50" r="22" fill="url(#sunSore)"/>
-      <ellipse cx="70" cy="55" rx="36" ry="16" fill="#fff" opacity=".9"/>
-      <ellipse cx="50" cy="60" rx="22" ry="11" fill="#ffd9c2" opacity=".85"/>
-      <rect x="8" y="76" width="104" height="3" rx="1.5" fill="#fff" opacity=".5"/>
-    </svg>`
-  };
-  return {
-    key:'malam',
-    sky:'linear-gradient(160deg,#2b2f6b 0%,#1c2150 55%,#0d1030 100%)',
-    icon:`<svg viewBox="0 0 120 90" width="88" height="66">
-      <defs><radialGradient id="moonMalam" cx="35%" cy="35%" r="70%">
-        <stop offset="0%" stop-color="#fdfdfd"/><stop offset="60%" stop-color="#e3e6f0"/><stop offset="100%" stop-color="#b9c0d6"/>
-      </radialGradient></defs>
-      <circle cx="52" cy="42" r="26" fill="url(#moonMalam)"/>
-      <circle cx="66" cy="34" r="26" fill="#1c2150"/>
-      <g fill="#ffe9a8">
-        <circle cx="18" cy="18" r="2"/><circle cx="32" cy="10" r="1.6"/>
-        <circle cx="96" cy="16" r="2"/><circle cx="104" cy="30" r="1.6"/>
-        <circle cx="12" cy="46" r="1.6"/>
-      </g>
-    </svg>`
-  };
+const WM_COND_TEXT = {
+  0: 'Cerah', 1: 'Cerah Berawan', 2: 'Berawan Sebagian', 3: 'Mendung',
+  45: 'Berkabut', 48: 'Berkabut',
+  51: 'Gerimis Ringan', 53: 'Gerimis', 55: 'Gerimis Lebat',
+  56: 'Gerimis Beku', 57: 'Gerimis Beku Lebat',
+  61: 'Hujan Ringan', 63: 'Hujan', 65: 'Hujan Lebat',
+  66: 'Hujan Beku', 67: 'Hujan Beku Lebat',
+  71: 'Salju Ringan', 73: 'Salju', 75: 'Salju Lebat',
+  80: 'Hujan Ringan', 81: 'Hujan', 82: 'Hujan Sangat Lebat',
+  95: 'Badai Petir', 96: 'Badai Petir', 99: 'Badai Petir'
+};
+function wmCondClass(code, isDay){
+  if(code === 0) return isDay ? 'wx-clear-day' : 'wx-clear-night';
+  if([1,2,3].includes(code)) return 'wx-cloudy';
+  if([45,48].includes(code)) return 'wx-fog';
+  if([95,96,99].includes(code)) return 'wx-storm';
+  return 'wx-rain';
 }
 
 function showUpdateReminderOnce(){
@@ -665,18 +618,25 @@ function showUpdateReminderOnce(){
   sessionStorage.setItem('update_reminder_shown', '1');
   const name = currentProfile?.full_name || currentProfile?.email || 'Pengguna';
   const lokasi = (currentProfile?.zona || '').toString().trim() || 'Ogan Komering Ilir';
-  const scene = greetingSceneByTime();
   const tanggal = new Date().toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.innerHTML = `
     <div class="modal-box" style="max-width:380px; padding:0; overflow:hidden; text-align:center; border-radius:22px;">
-      <div style="background:${scene.sky}; padding:26px 20px 22px; color:#fff;">
-        <div style="font-size:12px; letter-spacing:.5px; opacity:.85; text-transform:uppercase;">${lokasi}</div>
-        <div style="font-size:22px; font-weight:700; margin-top:4px;">${greetingByTime()}, ${name}</div>
-        <div style="margin:10px 0 4px; display:flex; justify-content:center;">${scene.icon}</div>
-        <div style="font-size:13px; opacity:.9;">Selamat datang kembali!</div>
-        <div style="font-size:11px; opacity:.7; margin-top:2px;">${tanggal}</div>
+      <div class="login-weather-widget wm-hero wx-clear-day" id="wmWeather">
+        <div class="lw-rays" aria-hidden="true"></div>
+        <div class="lw-sun" aria-hidden="true"></div>
+        <div class="lw-cloud lw-cloud-a" aria-hidden="true"></div>
+        <div class="lw-cloud lw-cloud-b" aria-hidden="true"></div>
+        <div class="lw-stars" aria-hidden="true"></div>
+        <div class="lw-rain" aria-hidden="true"></div>
+        <div class="lw-flash" aria-hidden="true"></div>
+        <div class="lw-eyebrow">${greetingByTime()}, ${name}</div>
+        <div class="lw-city">${lokasi}</div>
+        <div class="lw-temp"><span id="wmTemp">–</span>°</div>
+        <div class="lw-cond" id="wmCond">Memuat cuaca…</div>
+        <div class="lw-hilo"><span>H:<span id="wmHigh">–</span>°</span>&nbsp;&nbsp;<span>L:<span id="wmLow">–</span>°</span></div>
+        <div class="lw-caption">Selamat datang kembali!<span class="lw-date">${tanggal}</span></div>
       </div>
       <div class="modal-body" style="padding:18px 20px 4px;">
         <div style="font-size:30px; margin-bottom:8px;">⚠️</div>
@@ -688,6 +648,39 @@ function showUpdateReminderOnce(){
       </div>
     </div>`;
   document.body.appendChild(overlay);
+
+  // Cuaca asli (Open-Meteo, tanpa API key) -> widget update begitu data datang.
+  function applyWeather(lat, lon){
+    const widget = document.getElementById('wmWeather');
+    if(!widget) return;
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=auto`)
+      .then(res => res.ok ? res.json() : Promise.reject())
+      .then(data => {
+        const cw = data.current_weather;
+        if(!cw) return Promise.reject();
+        const cls = wmCondClass(cw.weathercode, cw.is_day === 1);
+        widget.classList.remove('wx-clear-day','wx-clear-night','wx-cloudy','wx-rain','wx-storm','wx-fog');
+        widget.classList.add(cls);
+        widget.classList.toggle('lw-night', cls === 'wx-clear-night');
+        document.getElementById('wmTemp').textContent = Math.round(cw.temperature);
+        document.getElementById('wmCond').textContent = WM_COND_TEXT[cw.weathercode] || 'Cerah Berawan';
+        const hi = data.daily?.temperature_2m_max?.[0];
+        const lo = data.daily?.temperature_2m_min?.[0];
+        document.getElementById('wmHigh').textContent = hi != null ? Math.round(hi) : '–';
+        document.getElementById('wmLow').textContent = lo != null ? Math.round(lo) : '–';
+      })
+      .catch(() => { document.getElementById('wmCond').textContent = 'Cerah Berawan'; });
+  }
+  const WM_FALLBACK_COORD = { lat: -5.45, lon: 105.27 }; // Bandar Lampung, kalau lokasi ditolak/gagal
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      pos => applyWeather(pos.coords.latitude, pos.coords.longitude),
+      () => applyWeather(WM_FALLBACK_COORD.lat, WM_FALLBACK_COORD.lon),
+      { timeout: 6000 }
+    );
+  } else {
+    applyWeather(WM_FALLBACK_COORD.lat, WM_FALLBACK_COORD.lon);
+  }
 }
 
 function applyRoleUI(){
