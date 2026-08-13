@@ -698,10 +698,6 @@ function applyRoleUI(){
   avatarEl.style.backgroundImage = `url('${avatarUrlOrDefault(currentProfile.avatar_url)}')`;
   avatarEl.style.backgroundSize = 'cover';
   avatarEl.style.backgroundPosition = 'center';
-  avatarEl.style.cursor = 'pointer';
-  avatarEl.title = 'Klik untuk ganti foto profil';
-  avatarEl.onclick = triggerAvatarUpload;
-  renderAvatarEditIcon();
   const pill = $('#userRolePill');
   const roleShortLabel = { superintendent: 'SPTD', supervisor: 'SPV' };
   const roleDisplay = roleShortLabel[currentProfile.role] || currentProfile.role;
@@ -1886,19 +1882,6 @@ async function markDMConversationRead(userId){
 async function startDMWith(userId){
   await navigate('dm');
   openDMConversation(userId);
-}
-function renderAvatarEditIcon(){
-  const avatarEl = $('#userAvatar');
-  if(!avatarEl) return;
-  avatarEl.style.position = 'relative';
-  let overlay = document.getElementById('avatarEditIcon');
-  if(!overlay){
-    overlay = document.createElement('div');
-    overlay.id = 'avatarEditIcon';
-    overlay.style.cssText = 'position:absolute; bottom:1px; right:1px; width:15px; height:15px; background:var(--accent-gold); border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid var(--sidebar); pointer-events:none;';
-    overlay.innerHTML = `<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#12200D" stroke-width="3"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>`;
-  }
-  avatarEl.appendChild(overlay); // re-append (textContent='' above may have removed it)
 }
 function ensureAvatarFileInput(){
   let inp = document.getElementById('avatarFileInput');
