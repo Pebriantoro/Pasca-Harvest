@@ -445,7 +445,7 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
   padding:10px 18px; border-radius: var(--radius-sm); font-weight:600; font-size:13.5px;
   border:1px solid transparent; transition: transform .12s var(--ease-out), box-shadow .15s var(--ease-out), background .15s, border-color .15s, color .15s;
-  white-space:nowrap;
+  white-space:nowrap; flex-shrink:0;
 }
 .btn:active{ transform: scale(.97); }
 .btn:hover{ transform: translateY(-1px); box-shadow: var(--shadow-glow-gold); }
