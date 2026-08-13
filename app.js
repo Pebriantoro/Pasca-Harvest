@@ -706,6 +706,9 @@ function applyRoleUI(){
   // punya jalur sendiri lewat Kelola Pengguna -> Ubah Password akun manapun).
   const pwSettingsBtn = $('#settingsChangePasswordBtn');
   if(pwSettingsBtn) pwSettingsBtn.style.display = isAdminRole() ? 'none' : '';
+  // Backup Database: khusus Admin.
+  const backupBtn = $('#settingsBackupDbBtn');
+  if(backupBtn) backupBtn.style.display = isAdminRole() ? '' : 'none';
   // Khusus role Staff: sembunyikan menu Produktivitas, Tenaga Kerja, dan Armada & Aset
   // (bukan bagian tanggung jawab Staff — role lain tidak terpengaruh).
   const hideForStaff = currentProfile.role === 'staff';
@@ -715,6 +718,53 @@ function applyRoleUI(){
   });
 }
 function isAdminRole(){ return currentProfile?.role === 'admin'; }
+
+/* ---- Backup Database (Admin) ----
+   Tarik semua baris tiap tabel via Supabase client (anon key + RLS admin)
+   lalu unduh sebagai satu file JSON. ponytail: select('*') tanpa paging —
+   PostgREST default cap ~1000 baris/tabel; kalau ada tabel yang kepotong,
+   upgrade ke .range() loop per tabel.
+*/
+const BACKUP_DB_TABLES = [
+  'profiles', 'petak', 'pasca_harvest', 'notifications', 'notification_reads',
+  'chat_messages', 'direct_messages', 'field_audit_log', 'access_log',
+  'push_subscriptions', 'qr_login_sessions'
+];
+async function backupDatabaseNow(){
+  if(!isAdminRole()) return;
+  const stateLabel = $('#backupDbStateLabel');
+  const btn = $('#settingsBackupDbBtn');
+  if(btn) btn.disabled = true;
+  if(stateLabel) stateLabel.textContent = 'Menyiapkan…';
+  toast('Menyiapkan backup database…', 'info');
+
+  const backup = { generated_at: new Date().toISOString(), generated_by: currentProfile?.email || currentUser?.id, tables: {} };
+  const failed = [];
+  await Promise.all(BACKUP_DB_TABLES.map(async table => {
+    const { data, error } = await supa.from(table).select('*');
+    if(error){ failed.push(table); return; }
+    backup.tables[table] = data || [];
+  }));
+
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `backup-estate2-${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+
+  if(btn) btn.disabled = false;
+  if(stateLabel) stateLabel.textContent = '';
+  if(failed.length){
+    toast(`Backup diunduh, tapi ${failed.length} tabel gagal ditarik: ${failed.join(', ')}`, 'error');
+  } else {
+    toast('Backup database berhasil diunduh.', 'success');
+  }
+}
 
 // Popup profil ringkas — muncul saat nama/role di topbar diklik.
 function openMyProfileModal(){

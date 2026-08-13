@@ -577,6 +577,11 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 <span class="settings-row-label">Ubah Password</span>
               </button>
+              <button type="button" class="settings-row" id="settingsBackupDbBtn" title="Unduh backup seluruh data sistem (JSON)" onclick="backupDatabaseNow()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span class="settings-row-label">Backup Database</span>
+                <span class="settings-row-state" id="backupDbStateLabel"></span>
+              </button>
               <button type="button" class="settings-row" id="settingsChangePasscodeBtn" title="Ubah passcode 4 digit di perangkat ini" onclick="openChangePasscodeModal()">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.6"/><path d="M8 11V8a4 4 0 0 1 8 0"/></svg>
                 <span class="settings-row-label">Ubah Passcode</span>
