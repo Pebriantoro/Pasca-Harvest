@@ -188,6 +188,9 @@ let qcpState = {
     .qcp-filter-bar .qcp-f{ display:flex; flex-direction:column; gap:4px; min-width:0; }
     .qcp-filter-bar label{ font-size:11px; color:var(--text-muted); }
     .qcp-f-reset button{ width:100%; }
+    .qcp-filter-bar .input{ height:34px; box-sizing:border-box; }
+    .qcp-filter-bar select.input{ padding-top:0; padding-bottom:0; }
+    .qcp-f-reset button{ height:34px; box-sizing:border-box; }
     @media (max-width:640px){
       .qcp-filter-bar{ grid-template-columns:1fr 1fr; }
       .qcp-f-reset{ grid-column:1 / -1; }
@@ -511,7 +514,7 @@ async function renderQcpAtasan(role){
     ` : `
       ${qcpFilterBarHTML(allRows, `renderQcpAtasan('${role}')`)}
       <div class="card">
-        <div class="card-header"><span class="card-title">Semua QC By Proses Zona Saya (${filteredTim.length})</span><button class="btn btn-outline btn-sm" onclick="qcpExportJPEG(qcpState.exportRows)">Export JPEG</button></div>
+        <div class="card-header"><span class="card-title">Semua QC By Proses Zona Saya (${filteredTim.length})</span><button class="btn btn-outline btn-sm" style="height:34px; box-sizing:border-box;" onclick="qcpExportJPEG(qcpState.exportRows)">Export JPEG</button></div>
         <div class="table-scroll">
           <table class="data-table">
             <thead><tr><th>Tanggal</th><th>Staff</th><th>Kegiatan</th><th>Petak</th><th>Average Nilai</th><th>Kategori</th><th>Nilai QC</th><th>Status</th><th>Aksi</th></tr></thead>
