@@ -36,7 +36,7 @@ async function berandaFetchFeed(){
   rkhRows.forEach(r => items.push({
     source: 'rkh', id: r.id, created_at: r.created_at || r.tanggal, tanggal: r.tanggal,
     staff_name: r.staff_name, zona: r.zona,
-    icon: '📋', sourceLabel: 'Rencana Kerja Harian',
+    icon: 'rkh', sourceLabel: 'Rencana Kerja Harian',
     body: `Rencana kerja <b>${esc(r.aktivitas || '-')}</b> di petak <b>${esc(r.petak || '-')}</b>${r.jumlah_tk ? ` · ${esc(String(r.jumlah_tk))} TK` : ''}${r.kontraktor ? ` · ${esc(r.kontraktor)}` : ''}`,
     statusHtml: berandaRelabelBadge(typeof rkhBadge === 'function' ? rkhBadge(r.status) : esc(r.status || '')),
     onClick: `navigate('rkh')`,
@@ -44,7 +44,7 @@ async function berandaFetchFeed(){
   praSpaRows.forEach(r => items.push({
     source: 'pra_spa', id: r.id, created_at: r.created_at || r.tanggal, tanggal: r.tanggal,
     staff_name: r.staff_name, zona: r.zona,
-    icon: '🔍', sourceLabel: 'Pengecekan Pra SPA',
+    icon: 'pra_spa', sourceLabel: 'Pengecekan Pra SPA',
     body: `Pengecekan <b>${esc(r.kegiatan || '-')}</b> di petak <b>${esc(r.no_petak || '-')}</b>${r.resume ? ` — Kelulusan ${r.resume.persen.toFixed(1)}%` : ''}`,
     statusHtml: berandaRelabelBadge(typeof praSpaBadge === 'function' ? praSpaBadge(r.status) : esc(r.status || '')),
     onClick: `navigate('pra_spa')`,
@@ -52,7 +52,7 @@ async function berandaFetchFeed(){
   qcpRows.forEach(r => items.push({
     source: 'qc_by_proses', id: r.id, created_at: r.created_at || r.tanggal, tanggal: r.tanggal,
     staff_name: r.staff_name, zona: r.zona,
-    icon: '✅', sourceLabel: 'QC By Proses',
+    icon: 'qc_by_proses', sourceLabel: 'QC By Proses',
     body: `QC <b>${esc(r.kegiatan || '-')}</b> di petak <b>${esc(r.petak || '-')}</b> — Nilai ${r.average_nilai ?? '-'} (${esc(r.kategori || '-')})`,
     statusHtml: berandaRelabelBadge(typeof qcpBadge === 'function' ? qcpBadge(r.status) : esc(r.status || '')),
     onClick: `navigate('qc_by_proses')`,
@@ -95,13 +95,19 @@ const BERANDA_SOURCE_COLOR = {
   pra_spa: 'var(--accent-gold)',
   qc_by_proses: 'var(--accent-blue)',
 };
+const BERANDA_SOURCE_SVG = {
+  rkh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>',
+  pra_spa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+  qc_by_proses: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+};
 
 function berandaCardHTML(item){
   const color = BERANDA_SOURCE_COLOR[item.source] || 'var(--accent-gold)';
+  const svg = BERANDA_SOURCE_SVG[item.source] || '';
   return `
     <div class="beranda-timeline-item">
       <div class="beranda-timeline-time">${esc(typeof timeAgo === 'function' ? timeAgo(item.created_at) : fmtTanggalRKH(item.tanggal))}</div>
-      <div class="beranda-timeline-dot" style="background:${color};">${item.icon}</div>
+      <div class="beranda-timeline-dot" style="background:${color};">${svg}</div>
       <div class="card card-hoverable beranda-timeline-content" style="position:relative; cursor:pointer; padding:16px;" onclick="${item.onClick}">
         <div style="position:absolute; top:14px; right:16px;">${item.statusHtml}</div>
         <div style="display:flex; gap:12px; align-items:flex-start;">

@@ -608,32 +608,29 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 /* Beranda: timeline vertikal (garis + dot) buat feed aktivitas, gaya
    referensi "22:10 Sleep / 05:05 Woke Up dst" — garis nyambung dari dot
    ke dot ke bawah, dot warna beda per sumber (RKH/Pra SPA/QC By Proses). */
-.beranda-timeline{ position:relative; padding-left:2px; }
+.beranda-timeline{ position:relative; padding-left:0; }
 .beranda-timeline::before{
-  content:''; position:absolute; left:33px; top:6px; bottom:6px; width:2px;
-  background:var(--border); z-index:0;
+  content:''; position:absolute; left:89px; top:8px; bottom:8px; width:3px;
+  background:var(--border-soft, var(--border)); z-index:0; border-radius:2px;
 }
 .beranda-timeline-item{
-  position:relative; display:grid;
-  grid-template-columns:52px 68px 1fr; align-items:start; gap:0 12px;
+  position:relative; display:flex; align-items:center; gap:10px;
   margin-bottom:14px;
 }
 .beranda-timeline-time{
-  grid-column:1; padding-top:8px; font-size:11px; color:var(--text-faint);
-  font-family:var(--font-mono); white-space:nowrap;
+  flex:0 0 60px; font-size:11px; color:var(--text-faint);
+  font-family:var(--font-mono); white-space:nowrap; text-align:right;
 }
 .beranda-timeline-dot{
-  grid-column:2; position:relative; z-index:1; width:36px; height:36px;
+  flex:0 0 38px; position:relative; z-index:1; width:38px; height:38px;
   border-radius:50%; display:flex; align-items:center; justify-content:center;
-  font-size:15px; flex-shrink:0; box-shadow:0 0 0 4px var(--bg);
+  color:#fff; box-shadow:0 0 0 4px var(--bg);
 }
-.beranda-timeline-content{ grid-column:3; min-width:0; }
+.beranda-timeline-content{ flex:1; min-width:0; }
 @media (max-width:640px){
-  .beranda-timeline::before{ left:21px; }
-  .beranda-timeline-item{ grid-template-columns:40px 1fr; }
+  .beranda-timeline::before{ left:17px; }
   .beranda-timeline-time{ display:none; }
-  .beranda-timeline-dot{ grid-column:1; width:32px; height:32px; font-size:13px; }
-  .beranda-timeline-content{ grid-column:2; }
+  .beranda-timeline-dot{ flex:0 0 34px; width:34px; height:34px; }
 }
 
 /* Task Calendar: grid bulanan 7 kolom, tiap tanggal punya dot warna per
@@ -653,12 +650,16 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 .taskcal-day-muted{ opacity:.4; }
 .taskcal-day-today{ border-color:var(--accent-gold); box-shadow:0 0 0 1px var(--accent-gold) inset; }
 .taskcal-day-num{ font-size:12.5px; font-weight:700; }
-.taskcal-day-dots{ display:flex; gap:4px; flex-wrap:wrap; margin-top:8px; }
-.taskcal-dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+.taskcal-day-bars{ display:flex; flex-direction:column; gap:3px; margin-top:8px; }
+.taskcal-bar-row{ display:flex; align-items:center; gap:4px; }
+.taskcal-bar{ height:5px; border-radius:3px; min-width:8px; display:inline-block; }
+.taskcal-bar-count{ font-size:9px; color:var(--text-faint); font-family:var(--font-mono); line-height:1; }
 @media (max-width:640px){
   .taskcal-day{ min-height:52px; padding:5px; border-radius:7px; }
   .taskcal-day-num{ font-size:11px; }
   .taskcal-grid, .taskcal-grid-head{ gap:4px; }
+  .taskcal-bar-count{ display:none; }
+  .taskcal-bar{ height:4px; }
 }
 
 .tab-toggle{ display:flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:20px; }

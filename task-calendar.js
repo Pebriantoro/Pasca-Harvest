@@ -66,12 +66,19 @@ function taskCalDayCellHTML(y, m, d, isCurrentMonth){
   const iso = taskCalISO(y, m, d);
   const day = taskCalEventsCache[iso];
   const isToday = iso === taskCalISO(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-  const dots = day ? TASK_CAL_LEGEND.filter(l => day[l.key] > 0) : [];
+  const bars = day ? TASK_CAL_LEGEND.filter(l => day[l.key] > 0) : [];
   return `
     <div class="taskcal-day ${isCurrentMonth ? '' : 'taskcal-day-muted'} ${isToday ? 'taskcal-day-today' : ''}" ${day ? `onclick="taskCalOpenDay('${iso}')"` : ''}>
       <div class="taskcal-day-num">${d}</div>
-      ${dots.length ? `<div class="taskcal-day-dots">
-        ${dots.map(l => `<span class="taskcal-dot" style="background:${l.color};" title="${esc(l.label)} (${day[l.key]})"></span>`).join('')}
+      ${bars.length ? `<div class="taskcal-day-bars">
+        ${bars.map(l => {
+          const count = day[l.key];
+          const widthPct = Math.min(100, 30 + count * 14);
+          return `<div class="taskcal-bar-row" title="${esc(l.label)} (${count})">
+            <span class="taskcal-bar" style="background:${l.color}; width:${widthPct}%;"></span>
+            <span class="taskcal-bar-count">${count}</span>
+          </div>`;
+        }).join('')}
       </div>` : ''}
     </div>`;
 }
