@@ -75,6 +75,9 @@
 .mp-card-menu-list button:hover{ background:var(--bg-card-hover); }
 .mp-card-menu-list button.mp-danger{ color:#F0A392; }
 
+/* petak-tag: hilangkan garis oranye kiri khusus di kartu ini */
+.mp-card .petak-tag{ border-left:none; padding-left:6px; }
+
 /* mobile: foto di atas, gradasi jadi memudar ke bawah */
 @media (max-width:640px){
   .mp-card{ flex-direction:column; }
