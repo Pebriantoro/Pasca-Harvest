@@ -1,0 +1,24 @@
+/* ===================== SETTINGS PANEL DESKTOP FIT — addon =====================
+   Panel Pengaturan (.settings-panel) makin tinggi setelah glass-toggle.css
+   naikin ukuran switch (38x22 -> 46x27), + baris Mode TV dari JS, jadi
+   kepotong max-height & muncul scrollbar di desktop. Addon ini padatkan
+   padding baris + header + grid tema, cuma di layar desktop (>880px,
+   breakpoint mobile udah override sendiri). Ga sentuh styles.css. */
+@media (min-width: 881px){
+  .settings-wrap .settings-panel{
+    max-height: min(92vh, 640px);
+  }
+  .settings-panel .notif-panel-header{
+    padding: 9px 14px;
+  }
+  .settings-panel .settings-row{
+    padding: 8px 14px;
+  }
+  .settings-panel .settings-section-label{
+    padding: 6px 14px 4px;
+  }
+  .settings-panel .palette-swatch-grid{
+    padding: 2px 14px 8px;
+    gap: 6px;
+  }
+}
