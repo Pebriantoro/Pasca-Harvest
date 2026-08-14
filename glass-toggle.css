@@ -1,0 +1,55 @@
+/* ===================== GLASS TOGGLE — addon ala Apple/iOS liquid glass =====================
+   Override .ui-switch (dipakai di Tampilan / Suara Notifikasi / Push / Bahasa / Mode TV).
+   Additive, tidak sentuh core styles.css. Load setelah styles.css & theme-palettes.css. */
+
+.ui-switch{
+  --w:46px; --h:27px;
+  background: color-mix(in srgb, var(--bg-elevated) 55%, transparent);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  box-shadow:
+    inset 0 1px 3px rgba(0,0,0,.22),
+    inset 0 0 0 1px rgba(255,255,255,.04),
+    0 1px 1px rgba(255,255,255,.06);
+  transition: background .35s cubic-bezier(.4,0,.2,1), border-color .35s ease, box-shadow .35s ease;
+}
+
+/* hilangkan ikon check/silang bawaan biar clean kaca ala Apple */
+.ui-switch::before{ content:none; }
+
+/* knob kaca: putih pekat + highlight atas + shadow lembut, terasa "melayang" */
+.ui-switch::after{
+  top:2px; left:2px; width:23px; height:23px;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,1) 0%, rgba(255,255,255,.94) 45%, rgba(240,240,240,.92) 100%);
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.28),
+    0 1px 1px rgba(0,0,0,.12),
+    inset 0 1px 1px rgba(255,255,255,.9);
+  transition: transform .38s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease, width .16s ease;
+}
+
+.ui-switch.on{
+  background: color-mix(in srgb, var(--accent-gold) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border-color: color-mix(in srgb, var(--accent-gold) 55%, transparent);
+  box-shadow:
+    inset 0 1px 3px rgba(0,0,0,.15),
+    inset 0 0 0 1px rgba(255,255,255,.12),
+    0 0 10px color-mix(in srgb, var(--accent-gold) 45%, transparent);
+}
+.ui-switch.on::after{
+  transform: translateX(19px);
+  box-shadow:
+    0 2px 5px rgba(0,0,0,.32),
+    0 0 8px color-mix(in srgb, var(--accent-gold) 55%, transparent),
+    inset 0 1px 1px rgba(255,255,255,.95);
+}
+
+.settings-row:active .ui-switch::after{ width:27px; }
+
+@media (prefers-reduced-motion: reduce){
+  .ui-switch::after{ transition:none; }
+}
