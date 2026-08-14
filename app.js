@@ -649,8 +649,9 @@ function showUpdateReminderOnce(){
   const tanggal = new Date().toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
+  overlay.style.alignItems = 'flex-start';
   overlay.innerHTML = `
-    <div class="modal-box" style="max-width:380px; padding:0; overflow:hidden; text-align:center; border-radius:22px;">
+    <div class="modal-box" style="max-width:380px; padding:0; overflow:hidden; text-align:center; border-radius:22px; min-height:auto; height:auto; align-self:flex-start;">
       <div class="login-weather-widget wm-hero wx-clear-day" id="wmWeather">
         <div class="lw-rays" aria-hidden="true"></div>
         <div class="lw-sun" aria-hidden="true"></div>
