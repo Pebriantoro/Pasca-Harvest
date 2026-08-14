@@ -300,12 +300,12 @@ function mpCardHTML(item){
         ${mpMenuHTML(item)}
         <div class="mp-card-photo">
           ${cover ? `<img src="${esc(cover)}" loading="lazy" onclick="mpOpenLightbox('${esc(cover)}')">` : `<div class="mp-card-photo-empty">📷</div>`}
+          <div class="mp-card-photo-stamp">${mpBadge(item.status)}</div>
         </div>
         <div class="mp-card-body">
           <div class="mp-card-eyebrow">${esc(fmtTanggalRKH(item.tanggal))} · ${esc(item.zona || '-')}</div>
           <div class="mp-card-title-row">
             <div class="mp-card-title">${esc(item.kegiatan || '-')}</div>
-            ${mpBadge(item.status)}
           </div>
           <div class="mp-card-desc">
             <div><b>Petak</b> : <span class="petak-tag">${esc(item.petak || '-')}</span></div>
