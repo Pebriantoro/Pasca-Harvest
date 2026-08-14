@@ -473,8 +473,8 @@ async function renderPraSpaAtasan(role){
       <div class="card">
         <div class="card-header">
           <span class="card-title">Semua Pengecekan Zona Saya (${filteredTim.length})</span>
-          <div style="display:flex; gap:8px;">
-            <input type="date" class="input" style="max-width:170px;" value="${esc(praSpaState.filterDate)}" onchange="praSpaState.filterDate=this.value; renderPraSpaAtasan('${role}');">
+          <div class="rkh-toolbar">
+            <input type="date" class="input" value="${esc(praSpaState.filterDate)}" onchange="praSpaState.filterDate=this.value; renderPraSpaAtasan('${role}');">
             <button class="btn btn-outline btn-sm" onclick="praSpaExportJPEG(praSpaState.exportRows)">Export JPEG</button>
           </div>
         </div>
@@ -539,8 +539,8 @@ async function renderPraSpaSummaryOnly(){
     <div class="card" style="margin-bottom:16px;">
       <div class="card-header">
         <span class="card-title">Ringkasan Pengecekan Pra SPA</span>
-        <div style="display:flex; gap:8px;">
-          <input type="date" class="input" style="max-width:170px;" value="${esc(praSpaState.filterDate)}" onchange="praSpaState.filterDate=this.value; renderPraSpaSummaryOnly();">
+        <div class="rkh-toolbar">
+          <input type="date" class="input" value="${esc(praSpaState.filterDate)}" onchange="praSpaState.filterDate=this.value; renderPraSpaSummaryOnly();">
           <button class="btn btn-outline btn-sm" onclick="praSpaExportJPEG(praSpaState.exportRows)">Export JPEG</button>
         </div>
       </div>
