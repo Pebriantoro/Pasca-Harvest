@@ -593,6 +593,18 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 .btn:disabled{ opacity:.5; cursor:not-allowed; transform:none !important; box-shadow:none !important; }
 .btn-icon{ width:34px; height:34px; padding:0; border-radius:8px; }
 
+/* Toolbar RKH (date filter + Export PDF/JPEG) — disamakan tinggi & lebar
+   supaya sejajar rapi, bukan cuma flex align-items:center yang gak cukup
+   karena .input dan .btn-sm punya padding vertikal berbeda. */
+.rkh-toolbar{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.rkh-toolbar .input{
+  width:auto; max-width:170px; height:34px; padding:0 12px;
+  font-size:13px; box-sizing:border-box;
+}
+.rkh-toolbar .btn{
+  height:34px; min-width:112px; box-sizing:border-box; padding:0 14px;
+}
+
 .tab-toggle{ display:flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:20px; }
 .tab-toggle button{ flex:1; padding:9px 0; background:transparent; border:none; color:var(--text-muted); font-size:13px; font-weight:600; }
 .tab-toggle button.active{ background: var(--accent-gold-soft); color: var(--accent-gold); }

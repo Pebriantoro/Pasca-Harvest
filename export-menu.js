@@ -119,6 +119,12 @@ function loadExportLib(key, url, checkFn){
     s.onload = () => resolve();
     s.onerror = () => reject(new Error('Gagal memuat modul ' + key));
     document.head.appendChild(s);
+  }).catch(err => {
+    // Kalau gagal (mis. koneksi sempat putus), jangan simpan promise gagal
+    // ini selamanya — hapus dari cache biar klik berikutnya coba lagi,
+    // bukan langsung gagal permanen sampai halaman di-refresh.
+    delete _exportLibPromises[key];
+    throw err;
   });
   return _exportLibPromises[key];
 }

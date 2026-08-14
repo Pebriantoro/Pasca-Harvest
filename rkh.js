@@ -331,7 +331,7 @@ async function renderRKHAtasan(role){
       <div class="card">
         <div class="card-header">
           <span class="card-title">Menunggu ${esc(stage.actionLabel)} Anda</span>
-          <div style="display:flex; gap:8px;">${rkhExportBtnsHTML()}</div>
+          <div class="rkh-toolbar">${rkhExportBtnsHTML()}</div>
         </div>
         <div class="table-scroll">
           <table class="data-table">
@@ -360,8 +360,8 @@ async function renderRKHAtasan(role){
       <div class="card">
         <div class="card-header">
           <span class="card-title">Semua RKH Tim Saya (${filteredTim.length})</span>
-          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-            <input type="date" class="input" style="max-width:170px;" value="${esc(rkhState.filterDate)}" onchange="rkhState.filterDate=this.value; renderRKHAtasan('${role}');">
+          <div class="rkh-toolbar">
+            <input type="date" class="input" value="${esc(rkhState.filterDate)}" onchange="rkhState.filterDate=this.value; renderRKHAtasan('${role}');">
             ${rkhExportBtnsHTML()}
           </div>
         </div>
