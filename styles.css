@@ -1012,7 +1012,7 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
   display:flex; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto;
   animation: modalOverlayIn .18s var(--ease-out);
 }
-.modal-box{ background: var(--bg-card); border:1px solid var(--border); border-radius:14px; width:100%; max-width:640px; box-shadow: var(--shadow-md); animation: modalBoxIn .22s var(--ease-out); }
+.modal-box{ background: var(--bg-card); border:1px solid var(--border); border-radius:14px; width:100%; max-width:640px; box-shadow: var(--shadow-md); animation: modalBoxIn .22s var(--ease-out); transform: translateZ(0); -webkit-backface-visibility: hidden; isolation: isolate; }
 @keyframes modalOverlayIn{ from{ opacity:0; } to{ opacity:1; } }
 @keyframes modalBoxIn{ from{ opacity:0; transform: translateY(10px) scale(.98); } to{ opacity:1; transform: translateY(0) scale(1); } }
 @media (prefers-reduced-motion: reduce){ .modal-overlay, .modal-box{ animation:none; } }
