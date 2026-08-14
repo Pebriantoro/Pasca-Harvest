@@ -361,6 +361,34 @@ function fitStretchCards(){
 window.addEventListener('resize', fitStretchCards);
 function $all(sel){ return Array.from(document.querySelectorAll(sel)); }
 function esc(v){ return v===null||v===undefined ? '' : String(v); }
+
+/* ---------------------------------------------------------------------
+   SEARCH BOX — dipakai di semua menu (id="searchInput_..."). Di-styling
+   murni pakai Tailwind utility classes (arbitrary value merujuk ke CSS
+   variable tema, jadi tetap ikut dark/light mode), gak pakai .search-box
+   / .input custom CSS lagi.
+   opts: { id, placeholder, value, maxWidth } — maxWidth optional, default 320px
+   --------------------------------------------------------------------- */
+function searchBoxHTML(opts){
+  const { id, placeholder = 'Cari…', value = '', maxWidth = '320px' } = opts;
+  return `
+    <div class="relative flex-1 min-w-[180px]" style="max-width:${maxWidth};">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none text-[var(--text-faint)] transition-colors duration-200 ease-[var(--ease-out)]">
+        <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input
+        id="${esc(id)}"
+        placeholder="${esc(placeholder)}"
+        value="${esc(value)}"
+        class="w-full pl-8 pr-3 py-2.5 text-sm rounded-[var(--radius-sm)] border border-[var(--border)]
+          bg-[var(--bg-elevated)] text-[var(--text-primary)] placeholder:text-[var(--text-faint)]
+          transition-[border-color,background-color,box-shadow] duration-200 ease-[var(--ease-out)]
+          hover:border-[var(--border-soft)] hover:bg-[var(--bg-card-hover)]
+          focus:outline-none focus:border-[var(--accent-gold)] focus:bg-[var(--bg-card)] focus:[box-shadow:var(--shadow-glow-gold)]">
+    </div>`;
+}
+
 // type bisa: 'success' (default) | 'error' | 'warning' | 'info', atau boolean
 // lama (true = error) supaya semua ratusan pemanggilan toast(msg, true) yang
 // sudah ada di seluruh modul tetap jalan tanpa diubah satu-satu.
@@ -2887,10 +2915,7 @@ function paintTablePage(table, allRows){
 
     <div class="card">
       <div class="table-toolbar">
-        <div class="search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-          <input class="input" placeholder="Cari petak, staff, varietas…" id="searchInput_${table}" value="${esc(st.search)}">
-        </div>
+        ${searchBoxHTML({ id: `searchInput_${table}`, placeholder: "Cari petak, staff, varietas…", value: esc(st.search) })}
         <button class="btn ${filterActive ? 'btn-primary' : 'btn-outline'} btn-sm" onclick="toggleFilterPanel('${table}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           Filter${filterCount ? ` (${filterCount})` : ''}
@@ -5005,7 +5030,7 @@ function paintProduktivitas(allRows){
     <div class="card">
       <div class="card-header" style="flex-wrap:wrap; gap:10px;">
         <span class="card-title">Data Harian (${rows.length} baris)</span>
-        <input class="input" style="max-width:220px;" placeholder="Cari nama/petak/kegiatan…" id="searchInput_produktivitas" value="${esc(st.search)}">
+        ${searchBoxHTML({ id: `searchInput_produktivitas`, placeholder: "Cari nama/petak/kegiatan…", value: esc(st.search), maxWidth: "220px" })}
         <button class="btn btn-outline btn-sm" onclick="toggleProduktivitasFilterPanel()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           Filter${filterCount ? ` (${filterCount})` : ''}
@@ -5503,7 +5528,7 @@ function paintMonitoringMotor(allRows){
     <div class="card">
       <div class="card-header" style="flex-wrap:wrap; gap:10px;">
         <span class="card-title">Data Unit Motor (${rows.length} unit)</span>
-        <input class="input" style="max-width:220px;" placeholder="Cari kode unit/PJ/kadept…" id="searchInput_motor" value="${esc(st.search)}">
+        ${searchBoxHTML({ id: `searchInput_motor`, placeholder: "Cari kode unit/PJ/kadept…", value: esc(st.search), maxWidth: "220px" })}
         <button class="btn btn-outline btn-sm" onclick="toggleMonitoringMotorFilterPanel()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           Filter${filterCount ? ` (${filterCount})` : ''}
@@ -5784,7 +5809,7 @@ function paintMonitoringAset(allRows){
     <div class="card">
       <div class="card-header" style="flex-wrap:wrap; gap:10px;">
         <span class="card-title">Data Aset (${rows.length} unit)</span>
-        <input class="input" style="max-width:220px;" placeholder="Cari kode/nama/COA…" id="searchInput_aset" value="${esc(st.search)}">
+        ${searchBoxHTML({ id: `searchInput_aset`, placeholder: "Cari kode/nama/COA…", value: esc(st.search), maxWidth: "220px" })}
         <button class="btn btn-outline btn-sm" onclick="toggleMonitoringAsetFilterPanel()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           Filter${filterCount ? ` (${filterCount})` : ''}
@@ -6066,7 +6091,7 @@ function paintHeImplement(allRows){
     <div class="card">
       <div class="card-header" style="flex-wrap:wrap; gap:10px;">
         <span class="card-title">Data Unit HE & Implement (${rows.length} unit)</span>
-        <input class="input" style="max-width:220px;" placeholder="Cari kode/type/vendor…" id="searchInput_he">
+        ${searchBoxHTML({ id: `searchInput_he`, placeholder: "Cari kode/type/vendor…", maxWidth: "220px" })}
         <button class="btn btn-outline btn-sm" onclick="toggleHeImplementFilterPanel()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           Filter${filterCount ? ` (${filterCount})` : ''}
@@ -6342,7 +6367,7 @@ function paintActualTK(allRows){
     <div class="card">
       <div class="card-header" style="flex-wrap:wrap; gap:10px;">
         <span class="card-title">Data Actual TK (${rows.length} baris)</span>
-        <input class="input" style="max-width:220px;" placeholder="Cari zona/kontraktor…" id="searchInput_actualtk" value="${esc(st.search)}">
+        ${searchBoxHTML({ id: `searchInput_actualtk`, placeholder: "Cari zona/kontraktor…", value: esc(st.search), maxWidth: "220px" })}
         <button class="btn btn-outline btn-sm" onclick="toggleActualTKFilterPanel()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           Filter${st.filterZona ? ' (1)' : ''}
@@ -6598,7 +6623,7 @@ function paintPlanKedatanganTK(allRows){
     <div class="card">
       <div class="card-header" style="flex-wrap:wrap; gap:10px;">
         <span class="card-title">Data Plan Kedatangan TK (${rows.length} baris)</span>
-        <input class="input" style="max-width:220px;" placeholder="Cari zona/kontraktor…" id="searchInput_plantk" value="${esc(st.search)}">
+        ${searchBoxHTML({ id: `searchInput_plantk`, placeholder: "Cari zona/kontraktor…", value: esc(st.search), maxWidth: "220px" })}
         <button class="btn btn-outline btn-sm" onclick="togglePlanKedatanganFilterPanel()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           Filter${st.filterZona ? ' (1)' : ''}
@@ -6941,7 +6966,7 @@ function paintJustifikasiTCH(allRows){
     <div class="card">
       <div class="card-header" style="flex-wrap:wrap; gap:10px;">
         <span class="card-title">Justifikasi TCH Under 70 (${rows.length} petak)</span>
-        <input class="input" style="max-width:220px;" placeholder="Cari petak/zona/staff…" id="searchInput_justifikasi" value="${esc(st.search)}">
+        ${searchBoxHTML({ id: `searchInput_justifikasi`, placeholder: "Cari petak/zona/staff…", value: esc(st.search), maxWidth: "220px" })}
         <button class="btn btn-outline btn-sm" onclick="toggleJustifikasiFilterPanel()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           Filter${filterCount ? ` (${filterCount})` : ''}
@@ -7312,7 +7337,7 @@ function paintProduktivitasKontraktor(allRows){
     <div class="card">
       <div class="card-header" style="flex-wrap:wrap; gap:10px;">
         <span class="card-title">Data WO Kontraktor (${rows.length} baris)</span>
-        <input class="input" style="max-width:220px;" placeholder="Cari Kontraktor/Kegiatan…" id="searchInput_pk" value="${esc(st.search)}">
+        ${searchBoxHTML({ id: `searchInput_pk`, placeholder: "Cari Kontraktor/Kegiatan…", value: esc(st.search), maxWidth: "220px" })}
         <button class="btn btn-outline btn-sm" onclick="togglePKFilterPanel()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           Filter${filterCount ? ` (${filterCount})` : ''}
@@ -8629,10 +8654,7 @@ function paintMaintenance(allRows){
 
     <div class="card">
       <div class="table-toolbar">
-        <div class="search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-          <input class="input" placeholder="Cari petak, next action…" id="searchInput_maintenance" value="${esc(st.search)}">
-        </div>
+        ${searchBoxHTML({ id: `searchInput_maintenance`, placeholder: "Cari petak, next action…", value: esc(st.search) })}
         <button class="btn ${filterActive ? 'btn-primary' : 'btn-outline'} btn-sm" onclick="toggleMaintenanceFilterPanel()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           Filter${filterCount ? ` (${filterCount})` : ''}
@@ -9201,10 +9223,7 @@ function paintPcRpc(allRows){
 
     <div class="card">
       <div class="table-toolbar">
-        <div class="search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-          <input class="input" placeholder="Cari petak, zona, action plan…" id="searchInput_pcrpc" value="${esc(st.search)}">
-        </div>
+        ${searchBoxHTML({ id: `searchInput_pcrpc`, placeholder: "Cari petak, zona, action plan…", value: esc(st.search) })}
         <button class="btn ${filterActive ? 'btn-primary' : 'btn-outline'} btn-sm" onclick="togglePcRpcFilterPanel()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           Filter${filterCount ? ` (${filterCount})` : ''}

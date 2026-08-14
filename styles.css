@@ -567,11 +567,9 @@ svg.icon-clicked{ transform-box: view-box; transform-origin: center; }
   font-size:14px; transition: border-color .15s;
 }
 .input:focus{ border-color: var(--accent-gold); }
-/* Semua kotak search di tiap menu (id="searchInput_..."), termasuk yang
-   gak dibungkus .search-box — biar konsisten interaktif satu app. */
-input[id^="searchInput_"]{ transition: border-color .2s var(--ease-out), box-shadow .2s var(--ease-out), background .2s var(--ease-out); }
-input[id^="searchInput_"]:hover{ border-color: var(--border-soft); background: var(--bg-card-hover); }
-input[id^="searchInput_"]:focus{ border-color: var(--accent-gold); box-shadow: var(--shadow-glow-gold); background: var(--bg-card); }
+/* Search bar (id="searchInput_...") sekarang di-styling langsung pakai
+   Tailwind utility classes lewat searchBoxHTML() di app.js — CSS custom
+   di sini gak dipakai lagi. */
 select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%2393A79A' viewBox='0 0 16 16'><path d='M8 11L2 5h12z'/></svg>"); background-repeat:no-repeat; background-position: right 10px center; padding-right:32px; }
 
 .btn{
@@ -939,13 +937,6 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 
 /* ===================== TABLE ===================== */
 .table-toolbar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:14px 18px; border-bottom:1px solid var(--border-soft); }
-.search-box{ position:relative; flex:1; min-width:180px; max-width:320px; }
-.search-box svg{ position:absolute; left:10px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-faint); transition: color .2s var(--ease-out), transform .2s var(--ease-out); pointer-events:none; }
-.search-box input{ padding-left:32px; transition: border-color .2s var(--ease-out), box-shadow .2s var(--ease-out), background .2s var(--ease-out); }
-.search-box:hover svg{ color:var(--text-muted); }
-.search-box:hover input{ border-color: var(--border-soft); background: var(--bg-card-hover); }
-.search-box input:focus{ border-color: var(--accent-gold); box-shadow: var(--shadow-glow-gold); background: var(--bg-card); }
-.search-box:focus-within svg{ color: var(--accent-gold); transform: translateY(-50%) scale(1.15); }
 
 .table-scroll{ overflow-x:auto; }
 table.data-table{ width:100%; border-collapse:collapse; font-size:13px; white-space:nowrap; }
@@ -1262,7 +1253,6 @@ table.data-table.zebra tbody tr:nth-child(even):hover{ background: var(--bg-card
   .card-title{ font-size:13px; }
   .card-body{ padding:11px 12px; }
   .table-toolbar{ padding:10px 12px; gap:8px; }
-  .search-box{ min-width:0; max-width:none; flex:1 1 100%; order:1; }
   .filter-panel-row{ padding:10px 12px 12px !important; gap:7px !important; }
   .filter-select{ min-width:0 !important; max-width:none !important; flex:1 1 46%; font-size:12px !important; padding:7px 8px !important; }
 
@@ -1706,7 +1696,6 @@ body::before{
 .nav-item.active{ box-shadow: inset 2px 0 0 var(--accent-gold), 0 0 20px -6px var(--accent-gold-soft), 0 1px 10px rgba(217,169,74,0.14); }
 
 /* --- 5. Search & tombol: glow lebih terasa saat interaksi --- */
-.search-box input:focus{ box-shadow: var(--shadow-glow-gold), 0 0 24px -6px var(--accent-gold-soft); }
 .btn-primary{ box-shadow: 0 0 18px -6px var(--accent-gold-soft); }
 .btn-primary:hover{ box-shadow: var(--shadow-glow-gold), 0 0 24px -4px var(--accent-gold-soft); }
 

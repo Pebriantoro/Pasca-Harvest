@@ -288,10 +288,7 @@ function paintTebangBibit(allRows){
 
     <div class="card">
       <div class="table-toolbar">
-        <div class="search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-          <input class="input" placeholder="Cari petak, zona, varietas…" id="searchInput_tebangbibit" value="${esc(st.search)}">
-        </div>
+        ${searchBoxHTML({ id: `searchInput_tebangbibit`, placeholder: "Cari petak, zona, varietas…", value: esc(st.search) })}
         <button class="btn ${filterActive ? 'btn-primary' : 'btn-outline'} btn-sm" onclick="toggleTebangBibitFilterPanel()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           Filter${filterCount ? ` (${filterCount})` : ''}

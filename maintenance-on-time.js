@@ -332,10 +332,7 @@ function paintMaintenanceOnTime(){
     </div>
     <div class="card" style="margin-top:18px; margin-bottom:16px;">
       <div class="card-body" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:14px 18px;">
-        <div class="search-box" style="max-width:280px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-          <input class="input" placeholder="Cari petak / zona…" id="searchInput_mot" value="${esc(st.search)}">
-        </div>
+        ${searchBoxHTML({ id: `searchInput_mot`, placeholder: "Cari petak / zona…", value: esc(st.search), maxWidth: "280px" })}
         <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-muted); cursor:pointer;">
           <input type="checkbox" id="onlyOverdue_mot" ${st.onlyOverdue?'checked':''}> Hanya tampilkan yang ada Overdue
         </label>
