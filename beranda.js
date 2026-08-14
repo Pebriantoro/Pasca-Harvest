@@ -90,18 +90,29 @@ function berandaRelabelBadge(html){
     .replace(/Ditolak/gi, 'Reject');
 }
 
+const BERANDA_SOURCE_COLOR = {
+  rkh: 'var(--accent-green)',
+  pra_spa: 'var(--accent-gold)',
+  qc_by_proses: 'var(--accent-blue)',
+};
+
 function berandaCardHTML(item){
+  const color = BERANDA_SOURCE_COLOR[item.source] || 'var(--accent-gold)';
   return `
-    <div class="card card-hoverable" style="position:relative; margin-bottom:12px; cursor:pointer; padding:16px;" onclick="${item.onClick}">
-      <div style="position:absolute; top:14px; right:16px;">${item.statusHtml}</div>
-      <div style="display:flex; gap:12px; align-items:flex-start;">
-        <div class="chat-avatar" style="width:42px; height:42px; font-size:16px; flex-shrink:0;">${esc(berandaInitial(item.staff_name))}</div>
-        <div style="flex:1; min-width:0; padding-right:120px;">
-          <div style="font-weight:700; font-size:13.5px;">${esc(item.staff_name || 'Staff')}</div>
-          <div style="font-size:11.5px; color:var(--text-faint); margin-top:2px;">
-            ${item.icon} ${esc(item.sourceLabel)} ${item.zona ? '· Zona '+esc(item.zona) : ''} · ${esc(typeof timeAgo === 'function' ? timeAgo(item.created_at) : fmtTanggalRKH(item.tanggal))}
+    <div class="beranda-timeline-item">
+      <div class="beranda-timeline-time">${esc(typeof timeAgo === 'function' ? timeAgo(item.created_at) : fmtTanggalRKH(item.tanggal))}</div>
+      <div class="beranda-timeline-dot" style="background:${color};">${item.icon}</div>
+      <div class="card card-hoverable beranda-timeline-content" style="position:relative; cursor:pointer; padding:16px;" onclick="${item.onClick}">
+        <div style="position:absolute; top:14px; right:16px;">${item.statusHtml}</div>
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div class="chat-avatar" style="width:36px; height:36px; font-size:14px; flex-shrink:0;">${esc(berandaInitial(item.staff_name))}</div>
+          <div style="flex:1; min-width:0; padding-right:120px;">
+            <div style="font-weight:700; font-size:13.5px;">${esc(item.staff_name || 'Staff')}</div>
+            <div style="font-size:11.5px; color:var(--text-faint); margin-top:2px;">
+              ${esc(item.sourceLabel)} ${item.zona ? '· Zona '+esc(item.zona) : ''}
+            </div>
+            <div style="font-size:13px; color:var(--text-muted); margin-top:10px; line-height:1.5;">${item.body}</div>
           </div>
-          <div style="font-size:13px; color:var(--text-muted); margin-top:10px; line-height:1.5;">${item.body}</div>
         </div>
       </div>
     </div>`;
@@ -115,7 +126,7 @@ function renderBerandaFeed(){
   if(filterEl) filterEl.innerHTML = berandaFilterBarHTML(berandaFeedCache);
   if(!listEl) return;
   listEl.innerHTML = visible.length
-    ? visible.map(berandaCardHTML).join('') + (items.length > visible.length
+    ? `<div class="beranda-timeline">${visible.map(berandaCardHTML).join('')}</div>` + (items.length > visible.length
         ? `<div style="text-align:center; margin-top:8px;"><button class="btn btn-outline btn-sm" onclick="berandaState.visibleCount+=${BERANDA_PAGE_SIZE}; renderBerandaFeed();">Muat Lebih Banyak</button></div>`
         : '')
     : `<div class="empty-state">Belum ada aktivitas untuk ditampilkan.</div>`;

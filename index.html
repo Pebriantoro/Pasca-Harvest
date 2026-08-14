@@ -284,6 +284,10 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
         <span>Beranda</span>
       </a>
+      <a class="nav-item" data-view="task_calendar" onclick="navigate('task_calendar')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><circle cx="8" cy="15" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg>
+        <span>Task Calendar</span>
+      </a>
       <div class="nav-section" id="navSection_ringkasan">
         <button type="button" class="nav-section-label" onclick="toggleNavSection('ringkasan')" aria-expanded="true">
           <span>Ringkasan</span>
@@ -686,6 +690,7 @@ function toggleAppLanguage(){
 <script src="qc-by-proses.js?v=1.3.14"></script>
 <script src="beranda.js?v=1.3.14"></script>
 <script src="beranda-workflow.js?v=1.3.14"></script>
+<script src="task-calendar.js?v=1.3.14"></script>
 <script src="posisi-unit.js?v=1.3.14"></script>
 <script src="sidebar-count-fix.js?v=1.3.14"></script>
 <script src="version-check.js?v=1.3.14"></script>
