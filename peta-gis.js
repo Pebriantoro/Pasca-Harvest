@@ -418,7 +418,7 @@ async function paintPeta() {
         ${module.key === 'kondisi_bulanan' ? `
         <div>
           <label class="field-label">Bulan</label>
-          <select class="input" id="petaBulanSelect" style="min-width:140px;">
+          <select class="input peta-input-compact" id="petaBulanSelect" style="min-width:140px;">
             <option value="">Terbaru (semua)</option>
             ${BULAN_OPTIONS.map(b => `<option value="${b}" ${petaState.bulanFilter === b ? 'selected' : ''}>Bulan ${b}</option>`).join('')}
           </select>
@@ -435,7 +435,7 @@ async function paintPeta() {
           const selected = petaState.extraFilterValues[ef.key] || '';
           return `<div>
             <label class="field-label">${esc(ef.label)}</label>
-            <select class="input peta-extra-filter" data-filter-key="${ef.key}" style="min-width:170px;">
+            <select class="input peta-input-compact peta-extra-filter" data-filter-key="${ef.key}" style="min-width:170px;">
               <option value="">Semua</option>
               ${opts.map(v => `<option value="${esc(v)}" ${selected === v ? 'selected' : ''}>${esc(v)}</option>`).join('')}
             </select>
