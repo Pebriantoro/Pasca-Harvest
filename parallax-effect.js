@@ -63,10 +63,20 @@
   window.addEventListener('resize', pfxRequestTick);
 
   // Ganti menu / render ulang tabel bisa mengubah tinggi & posisi kartu --
-  // pantau lewat MutationObserver supaya offset tetap sinkron, dibatasi
-  // lewat requestAnimationFrame yang sama (jadi tidak nge-spam hitungan).
+  // pantau lewat MutationObserver supaya offset tetap sinkron. DEBOUNCE
+  // (bukan langsung rAF): render ulang tabel (mis. klik pagination) bisa
+  // trigger banyak mutation sekaligus & kartu belum tentu berubah posisi
+  // signifikan -- kalau langsung dihitung ulang tiap mutation, forced
+  // reflow (getBoundingClientRect semua kartu) numpuk bareng kerja render
+  // tabel itu sendiri -> kerasa delay/macet pas klik pagination. Tunda
+  // 150ms setelah mutation terakhir, recompute posisi gak butuh instan.
+  let mutationTimer = null;
+  function pfxOnMutation(){
+    clearTimeout(mutationTimer);
+    mutationTimer = setTimeout(pfxRequestTick, 150);
+  }
   const target = document.getElementById('pageContent') || document.body;
-  new MutationObserver(pfxRequestTick).observe(target, { childList: true, subtree: true });
+  new MutationObserver(pfxOnMutation).observe(target, { childList: true, subtree: true });
 
   pfxRequestTick();
 })();
