@@ -73,11 +73,14 @@ function berandaFilterBarHTML(items){
   const counts = { semua: items.length };
   BERANDA_FILTERS.slice(1).forEach(f => { counts[f.key] = items.filter(i => i.source === f.key).length; });
   return `<div style="margin-bottom:16px;">
-    <select class="btn btn-sm btn-outline" style="width:auto; min-width:180px;" onchange="berandaState.filter=this.value; berandaState.visibleCount=${BERANDA_PAGE_SIZE}; renderBerandaFeed();">
-      ${BERANDA_FILTERS.map(f => `
-        <option value="${f.key}" ${berandaState.filter===f.key ? 'selected' : ''}>${esc(f.label)} (${counts[f.key] || 0})</option>
-      `).join('')}
-    </select>
+    <div class="beranda-filter-select-wrap">
+      <select class="beranda-filter-select" onchange="berandaState.filter=this.value; berandaState.visibleCount=${BERANDA_PAGE_SIZE}; renderBerandaFeed();">
+        ${BERANDA_FILTERS.map(f => `
+          <option value="${f.key}" ${berandaState.filter===f.key ? 'selected' : ''}>${esc(f.label)} (${counts[f.key] || 0})</option>
+        `).join('')}
+      </select>
+      <svg class="beranda-filter-select-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
   </div>`;
 }
 
