@@ -392,14 +392,28 @@ function petaToggleStatusFilter(key) {
   }
 }
 
-async function renderPeta() {
-  $('#pageEyebrow').textContent = '';
-  $('#pageTitle').textContent = 'Peta';
+async function petaOpenEmbedded(moduleKey) {
+  petaState.module = moduleKey;
+  const module = petaModuleByKey(moduleKey);
+  $('#pageEyebrow').textContent = 'PETA';
+  $('#pageTitle').textContent = `Peta — ${module.label}`;
   $('#pageContent').innerHTML = skeletonPageHTML();
-  await paintPeta();
+  await paintPeta(true);
 }
 
-async function paintPeta() {
+function petaCloseEmbedded() {
+  navigate(petaState.module); // balik ke halaman data modul asal (title/eyebrow ke-reset otomatis)
+}
+
+function petaEmbedButtonHTML(moduleKey) {
+  if (!PETA_MODULES.some(m => m.key === moduleKey)) return '';
+  return `<button class="btn btn-outline btn-sm" onclick="petaOpenEmbedded('${moduleKey}')" title="Lihat sebaran petak modul ini di peta">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13 6-3m-6 3V7m6 10 4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+    Peta
+  </button>`;
+}
+
+async function paintPeta(embedded) {
   const module = petaModuleByKey(petaState.module);
   if (petaState.activeStatusesFor !== module.key) {
     petaState.activeStatuses = new Set(module.legend.map(i => i[0])); // default: semua status modul ini aktif
@@ -409,12 +423,20 @@ async function paintPeta() {
   $('#pageContent').innerHTML = `
     <div class="card" style="margin-bottom:16px;">
       <div class="card-body" style="display:flex; gap:14px; flex-wrap:wrap; align-items:center; padding:16px 18px;">
+        ${embedded ? `
+        <button class="btn btn-outline btn-sm" onclick="petaCloseEmbedded()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m0 0 7 7m-7-7 7-7"/></svg>
+          Kembali ke Data
+        </button>
+        <div style="font-weight:700; font-size:14px;">Peta — ${esc(module.label)}</div>
+        ` : `
         <div>
           <label class="field-label">Modul</label>
           <select class="input peta-input-compact" id="petaModuleSelect" style="min-width:240px;">
             ${PETA_MODULES.map(m => `<option value="${m.key}" ${m.key === module.key ? 'selected' : ''}>${esc(m.label)}</option>`).join('')}
           </select>
         </div>
+        `}
         ${module.key === 'kondisi_bulanan' ? `
         <div>
           <label class="field-label">Bulan</label>
@@ -465,7 +487,7 @@ async function paintPeta() {
       </div>
     </div>
   `;
-  $('#petaModuleSelect').addEventListener('change', function () {
+  $('#petaModuleSelect')?.addEventListener('change', function () {
     petaState.module = this.value;
     petaState.bulanFilter = ''; // reset filter bulan tiap ganti modul
     petaState.extraFilterValues = {}; // reset extra filter tiap ganti modul
@@ -698,66 +720,3 @@ function petaOpenDetail(view, stateKey, petak) {
   }
   navigate(view);
 }
-
-/* ---------------------------------------------------------------------
-   OVERRIDE navigate() — routing view 'peta_<modulekey>' (satu nav-item
-   per modul, breakdown dari 1 menu "Peta" + dropdown jadi kartu menu
-   masing-masing biar staff langsung ke peta modul yang dia mau, gak
-   perlu pilih dropdown dulu). Dropdown "Modul" di halaman tetap ada
-   buat pindah cepat ke modul lain tanpa balik ke sidebar.
-   --------------------------------------------------------------------- */
-const _prevNavigatePeta = navigate;
-navigate = async function (view) {
-  if (view === 'peta' || view.startsWith('peta_')) {
-    const moduleKey = view === 'peta' ? petaState.module : view.slice('peta_'.length);
-    if (PETA_MODULES.some(m => m.key === moduleKey)) petaState.module = moduleKey;
-    currentView = view;
-    $all('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.view === view));
-    const activeItem = $all('.nav-item').find(el => el.dataset.view === view);
-    const parentSection = activeItem?.closest('.nav-section');
-    if (parentSection && parentSection.classList.contains('collapsed')) {
-      parentSection.classList.remove('collapsed');
-      const key = parentSection.id.replace('navSection_', '');
-      const btn = parentSection.querySelector('.nav-section-label');
-      if (btn) btn.setAttribute('aria-expanded', 'true');
-      saveNavSectionState(key, false);
-    }
-    sidebarOpenState = false; $('#sidebar').classList.remove('open'); $('#sidebarBackdrop')?.classList.remove('show');
-    await renderPeta();
-    return;
-  }
-  return _prevNavigatePeta(view);
-};
-
-/* ---------------------------------------------------------------------
-   INJECT nav-item per modul Peta ke sidebar (bukan 1 menu "Peta" +
-   dropdown pilih modul lagi -- tiap modul kartu/link sendiri, data-view
-   nya "peta_<modulekey>" biar navigate() di atas bisa langsung tau mau
-   buka peta modul mana pas diklik).
-   --------------------------------------------------------------------- */
-(function injectPetaNavItem() {
-  const nav = document.getElementById('sidebarNav');
-  if (!nav) return;
-  const section = document.createElement('div');
-  section.className = 'nav-section';
-  section.id = 'navSection_peta';
-  section.innerHTML = `
-    <button type="button" class="nav-section-label" onclick="toggleNavSection('peta')" aria-expanded="true">
-      <span>Peta</span>
-      <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
-    </button>
-    <div class="nav-section-body" id="navSectionBody_peta">
-      ${PETA_MODULES.map(m => `
-      <a class="nav-item" data-view="peta_${m.key}" onclick="navigate('peta_${m.key}')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13 6-3m-6 3V7m6 10 4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-        <span>${esc(m.label)}</span>
-      </a>`).join('')}
-    </div>
-  `;
-  const menuDataSection = document.getElementById('navSection_menu_data');
-  if (menuDataSection && menuDataSection.nextSibling) {
-    nav.insertBefore(section, menuDataSection.nextSibling);
-  } else {
-    nav.appendChild(section);
-  }
-})();

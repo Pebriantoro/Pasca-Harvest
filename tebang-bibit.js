@@ -295,6 +295,7 @@ function paintTebangBibit(allRows){
         </button>
         ${filterActive ? `<button class="btn btn-outline btn-sm" onclick="resetTebangBibitFilters()" title="Hapus semua filter">✕</button>` : ''}
         <div style="margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;">
+          ${typeof petaEmbedButtonHTML === 'function' ? petaEmbedButtonHTML('tebang_bibit') : ''}
           ${isAdminRole() ? `
           <button class="btn btn-outline btn-sm" onclick="triggerImportTebangBibit()" title="Baris dengan Petak yang sudah ada akan diperbarui, yang belum ada akan ditambahkan.">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg>

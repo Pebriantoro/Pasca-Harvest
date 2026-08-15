@@ -2923,6 +2923,7 @@ function paintTablePage(table, allRows){
         </button>
         ${filterActive ? `<button class="btn btn-outline btn-sm" onclick="resetFilters('${table}')" title="Hapus semua filter">✕</button>` : ''}
         <div style="margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;">
+          ${typeof petaEmbedButtonHTML === 'function' ? petaEmbedButtonHTML(table) : ''}
           ${isAdminRole() ? `
           <button class="btn btn-outline btn-sm" onclick="triggerImport('${table}')" title="${cfg.importMode==='upsert' ? 'Baris dengan Petak+Bulan yang sudah ada akan diperbarui, yang belum ada akan ditambahkan.' : 'Hanya memperbarui petak yang sudah ada. Tidak menambah petak baru.'}">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg>
@@ -6974,6 +6975,7 @@ function paintJustifikasiTCH(allRows){
         </button>
         ${filterActive ? `<button class="btn btn-outline btn-sm" onclick="resetJustifikasiFilters()" title="Hapus semua filter">✕</button>` : ''}
         <div style="margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;">
+          ${typeof petaEmbedButtonHTML === 'function' ? petaEmbedButtonHTML('justifikasi_tch_under70') : ''}
           ${renderExportMenu('justifikasi')}
         </div>
       </div>
@@ -8662,6 +8664,7 @@ function paintMaintenance(allRows){
         </button>
         ${filterActive ? `<button class="btn btn-outline btn-sm" onclick="resetMaintenanceFilters()" title="Hapus semua filter">✕</button>` : ''}
         <div style="margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;">
+          ${typeof petaEmbedButtonHTML === 'function' ? petaEmbedButtonHTML('maintenance') : ''}
           ${isAdminRole() ? `
           <button class="btn btn-outline btn-sm" onclick="triggerImportMaintenance()" title="Baris dengan Petak yang sudah ada akan diperbarui, yang belum ada akan ditambahkan.">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg>
@@ -9231,6 +9234,7 @@ function paintPcRpc(allRows){
         </button>
         ${filterActive ? `<button class="btn btn-outline btn-sm" onclick="resetPcRpcFilters()" title="Hapus semua filter">✕</button>` : ''}
         <div style="margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;">
+          ${typeof petaEmbedButtonHTML === 'function' ? petaEmbedButtonHTML('pc_rpc_eks_non_rkt') : ''}
           ${isAdminRole() ? `
           <button class="btn btn-outline btn-sm" onclick="triggerImportPcRpc()" title="Baris dengan Petak yang sudah ada akan diperbarui, yang belum ada akan ditambahkan.">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg>

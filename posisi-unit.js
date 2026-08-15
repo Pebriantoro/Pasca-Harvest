@@ -389,7 +389,7 @@ async function renderPuSummaryOnly(){
   const zonaLabel = (currentProfile?.role === 'superintendent' && currentProfile.zona) ? ` — Zona ${esc(currentProfile.zona)}` : ' — Semua Zona';
 
   $('#pageContent').innerHTML = `
-    <div class="card" style="margin-bottom:16px;"><div class="card-header"><span class="card-title">Ringkasan Data Posisi Unit${zonaLabel}</span><div style="display:flex; gap:8px;"><input class="input" type="date" style="width:auto; padding:6px 12px; font-size:12.5px;" value="${esc(puState.filters.tanggal)}" onchange="puState.filters.tanggal=this.value; renderPuSummaryOnly();">${puExportBtnHTML()}</div></div></div>
+    <div class="card" style="margin-bottom:16px;"><div class="card-header"><span class="card-title">Ringkasan Data Posisi Unit${zonaLabel}</span><div style="display:flex; gap:8px;"><input class="input" type="date" style="width:auto; padding:6px 12px; font-size:12.5px;" value="${esc(puState.filters.tanggal)}" onchange="puState.filters.tanggal=this.value; renderPuSummaryOnly();">${typeof petaEmbedButtonHTML === 'function' ? petaEmbedButtonHTML('posisi_unit') : ''}${puExportBtnHTML()}</div></div></div>
     ${puSummaryCards(s)}
     <div class="card" style="margin-top:16px;">
       <div class="card-header"><span class="card-title">Ringkasan per Zona</span></div>
