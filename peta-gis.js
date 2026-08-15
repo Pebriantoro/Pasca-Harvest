@@ -700,11 +700,17 @@ function petaOpenDetail(view, stateKey, petak) {
 }
 
 /* ---------------------------------------------------------------------
-   OVERRIDE navigate() — routing view 'peta'
+   OVERRIDE navigate() — routing view 'peta_<modulekey>' (satu nav-item
+   per modul, breakdown dari 1 menu "Peta" + dropdown jadi kartu menu
+   masing-masing biar staff langsung ke peta modul yang dia mau, gak
+   perlu pilih dropdown dulu). Dropdown "Modul" di halaman tetap ada
+   buat pindah cepat ke modul lain tanpa balik ke sidebar.
    --------------------------------------------------------------------- */
 const _prevNavigatePeta = navigate;
 navigate = async function (view) {
-  if (view === 'peta') {
+  if (view === 'peta' || view.startsWith('peta_')) {
+    const moduleKey = view === 'peta' ? petaState.module : view.slice('peta_'.length);
+    if (PETA_MODULES.some(m => m.key === moduleKey)) petaState.module = moduleKey;
     currentView = view;
     $all('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.view === view));
     const activeItem = $all('.nav-item').find(el => el.dataset.view === view);
@@ -724,8 +730,10 @@ navigate = async function (view) {
 };
 
 /* ---------------------------------------------------------------------
-   INJECT nav-item "Peta" ke sidebar (satu section sendiri, dibawah Menu
-   Data). Dijalankan sekali saat file ini di-load.
+   INJECT nav-item per modul Peta ke sidebar (bukan 1 menu "Peta" +
+   dropdown pilih modul lagi -- tiap modul kartu/link sendiri, data-view
+   nya "peta_<modulekey>" biar navigate() di atas bisa langsung tau mau
+   buka peta modul mana pas diklik).
    --------------------------------------------------------------------- */
 (function injectPetaNavItem() {
   const nav = document.getElementById('sidebarNav');
@@ -739,10 +747,11 @@ navigate = async function (view) {
       <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
     </button>
     <div class="nav-section-body" id="navSectionBody_peta">
-      <a class="nav-item" data-view="peta" onclick="navigate('peta')">
+      ${PETA_MODULES.map(m => `
+      <a class="nav-item" data-view="peta_${m.key}" onclick="navigate('peta_${m.key}')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13 6-3m-6 3V7m6 10 4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-        <span>Peta</span>
-      </a>
+        <span>${esc(m.label)}</span>
+      </a>`).join('')}
     </div>
   `;
   const menuDataSection = document.getElementById('navSection_menu_data');
