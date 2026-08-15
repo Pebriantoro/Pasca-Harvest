@@ -72,12 +72,12 @@ const BERANDA_FILTERS = [
 function berandaFilterBarHTML(items){
   const counts = { semua: items.length };
   BERANDA_FILTERS.slice(1).forEach(f => { counts[f.key] = items.filter(i => i.source === f.key).length; });
-  return `<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
-    ${BERANDA_FILTERS.map(f => `
-      <button class="btn btn-sm ${berandaState.filter===f.key ? 'btn-primary' : 'btn-outline'}" onclick="berandaState.filter='${f.key}'; berandaState.visibleCount=${BERANDA_PAGE_SIZE}; renderBerandaFeed();">
-        ${esc(f.label)} (${counts[f.key] || 0})
-      </button>
-    `).join('')}
+  return `<div style="margin-bottom:16px;">
+    <select class="btn btn-sm btn-outline" style="width:auto; min-width:180px;" onchange="berandaState.filter=this.value; berandaState.visibleCount=${BERANDA_PAGE_SIZE}; renderBerandaFeed();">
+      ${BERANDA_FILTERS.map(f => `
+        <option value="${f.key}" ${berandaState.filter===f.key ? 'selected' : ''}>${esc(f.label)} (${counts[f.key] || 0})</option>
+      `).join('')}
+    </select>
   </div>`;
 }
 
