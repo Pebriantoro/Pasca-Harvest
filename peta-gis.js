@@ -411,7 +411,7 @@ async function paintPeta() {
       <div class="card-body" style="display:flex; gap:14px; flex-wrap:wrap; align-items:center; padding:16px 18px;">
         <div>
           <label class="field-label">Modul</label>
-          <select class="input" id="petaModuleSelect" style="min-width:240px;">
+          <select class="input peta-input-compact" id="petaModuleSelect" style="min-width:240px;">
             ${PETA_MODULES.map(m => `<option value="${m.key}" ${m.key === module.key ? 'selected' : ''}>${esc(m.label)}</option>`).join('')}
           </select>
         </div>
@@ -444,11 +444,11 @@ async function paintPeta() {
         ${module.bappFilter ? `
         <div>
           <label class="field-label">Tgl BAPP Dari</label>
-          <input class="input" type="date" style="min-width:150px;" id="petaBappDari" value="${esc(petaState.bappFrom)}">
+          <input class="input peta-input-compact" type="date" style="min-width:150px;" id="petaBappDari" value="${esc(petaState.bappFrom)}">
         </div>
         <div>
           <label class="field-label">Tgl BAPP Sampai</label>
-          <input class="input" type="date" style="min-width:150px;" id="petaBappSampai" value="${esc(petaState.bappTo)}">
+          <input class="input peta-input-compact" type="date" style="min-width:150px;" id="petaBappSampai" value="${esc(petaState.bappTo)}">
         </div>
         ${(petaState.bappFrom || petaState.bappTo) ? `<div style="align-self:flex-end;">
           <button class="btn btn-outline btn-sm" id="petaBappReset" type="button">Reset Tgl BAPP</button>

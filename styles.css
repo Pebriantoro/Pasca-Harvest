@@ -605,6 +605,14 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 
 /* Beranda: dropdown filter feed (ganti 4 tombol Semua/RKH/Pra SPA/QC),
    gaya pill gold biar senada tema card & mudah ditap di HP. */
+/* Peta GIS: select Modul + input Tgl BAPP Dari/Sampai disamain ukuran
+   dengan tombol "Muat Ulang" (.btn-sm) di sebelahnya -- default .input
+   lebih tinggi/besar (padding 10px, font 14px) jadi kelihatan gak
+   sejajar sama tombol. */
+.peta-input-compact{
+  padding:6px 12px !important; font-size:12.5px !important;
+}
+
 .beranda-filter-select-wrap{
   position:relative; display:inline-block; width:100%; max-width:280px;
 }
