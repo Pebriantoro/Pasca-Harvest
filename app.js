@@ -7735,7 +7735,7 @@ async function renderLogHistory(){
     $('#pageContent').innerHTML = `<div class="empty-state">Halaman ini hanya dapat diakses oleh Admin.</div>`;
     return;
   }
-  $('#pageContent').innerHTML = `${logHistoryTabBar()}${skeletonPageHTML()}`;
+  $('#pageContent').innerHTML = `${logHistoryTabBar()}<div style="margin-top:14px;">${skeletonPageHTML()}</div>`;
   if(logHistoryState.tab === 'audit'){
     const { data, error } = await supa.from('field_audit_log')
       .select('*').order('created_at', { ascending:false }).limit(500);
