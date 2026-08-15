@@ -436,7 +436,7 @@ async function paintPeta(embedded) {
           </select>
         </div>
         `}
-        ${module.key === 'kondisi_bulanan' ? `
+        ${(!embedded && module.key === 'kondisi_bulanan') ? `
         <div>
           <label class="field-label">Bulan</label>
           <select class="input peta-input-compact" id="petaBulanSelect" style="min-width:140px;">
@@ -448,9 +448,17 @@ async function paintPeta(embedded) {
           <label class="field-label" style="visibility:hidden;">Status</label>
           ${petaLegendHTML(module)}
         </div>
-        <button class="btn btn-outline btn-sm" onclick="paintPeta()">Muat Ulang</button>
+        <button class="btn btn-outline btn-sm" onclick="paintPeta(${embedded ? 'true' : ''})">Muat Ulang</button>
       </div>
-      ${(module.extraFilters || module.bappFilter) ? `<div class="card-body" style="display:flex; gap:14px; flex-wrap:wrap; padding:0 18px 16px;">
+      ${(module.extraFilters || module.bappFilter || (embedded && module.key === 'kondisi_bulanan')) ? `<div class="card-body" style="display:flex; gap:14px; flex-wrap:wrap; padding:0 18px 16px;">
+        ${(embedded && module.key === 'kondisi_bulanan') ? `
+        <div>
+          <label class="field-label">Bulan</label>
+          <select class="input peta-input-compact" id="petaBulanSelect" style="min-width:140px;">
+            <option value="">Terbaru (semua)</option>
+            ${BULAN_OPTIONS.map(b => `<option value="${b}" ${petaState.bulanFilter === b ? 'selected' : ''}>Bulan ${b}</option>`).join('')}
+          </select>
+        </div>` : ''}
         ${(module.extraFilters || []).map(ef => {
           const opts = ef.values;
           const selected = petaState.extraFilterValues[ef.key] || '';
@@ -495,25 +503,25 @@ async function paintPeta(embedded) {
   });
   $('#petaBulanSelect')?.addEventListener('change', function () {
     petaState.bulanFilter = this.value;
-    paintPeta();
+    paintPeta(embedded);
   });
   $all('.peta-extra-filter').forEach(sel => {
     sel.addEventListener('change', function () {
       petaState.extraFilterValues[this.dataset.filterKey] = this.value;
-      paintPeta();
+      paintPeta(embedded);
     });
   });
   $('#petaBappDari')?.addEventListener('change', function () {
     petaState.bappFrom = this.value;
-    paintPeta();
+    paintPeta(embedded);
   });
   $('#petaBappSampai')?.addEventListener('change', function () {
     petaState.bappTo = this.value;
-    paintPeta();
+    paintPeta(embedded);
   });
   $('#petaBappReset')?.addEventListener('click', function () {
     petaState.bappFrom = ''; petaState.bappTo = '';
-    paintPeta();
+    paintPeta(embedded);
   });
 
   try {
