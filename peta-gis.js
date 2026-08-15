@@ -428,7 +428,6 @@ async function paintPeta(embedded) {
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m0 0 7 7m-7-7 7-7"/></svg>
           Kembali ke Data
         </button>
-        <div style="font-weight:700; font-size:14px;">Peta — ${esc(module.label)}</div>
         ` : `
         <div>
           <label class="field-label">Modul</label>
@@ -445,7 +444,7 @@ async function paintPeta(embedded) {
             ${BULAN_OPTIONS.map(b => `<option value="${b}" ${petaState.bulanFilter === b ? 'selected' : ''}>Bulan ${b}</option>`).join('')}
           </select>
         </div>` : ''}
-        <div style="flex:1; min-width:220px;" id="petaLegendHolder">
+        <div style="flex:1; min-width:260px; margin-left:${embedded ? '4px' : '0'};" id="petaLegendHolder">
           <label class="field-label" style="visibility:hidden;">Status</label>
           ${petaLegendHTML(module)}
         </div>
