@@ -22,6 +22,11 @@
 <link rel="stylesheet" href="monitoring-plantation.css?v=1.0.0">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 
+<!-- Material 3 theme overlay (https://m3.material.io/) — dimuat PALING TERAKHIR
+     supaya cascade menang & restyle semua modul sekaligus. File CSS lain di atas
+     TIDAK diubah, jadi kalau overlay ini dicopot, tampilan lama balik seperti semula. -->
+<link rel="stylesheet" href="m3-theme.css?v=1.0.0">
+
 <!-- Tailwind CSS (Play CDN) — utility class siap dipakai buat komponen/fitur BARU.
      CSS lama (styles.css dkk) TIDAK diubah/dihapus, jadi tampilan yang sudah ada aman.
      Token warna di-mapping ke CSS variable brand yang sama, otomatis ngikut tema gelap/terang. -->
@@ -706,5 +711,6 @@ function toggleAppLanguage(){
 <script src="menu-transitions.js?v=1.0.0"></script>
 <script src="theme-palettes.js?v=1.0.0"></script>
 <script src="monitoring-plantation.js?v=1.0.0"></script>
+<script src="m3-ripple.js?v=1.0.0"></script>
 </body>
 </html>

@@ -1,0 +1,443 @@
+/* =====================================================================
+   SAMSAT ESTATE 2 — MATERIAL 3 THEME OVERLAY   (m3-theme.css)
+   Ref: https://m3.material.io/
+
+   Cara kerja:
+   - File CSS lama (styles.css, chat-polish.css, dst) TIDAK diubah/dihapus.
+   - File ini dimuat PALING TERAKHIR di <head>, jadi cascade menang dan
+     me-restyle SELURUH modul sekaligus tanpa sentuh HTML/JS.
+   - Warna = HCT tonal palette asli M3 (bukan tebak-tebakan hex), di-generate
+     dari seed warna brand yang sudah ada:
+       primary seed = gold brand (#D9A94A)
+       custom colors (di-harmonisasi ke primary, makna semantik dipertahankan):
+         green = sukses / on-time      (seed #5FAE7D)
+         red   = bahaya / overdue      (seed #C1543C)
+         blue  = info / netral         (seed #5B8FA8)
+   - Semua nama CSS variable LAMA (--bg, --accent-gold, dst) tetap ada &
+     dipetakan ke role M3 yang setara -> nol resiko ke app.js / komponen lain
+     yang masih baca variable lama itu.
+   ===================================================================== */
+
+:root{
+  /* ============ ALIAS VARIABLE LAMA -> ROLE M3 (dark, default tema app) ============ */
+  --bg: var(--m3-surface);
+  --bg-elevated: var(--m3-surface-container-low);
+  --bg-card: var(--m3-surface-container);
+  --bg-card-hover: var(--m3-surface-container-high);
+  --sidebar: var(--m3-surface-container-low);
+  --border: var(--m3-outline-variant);
+  --border-soft: color-mix(in srgb, var(--m3-outline-variant) 60%, transparent);
+
+  --accent-gold: var(--m3-primary);
+  --accent-gold-soft: color-mix(in srgb, var(--m3-primary) 16%, transparent);
+  --accent-green: var(--m3-green);
+  --accent-green-soft: color-mix(in srgb, var(--m3-green) 16%, transparent);
+  --accent-red: var(--m3-red);
+  --accent-red-soft: color-mix(in srgb, var(--m3-red) 16%, transparent);
+  --accent-red-text: var(--m3-red);
+  --accent-blue: var(--m3-blue);
+  --accent-blue-soft: color-mix(in srgb, var(--m3-blue) 16%, transparent);
+  --accent-blue-text: var(--m3-blue);
+
+  --text-primary: var(--m3-on-surface);
+  --text-muted: var(--m3-on-surface-variant);
+  --text-faint: var(--m3-outline);
+
+  /* ============ M3 SHAPE SCALE ============ */
+  --m3-shape-none: 0px;
+  --m3-shape-xs: 4px;
+  --m3-shape-sm: 8px;
+  --m3-shape-md: 12px;
+  --m3-shape-lg: 16px;
+  --m3-shape-xl: 28px;
+  --m3-shape-full: 999px;
+  --radius: var(--m3-shape-md);
+  --radius-sm: var(--m3-shape-sm);
+
+  /* ============ M3 ELEVATION (official shadow specs, dp1-5) ============ */
+  --m3-elevation-0: none;
+  --m3-elevation-1: 0 1px 2px rgba(0,0,0,.30), 0 1px 3px 1px rgba(0,0,0,.15);
+  --m3-elevation-2: 0 1px 2px rgba(0,0,0,.30), 0 2px 6px 2px rgba(0,0,0,.15);
+  --m3-elevation-3: 0 1px 3px rgba(0,0,0,.30), 0 4px 8px 3px rgba(0,0,0,.15);
+  --m3-elevation-4: 0 2px 3px rgba(0,0,0,.30), 0 6px 10px 4px rgba(0,0,0,.15);
+  --m3-elevation-5: 0 4px 4px rgba(0,0,0,.30), 0 8px 12px 6px rgba(0,0,0,.15);
+  --shadow-sm: var(--m3-elevation-1);
+  --shadow-md: var(--m3-elevation-2);
+  --shadow-lift: var(--m3-elevation-3);
+  --shadow-glow-gold: 0 0 0 1px color-mix(in srgb, var(--m3-primary) 30%, transparent), var(--m3-elevation-2);
+  --shadow-glow-red: 0 0 0 1px color-mix(in srgb, var(--m3-red) 32%, transparent), var(--m3-elevation-2);
+  --shadow-glow-green: 0 0 0 1px color-mix(in srgb, var(--m3-green) 30%, transparent), var(--m3-elevation-2);
+  --shadow-glow-blue: 0 0 0 1px color-mix(in srgb, var(--m3-blue) 30%, transparent), var(--m3-elevation-2);
+
+  /* ============ M3 STATE-LAYER OPACITIES ============ */
+  --m3-state-hover: .08;
+  --m3-state-focus: .10;
+  --m3-state-pressed: .10;
+  --m3-state-dragged: .16;
+  --m3-state-disabled-content: .38;
+  --m3-state-disabled-container: .12;
+
+  /* ============ M3 MOTION ============ */
+  --m3-motion-standard: cubic-bezier(.2,0,0,1);
+  --m3-motion-emphasized: cubic-bezier(.3,0,.8,.15);
+  --m3-motion-emphasized-decel: cubic-bezier(.05,.7,.1,1);
+  --m3-duration-short: 150ms;
+  --m3-duration-medium: 250ms;
+  --m3-duration-long: 400ms;
+  --ease-out: var(--m3-motion-emphasized-decel);
+
+  --skeleton-base: var(--m3-surface-container-high);
+  --skeleton-shine: var(--m3-surface-container-highest);
+
+  --chart-text: var(--m3-on-surface-variant);
+  --chart-grid: color-mix(in srgb, var(--m3-outline-variant) 50%, transparent);
+  --chart-border: var(--m3-surface-container);
+  --chart-dl-text: var(--m3-on-surface);
+  --chart-dl-stroke: color-mix(in srgb, var(--m3-scrim) 60%, transparent);
+
+  color-scheme: dark;
+
+  /* ---- M3 core roles (dark) ---- */
+  --m3-primary: #f7bd48;
+  --m3-on-primary: #412d00;
+  --m3-primary-container: #5d4200;
+  --m3-on-primary-container: #ffdea6;
+  --m3-secondary: #d9c4a0;
+  --m3-on-secondary: #3c2e15;
+  --m3-secondary-container: #54452a;
+  --m3-on-secondary-container: #f7dfbb;
+  --m3-tertiary: #b3cea7;
+  --m3-on-tertiary: #1f361a;
+  --m3-tertiary-container: #354d2e;
+  --m3-on-tertiary-container: #ceebc1;
+  --m3-error: #ffb4ab;
+  --m3-on-error: #690005;
+  --m3-error-container: #93000a;
+  --m3-on-error-container: #ffb4ab;
+  --m3-background: #1e1b16;
+  --m3-on-background: #e9e1d9;
+  --m3-surface: #1e1b16;
+  --m3-on-surface: #e9e1d9;
+  --m3-surface-variant: #4e4639;
+  --m3-on-surface-variant: #d1c5b4;
+  --m3-outline: #9a8f80;
+  --m3-outline-variant: #4e4639;
+  --m3-shadow: #000000;
+  --m3-scrim: #000000;
+  --m3-inverse-surface: #e9e1d9;
+  --m3-inverse-on-surface: #34302a;
+  --m3-inverse-primary: #7b5800;
+
+  /* ---- M3 custom brand colors (dark) ---- */
+  --m3-green: #94d785;
+  --m3-on-green: #003a03;
+  --m3-green-container: #125210;
+  --m3-on-green-container: #aff49f;
+  --m3-red: #ffb691;
+  --m3-on-red: #552100;
+  --m3-red-container: #783100;
+  --m3-on-red-container: #ffdbcb;
+  --m3-blue: #53d7f1;
+  --m3-on-blue: #00363f;
+  --m3-blue-container: #004e5b;
+  --m3-on-blue-container: #a6eeff;
+
+  /* ---- surface container tonal steps (neutral elevation, via color-mix) ---- */
+  --m3-surface-dim: color-mix(in srgb, var(--m3-surface) 90%, var(--m3-on-surface) 10%);
+  --m3-surface-bright: color-mix(in srgb, var(--m3-surface) 96%, var(--m3-on-surface) 4%);
+  --m3-surface-container-lowest: color-mix(in srgb, var(--m3-surface) 100%, var(--m3-on-surface) 0%);
+  --m3-surface-container-low: color-mix(in srgb, var(--m3-surface) 96%, var(--m3-on-surface) 4%);
+  --m3-surface-container: color-mix(in srgb, var(--m3-surface) 92%, var(--m3-on-surface) 8%);
+  --m3-surface-container-high: color-mix(in srgb, var(--m3-surface) 88%, var(--m3-on-surface) 12%);
+  --m3-surface-container-highest: color-mix(in srgb, var(--m3-surface) 84%, var(--m3-on-surface) 16%);
+}
+
+:root[data-theme="light"]{
+
+  /* ---- M3 core roles (light) ---- */
+  --m3-primary: #7b5800;
+  --m3-on-primary: #ffffff;
+  --m3-primary-container: #ffdea6;
+  --m3-on-primary-container: #271900;
+  --m3-secondary: #6d5c3f;
+  --m3-on-secondary: #ffffff;
+  --m3-secondary-container: #f7dfbb;
+  --m3-on-secondary-container: #251a04;
+  --m3-tertiary: #4c6544;
+  --m3-on-tertiary: #ffffff;
+  --m3-tertiary-container: #ceebc1;
+  --m3-on-tertiary-container: #0a2007;
+  --m3-error: #ba1a1a;
+  --m3-on-error: #ffffff;
+  --m3-error-container: #ffdad6;
+  --m3-on-error-container: #410002;
+  --m3-background: #fffbff;
+  --m3-on-background: #1e1b16;
+  --m3-surface: #fffbff;
+  --m3-on-surface: #1e1b16;
+  --m3-surface-variant: #eee1cf;
+  --m3-on-surface-variant: #4e4639;
+  --m3-outline: #807667;
+  --m3-outline-variant: #d1c5b4;
+  --m3-shadow: #000000;
+  --m3-scrim: #000000;
+  --m3-inverse-surface: #34302a;
+  --m3-inverse-on-surface: #f8efe7;
+  --m3-inverse-primary: #f7bd48;
+
+  /* ---- M3 custom brand colors (light) ---- */
+  --m3-green: #2d6b27;
+  --m3-on-green: #ffffff;
+  --m3-green-container: #aff49f;
+  --m3-on-green-container: #002201;
+  --m3-red: #9e4300;
+  --m3-on-red: #ffffff;
+  --m3-red-container: #ffdbcb;
+  --m3-on-red-container: #341100;
+  --m3-blue: #006878;
+  --m3-on-blue: #ffffff;
+  --m3-blue-container: #a6eeff;
+  --m3-on-blue-container: #001f25;
+
+  /* ---- surface container tonal steps (neutral elevation, via color-mix) ---- */
+  --m3-surface-dim: color-mix(in srgb, var(--m3-surface) 90%, var(--m3-on-surface) 10%);
+  --m3-surface-bright: color-mix(in srgb, var(--m3-surface) 96%, var(--m3-on-surface) 4%);
+  --m3-surface-container-lowest: color-mix(in srgb, var(--m3-surface) 100%, var(--m3-on-surface) 0%);
+  --m3-surface-container-low: color-mix(in srgb, var(--m3-surface) 96%, var(--m3-on-surface) 4%);
+  --m3-surface-container: color-mix(in srgb, var(--m3-surface) 92%, var(--m3-on-surface) 8%);
+  --m3-surface-container-high: color-mix(in srgb, var(--m3-surface) 88%, var(--m3-on-surface) 12%);
+  --m3-surface-container-highest: color-mix(in srgb, var(--m3-surface) 84%, var(--m3-on-surface) 16%);
+
+  --bg: var(--m3-surface);
+  --bg-elevated: var(--m3-surface-container-low);
+  --bg-card: var(--m3-surface-container-lowest);
+  --bg-card-hover: var(--m3-surface-container-low);
+  --sidebar: var(--m3-surface-container-low);
+  --border: var(--m3-outline-variant);
+  --border-soft: color-mix(in srgb, var(--m3-outline-variant) 55%, transparent);
+
+  --accent-gold: var(--m3-primary);
+  --accent-gold-soft: color-mix(in srgb, var(--m3-primary) 12%, transparent);
+  --accent-green: var(--m3-green);
+  --accent-green-soft: color-mix(in srgb, var(--m3-green) 12%, transparent);
+  --accent-red: var(--m3-red);
+  --accent-red-soft: color-mix(in srgb, var(--m3-red) 10%, transparent);
+  --accent-red-text: var(--m3-red);
+  --accent-blue: var(--m3-blue);
+  --accent-blue-soft: color-mix(in srgb, var(--m3-blue) 10%, transparent);
+  --accent-blue-text: var(--m3-blue);
+
+  --text-primary: var(--m3-on-surface);
+  --text-muted: var(--m3-on-surface-variant);
+  --text-faint: var(--m3-outline);
+
+  --shadow-sm: 0 1px 2px rgba(30,27,22,.08), 0 1px 3px 1px rgba(30,27,22,.06);
+  --shadow-md: 0 1px 2px rgba(30,27,22,.08), 0 2px 6px 2px rgba(30,27,22,.06);
+  --shadow-lift: 0 1px 3px rgba(30,27,22,.09), 0 4px 8px 3px rgba(30,27,22,.06);
+  --shadow-glow-gold: 0 0 0 1px color-mix(in srgb, var(--m3-primary) 24%, transparent), var(--shadow-md);
+  --shadow-glow-red: 0 0 0 1px color-mix(in srgb, var(--m3-red) 26%, transparent), var(--shadow-md);
+
+  --skeleton-base: var(--m3-surface-container-low);
+  --skeleton-shine: var(--m3-surface-container);
+
+  --chart-text: var(--m3-on-surface-variant);
+  --chart-grid: color-mix(in srgb, var(--m3-outline-variant) 45%, transparent);
+  --chart-border: var(--m3-surface-container-lowest);
+  --chart-dl-text: var(--m3-on-surface);
+  --chart-dl-stroke: rgba(255,255,255,.75);
+
+  color-scheme: light;
+}
+
+/* =====================================================================
+   TYPOGRAPHY — dipetakan ke M3 type scale, font brand (Space Grotesk /
+   Inter) dipertahankan biar identitas tetap ada, cuma ukuran/tracking
+   diselaraskan ke skala M3 (Display/Headline/Title/Body/Label).
+   ===================================================================== */
+body{ font-size: 14px; line-height: 1.43; letter-spacing: .0125em; }
+h1,h2,h3,h4,.font-display{ letter-spacing: -.005em; font-weight: 600; }
+.page-title{ font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: 0; }
+.page-eyebrow{ font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--m3-primary); }
+.kpi-value{ font-size: 32px; line-height: 40px; font-weight: 600; letter-spacing: -.01em; }
+.field-label{ font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .03em; color: var(--m3-on-surface-variant); }
+.card-title{ font-size: 16px; line-height: 24px; font-weight: 600; letter-spacing: 0; }
+
+/* =====================================================================
+   BUTTONS — M3 Filled / Outlined / Text / Icon button
+   ===================================================================== */
+.btn{
+  position: relative; overflow: hidden; isolation: isolate;
+  height: 40px; padding: 0 24px; border-radius: var(--m3-shape-full);
+  font-size: 14px; font-weight: 500; letter-spacing: .01em;
+  border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--m3-surface-container-high); color: var(--m3-on-surface);
+  transition: box-shadow var(--m3-duration-short) var(--m3-motion-standard),
+              background-color var(--m3-duration-short) var(--m3-motion-standard);
+}
+.btn::before{
+  content:""; position:absolute; inset:0; background: currentColor; opacity:0; z-index:-1;
+  transition: opacity var(--m3-duration-short) var(--m3-motion-standard);
+}
+.btn:hover::before{ opacity: var(--m3-state-hover); }
+.btn:focus-visible::before{ opacity: var(--m3-state-focus); }
+.btn:active::before{ opacity: var(--m3-state-pressed); }
+.btn-sm{ height: 32px; padding: 0 16px; font-size: 13px; }
+
+.btn-primary{ background: var(--m3-primary); color: var(--m3-on-primary); }
+.btn-primary:hover{ box-shadow: var(--m3-elevation-1); }
+
+.btn-outline{ background: transparent; color: var(--m3-primary); box-shadow: inset 0 0 0 1px var(--m3-outline); }
+.btn-outline::before{ background: var(--m3-primary); }
+
+.btn-danger{ background: var(--m3-red-container); color: var(--m3-on-red-container); }
+.btn-danger::before{ background: var(--m3-on-red-container); }
+
+.btn-icon{
+  width: 40px; height: 40px; padding: 0; border-radius: var(--m3-shape-full);
+  background: transparent; color: var(--m3-on-surface-variant);
+}
+.btn-icon::before{ background: currentColor; border-radius: var(--m3-shape-full); }
+.btn:disabled, .btn[disabled]{ opacity: var(--m3-state-disabled-content); pointer-events: none; box-shadow: none; }
+
+.pill-btn{
+  border-radius: var(--m3-shape-full); background: var(--m3-surface-container-high);
+  color: var(--m3-on-surface-variant); border: 1px solid transparent;
+  font-size: 13px; font-weight: 500; transition: background var(--m3-duration-short) var(--m3-motion-standard);
+}
+.pill-btn.active, .tab-toggle .active{
+  background: var(--m3-secondary-container); color: var(--m3-on-secondary-container);
+}
+
+/* =====================================================================
+   CARDS — M3 Elevated Card (surface-container + elevation-1, naik ke
+   elevation-2 saat hover kalau card-hoverable)
+   ===================================================================== */
+.card, .kpi-card, .chat-card, .dm-card, .changelog-card, .mp-card, .login-card,
+.chart-box, .chart-box-sm, .beranda-weather-widget, .login-weather-widget, .stat-drawer{
+  background: var(--m3-surface-container); border: 1px solid var(--border-soft);
+  border-radius: var(--m3-shape-lg); box-shadow: var(--m3-elevation-1);
+  transition: box-shadow var(--m3-duration-medium) var(--m3-motion-standard);
+}
+.card-hoverable:hover, .mp-card:hover{ box-shadow: var(--m3-elevation-2); }
+.card-header, .modal-header{ border-bottom: 1px solid var(--border-soft); }
+.card-body{ color: var(--m3-on-surface-variant); }
+
+/* =====================================================================
+   INPUTS — M3 Filled Text Field (top-rounded, bottom indicator line)
+   ===================================================================== */
+.input, .beranda-filter-select, .peta-input-compact, .dm-search input,
+.chat-textarea, .pin-input-box{
+  background: var(--m3-surface-container-highest);
+  border: none; border-bottom: 1px solid var(--m3-outline);
+  border-radius: var(--m3-shape-xs) var(--m3-shape-xs) 0 0;
+  color: var(--m3-on-surface); padding: 10px 14px;
+  transition: border-color var(--m3-duration-short) var(--m3-motion-standard),
+              box-shadow var(--m3-duration-short) var(--m3-motion-standard);
+}
+.input:focus, .beranda-filter-select:focus, .dm-search input:focus, .chat-textarea:focus{
+  outline: none; border-bottom: 2px solid var(--m3-primary);
+  box-shadow: 0 1px 0 0 var(--m3-primary);
+}
+.ui-switch{ accent-color: var(--m3-primary); }
+
+
+/* =====================================================================
+   NAVIGATION — Sidebar = M3 Navigation Drawer, Bottom nav = M3
+   Navigation Bar, Topbar = M3 Top App Bar
+   ===================================================================== */
+.sidebar{ background: var(--m3-surface-container-low); border-right: 1px solid var(--border-soft); }
+.sidebar-header, .sidebar-footer{ border-color: var(--border-soft); }
+.nav-section-label{ color: var(--m3-on-surface-variant); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+
+.nav-item{
+  position: relative; overflow: hidden;
+  border-radius: var(--m3-shape-full); color: var(--m3-on-surface-variant);
+  transition: background var(--m3-duration-short) var(--m3-motion-standard), color var(--m3-duration-short) var(--m3-motion-standard);
+}
+.nav-item::before{
+  content:""; position:absolute; inset:0; background: var(--m3-on-surface); opacity:0; z-index:-1;
+  transition: opacity var(--m3-duration-short) var(--m3-motion-standard);
+}
+.nav-item:hover::before{ opacity: var(--m3-state-hover); }
+.nav-item.active, .nav-item[aria-current="page"]{
+  background: var(--m3-secondary-container); color: var(--m3-on-secondary-container); font-weight: 600;
+}
+.nav-item.active::before{ content: none; }
+
+.topbar{ background: var(--m3-surface); border-bottom: 1px solid var(--border-soft); }
+.topbar-icon-row .btn-icon{ color: var(--m3-on-surface-variant); }
+.user-chip, .user-chip-topbar{
+  border-radius: var(--m3-shape-full); background: var(--m3-surface-container-high);
+}
+
+.bottom-nav{
+  background: var(--m3-surface-container); border-top: 1px solid var(--border-soft);
+  box-shadow: var(--m3-elevation-2);
+}
+.bottom-nav-item{ color: var(--m3-on-surface-variant); }
+.bottom-nav-item .bn-icon-wrap{
+  border-radius: var(--m3-shape-full); transition: background var(--m3-duration-short) var(--m3-motion-standard);
+  padding: 4px 20px;
+}
+.bottom-nav-item.active .bn-icon-wrap{ background: var(--m3-secondary-container); }
+.bottom-nav-item.active{ color: var(--m3-on-surface); font-weight: 600; }
+.bottom-nav-item.active .bn-label{ color: var(--m3-primary); }
+
+/* =====================================================================
+   BADGES / CHIPS / STATUS PILLS — M3 Assist/Filter Chip pattern
+   ===================================================================== */
+.badge, .status-badge, .count-badge, .role-pill, .chat-reaction-pill,
+.chat-bubble-notif-tag, .petak-tag, .taskcal-bar{
+  border-radius: var(--m3-shape-full); font-weight: 600; font-size: 12px; letter-spacing: .02em;
+}
+.badge-done, .status-badge.done{ background: var(--m3-green-container); color: var(--m3-on-green-container); }
+.badge-progress, .status-badge.progress{ background: var(--m3-primary-container); color: var(--m3-on-primary-container); }
+.badge-notyet, .badge-neutral, .status-badge.neutral{ background: var(--m3-surface-variant); color: var(--m3-on-surface-variant); }
+.badge-rejected, .status-badge.rejected{ background: var(--m3-red-container); color: var(--m3-on-red-container); }
+
+.role-admin{ background: var(--m3-primary-container); color: var(--m3-on-primary-container); }
+.role-manager{ background: var(--m3-tertiary-container); color: var(--m3-on-tertiary-container); }
+.role-superintendent, .role-supervisor{ background: var(--m3-blue-container); color: var(--m3-on-blue-container); }
+.role-staff{ background: var(--m3-secondary-container); color: var(--m3-on-secondary-container); }
+.role-viewer{ background: var(--m3-surface-variant); color: var(--m3-on-surface-variant); }
+
+.count-badge, .notif-badge{ background: var(--m3-red); color: var(--m3-on-red); box-shadow: 0 0 0 2px var(--m3-surface); }
+
+/* =====================================================================
+   MODALS / DIALOGS — M3 Dialog (extra-large shape 28px, elevation-3)
+   ===================================================================== */
+.modal-overlay{ background: color-mix(in srgb, var(--m3-scrim) 32%, transparent); backdrop-filter: blur(2px); }
+.modal-box, .changelog-modal{
+  background: var(--m3-surface-container-high); border-radius: var(--m3-shape-xl);
+  box-shadow: var(--m3-elevation-3); border: none;
+}
+.modal-footer{ border-top: 1px solid var(--border-soft); }
+
+/* =====================================================================
+   TABLES
+   ===================================================================== */
+.table-toolbar{ background: var(--m3-surface-container-low); border-radius: var(--m3-shape-md) var(--m3-shape-md) 0 0; }
+.table-scroll table thead th{ background: var(--m3-surface-container-low); color: var(--m3-on-surface-variant); font-weight: 600; }
+.table-scroll table tbody tr{ border-bottom: 1px solid var(--border-soft); }
+.table-scroll table tbody tr:hover{ background: color-mix(in srgb, var(--m3-on-surface) 4%, transparent); }
+.pagination .pager-pills, .pager-pills{ border-radius: var(--m3-shape-full); }
+
+/* =====================================================================
+   TOAST / SNACKBAR — M3 Snackbar (small shape 4px, inverse surface)
+   ===================================================================== */
+.toast, .import-progress-toast{
+  background: var(--m3-inverse-surface); color: var(--m3-inverse-on-surface);
+  border-radius: var(--m3-shape-xs); box-shadow: var(--m3-elevation-3);
+}
+
+/* =====================================================================
+   MISC — skeleton, spinner, empty state, login card shape
+   ===================================================================== */
+.skeleton, .skeleton-line, .skeleton-row, .skeleton-kpi, .skeleton-chart{
+  background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 37%, var(--skeleton-base) 63%);
+  background-size: 400% 100%;
+}
+.spinner{ border-color: var(--m3-surface-variant); border-top-color: var(--m3-primary); }
+.empty-state{ color: var(--m3-on-surface-variant); }
+.login-card{ border-radius: var(--m3-shape-xl); }
+:focus-visible{ outline: 2px solid var(--m3-primary); outline-offset: 2px; border-radius: 2px; }
