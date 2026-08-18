@@ -340,6 +340,26 @@ h1,h2,h3,h4,.font-display{ letter-spacing: -.005em; font-weight: 600; }
 }
 .ui-switch{ accent-color: var(--m3-primary); }
 
+/* fix: browser autofill (email/password tersimpan) maksa bg kuning bawaan +
+   text jadi nyaris gak kebaca. Override paksa pake warna field kita sendiri. */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus{
+  -webkit-text-fill-color: var(--m3-on-surface);
+  -webkit-box-shadow: 0 0 0px 1000px var(--m3-surface-container-highest) inset;
+  box-shadow: 0 0 0px 1000px var(--m3-surface-container-highest) inset;
+  caret-color: var(--m3-on-surface);
+  transition: background-color 9999s ease-in-out 0s;
+}
+.login-card .input:-webkit-autofill,
+.login-card .input:-webkit-autofill:hover,
+.login-card .input:-webkit-autofill:focus{
+  -webkit-text-fill-color: #1B1405;
+  -webkit-box-shadow: 0 0 0px 1000px rgba(255,246,225,0.92) inset;
+  box-shadow: 0 0 0px 1000px rgba(255,246,225,0.92) inset;
+  caret-color: #1B1405;
+}
+
 
 /* =====================================================================
    NAVIGATION — Sidebar = M3 Navigation Drawer, Bottom nav = M3
