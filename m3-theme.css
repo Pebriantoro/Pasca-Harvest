@@ -347,20 +347,20 @@ h1,h2,h3,h4,.font-display{ letter-spacing: -.005em; font-weight: 600; }
    ===================================================================== */
 .sidebar{ background: var(--m3-surface-container-low); }
 
-/* satuin sidebar jadi 1 card M3, bukan 2 card ngambang (header + panel) kayak aslinya */
+/* sidebar = 2 card terpisah (header logo + panel menu), masing-masing card M3 sendiri */
 .sidebar{
-  border-radius: var(--m3-shape-xl); border: 1px solid var(--border-soft);
-  box-shadow: var(--m3-elevation-1); background: var(--m3-surface-container-low);
-  gap: 0; overflow: hidden;
+  border-radius: 0; border: none; box-shadow: none; background: transparent;
+  gap: 14px; overflow: visible;
 }
 .sidebar-header{
-  background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none;
-  border-radius: 0; border: none; box-shadow: none;
-  border-bottom: 1px solid var(--border-soft);
+  background: var(--m3-surface-container-low); backdrop-filter: none; -webkit-backdrop-filter: none;
+  border-radius: var(--m3-shape-xl); border: 1px solid var(--border-soft);
+  box-shadow: var(--m3-elevation-1);
 }
 .sidebar-menu-panel{
-  background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none;
-  border-radius: 0; border: none; box-shadow: none;
+  background: var(--m3-surface-container-low); backdrop-filter: none; -webkit-backdrop-filter: none;
+  border-radius: var(--m3-shape-xl); border: 1px solid var(--border-soft);
+  box-shadow: var(--m3-elevation-1);
 }
 .sidebar-footer{ border-top: 1px solid var(--border-soft); }
 .sidebar-header, .sidebar-footer{ border-color: var(--border-soft); }
