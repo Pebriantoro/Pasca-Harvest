@@ -345,7 +345,7 @@ h1,h2,h3,h4,.font-display{ letter-spacing: -.005em; font-weight: 600; }
    NAVIGATION — Sidebar = M3 Navigation Drawer, Bottom nav = M3
    Navigation Bar, Topbar = M3 Top App Bar
    ===================================================================== */
-.sidebar{ background: var(--m3-surface-container-low); border-right: 1px solid var(--border-soft); }
+.sidebar{ background: var(--m3-surface-container-low); }
 .sidebar-header, .sidebar-footer{ border-color: var(--border-soft); }
 .nav-section-label{ color: var(--m3-on-surface-variant); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
 
