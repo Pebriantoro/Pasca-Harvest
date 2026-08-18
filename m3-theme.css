@@ -517,3 +517,170 @@ h1,h2,h3,h4,.font-display{ letter-spacing: -.005em; font-weight: 600; }
 .bottom-nav-item.active .material-symbols-outlined{
   font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 20;
 }
+
+/* =====================================================================
+   FAB — M3 Floating Action Button (primary/small/extended, elevation-3,
+   naik ke elevation-4 saat hover). Class siap pakai, tinggal tempel ke
+   HTML: <button class="fab"><span class="material-symbols-outlined">add</span></button>
+   ===================================================================== */
+.fab{
+  position: relative; overflow: hidden; isolation: isolate;
+  width: 56px; height: 56px; border-radius: var(--m3-shape-lg);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--m3-primary-container); color: var(--m3-on-primary-container);
+  border: none; box-shadow: var(--m3-elevation-3); cursor: pointer;
+  transition: box-shadow var(--m3-duration-short) var(--m3-motion-standard);
+}
+.fab::before{
+  content:""; position:absolute; inset:0; background: currentColor; opacity:0; z-index:-1;
+  transition: opacity var(--m3-duration-short) var(--m3-motion-standard);
+}
+.fab:hover{ box-shadow: var(--m3-elevation-4); }
+.fab:hover::before{ opacity: var(--m3-state-hover); }
+.fab:active::before{ opacity: var(--m3-state-pressed); }
+.fab .material-symbols-outlined{ font-size: 24px; }
+.fab-small{ width: 40px; height: 40px; border-radius: var(--m3-shape-md); }
+.fab-small .material-symbols-outlined{ font-size: 20px; }
+.fab-large{ width: 96px; height: 96px; border-radius: var(--m3-shape-xl); }
+.fab-large .material-symbols-outlined{ font-size: 36px; }
+.fab-extended{ width: auto; height: 56px; padding: 0 20px 0 16px; border-radius: var(--m3-shape-lg); gap: 12px; font-size: 14px; font-weight: 500; }
+
+/* =====================================================================
+   CHIPS — M3 Assist/Filter/Input chip (shape-sm, outline default,
+   filled + checkmark saat selected). Reusable: <button class="m3-chip">Label</button>
+   ===================================================================== */
+.m3-chip{
+  position: relative; overflow: hidden; isolation: isolate;
+  display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 16px;
+  border-radius: var(--m3-shape-sm); font-size: 13px; font-weight: 500;
+  background: transparent; color: var(--m3-on-surface-variant);
+  box-shadow: inset 0 0 0 1px var(--m3-outline); border: none; cursor: pointer;
+  transition: background var(--m3-duration-short) var(--m3-motion-standard),
+              box-shadow var(--m3-duration-short) var(--m3-motion-standard);
+}
+.m3-chip::before{
+  content:""; position:absolute; inset:0; background: currentColor; opacity:0; z-index:-1;
+  transition: opacity var(--m3-duration-short) var(--m3-motion-standard);
+}
+.m3-chip:hover::before{ opacity: var(--m3-state-hover); }
+.m3-chip .material-symbols-outlined{ font-size: 18px; }
+.m3-chip.selected{
+  background: var(--m3-secondary-container); color: var(--m3-on-secondary-container);
+  box-shadow: none; padding-left: 8px;
+}
+.m3-chip.selected::after{ content: '\2713'; font-size: 14px; font-weight: 700; }
+.m3-chip:disabled{ opacity: var(--m3-state-disabled-content); pointer-events: none; box-shadow: inset 0 0 0 1px var(--m3-outline-variant); }
+
+/* =====================================================================
+   OUTLINED TEXT FIELD — varian kedua M3 (filled sudah ada di .input).
+   Reusable: <input class="input input-outlined">
+   ===================================================================== */
+.input-outlined{
+  background: transparent; border: 1px solid var(--m3-outline);
+  border-radius: var(--m3-shape-xs); border-bottom: 1px solid var(--m3-outline);
+}
+.input-outlined:focus{
+  border: 2px solid var(--m3-primary); box-shadow: none; padding: 9px 13px;
+}
+
+/* =====================================================================
+   SWITCH — upgrade .ui-switch existing ke dimensi + state resmi M3
+   (track 52x32, thumb kecil 16px waktu off, thumb besar 24px + icon
+   check waktu on). Markup/JS lama (.ui-switch.on toggle) tidak disentuh.
+   ===================================================================== */
+.ui-switch{
+  --w: 52px; --h: 32px; border-radius: var(--m3-shape-full);
+  background: var(--m3-surface-container-highest);
+  border: 2px solid var(--m3-outline); box-shadow: none;
+}
+.ui-switch::before{ content: none; }
+.ui-switch::after{
+  top: 50%; left: 4px; width: 16px; height: 16px; transform: translateY(-50%);
+  background: var(--m3-outline); box-shadow: none;
+  transition: transform var(--m3-duration-medium) var(--m3-motion-emphasized-decel),
+              width var(--m3-duration-short) var(--m3-motion-standard),
+              height var(--m3-duration-short) var(--m3-motion-standard),
+              background var(--m3-duration-short) var(--m3-motion-standard);
+}
+.ui-switch.on{
+  background: var(--m3-primary); border-color: var(--m3-primary); box-shadow: none;
+}
+.ui-switch.on::after{
+  content: '\2713'; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--m3-on-primary);
+  width: 24px; height: 24px; background: var(--m3-on-primary-container);
+  transform: translate(20px, -50%);
+}
+.settings-row:active .ui-switch::after{ width: 28px; }
+.settings-row:hover .ui-switch{ border-color: var(--m3-primary); }
+
+/* =====================================================================
+   SEGMENTED BUTTON — upgrade .tab-toggle existing ke pola resmi M3
+   (outline shape-full, divider antar segmen, segmen aktif = filled +
+   checkmark). Markup lama tidak disentuh.
+   ===================================================================== */
+.tab-toggle{
+  border: 1px solid var(--m3-outline); border-radius: var(--m3-shape-full);
+  overflow: hidden; background: transparent;
+}
+.tab-toggle button{
+  position: relative; height: 36px; color: var(--m3-on-surface); font-size: 13px;
+  border-right: 1px solid var(--m3-outline);
+}
+.tab-toggle button:last-child{ border-right: none; }
+.tab-toggle button.active{
+  background: var(--m3-secondary-container); color: var(--m3-on-secondary-container);
+}
+.tab-toggle button.active::before{ content: '\2713'; margin-right: 6px; font-size: 12px; }
+
+/* =====================================================================
+   TABS — M3 Primary Tabs dengan indicator bar (component baru, belum
+   dipakai di HTML manapun — siap pasang kalau butuh halaman bertab).
+   Markup: <div class="m3-tabs"><button class="m3-tab active">A</button>...</div>
+   ===================================================================== */
+.m3-tabs{ display: flex; border-bottom: 1px solid var(--border-soft); }
+.m3-tab{
+  position: relative; height: 48px; padding: 0 16px; background: transparent; border: none;
+  color: var(--m3-on-surface-variant); font-size: 14px; font-weight: 500;
+  transition: color var(--m3-duration-short) var(--m3-motion-standard);
+}
+.m3-tab.active{ color: var(--m3-primary); }
+.m3-tab.active::after{
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: var(--m3-primary); border-radius: var(--m3-shape-xs) var(--m3-shape-xs) 0 0;
+}
+
+/* =====================================================================
+   SLIDER — M3 slider (auto-styled kalau ada <input type="range"> baru
+   ditambahkan; belum ada input range di app sekarang).
+   ===================================================================== */
+input[type="range"]{
+  -webkit-appearance: none; appearance: none; height: 4px; border-radius: var(--m3-shape-full);
+  background: var(--m3-surface-variant); accent-color: var(--m3-primary);
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance: none; width: 20px; height: 20px; border-radius: var(--m3-shape-full);
+  background: var(--m3-primary); box-shadow: var(--m3-elevation-1); cursor: pointer;
+}
+
+/* =====================================================================
+   NAVIGATION RAIL — breakpoint tablet (M3 spec 840px-1240px pakai rail,
+   bukan drawer/bottom-nav). App ini masih 2 mode (sidebar desktop, bottom
+   nav mobile) — nav rail BELUM di-wire karena butuh logic JS baru buat
+   swap komponen di breakpoint tengah. CSS siap, tinggal panggil kalau
+   struktur HTML nav-rail ditambahkan.
+   ===================================================================== */
+.nav-rail{
+  display: none; flex-direction: column; align-items: center; gap: 4px; width: 80px;
+  background: var(--m3-surface-container-low); padding: 12px 0;
+}
+.nav-rail-item{
+  display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%;
+  padding: 4px 0; color: var(--m3-on-surface-variant); font-size: 11px;
+}
+.nav-rail-item .nav-rail-icon-wrap{
+  border-radius: var(--m3-shape-full); padding: 4px 20px;
+  transition: background var(--m3-duration-short) var(--m3-motion-standard);
+}
+.nav-rail-item.active .nav-rail-icon-wrap{ background: var(--m3-secondary-container); }
+.nav-rail-item.active{ color: var(--m3-on-surface); font-weight: 600; }
