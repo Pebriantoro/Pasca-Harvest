@@ -476,6 +476,21 @@ h1,h2,h3,h4,.font-display{ letter-spacing: -.005em; font-weight: 600; }
   background-size: 400% 100%;
 }
 .spinner{ border-color: var(--m3-surface-variant); border-top-color: var(--m3-primary); }
+
+/* M3 Linear Progress Indicator — track flat rounded, indicator solid primary, no glow */
+.import-progress-toast{
+  border-left: none; background: var(--m3-surface-container-high);
+}
+.import-progress-bar{
+  height: 4px; border-radius: var(--m3-shape-full);
+  background: color-mix(in srgb, var(--m3-primary) 24%, var(--m3-surface-variant));
+}
+.import-progress-fill{
+  border-radius: var(--m3-shape-full);
+  background: var(--m3-primary);
+  box-shadow: none;
+}
+.import-progress-head #importProgressPct{ color: var(--m3-primary); }
 .empty-state{ color: var(--m3-on-surface-variant); }
 .login-card{ border-radius: var(--m3-shape-xl); }
 :focus-visible{ outline: 2px solid var(--m3-primary); outline-offset: 2px; border-radius: 2px; }
