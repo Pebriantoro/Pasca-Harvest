@@ -8,6 +8,7 @@
 <link rel="apple-touch-icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0..1,0" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=1.3.14">
 <link rel="stylesheet" href="chat-polish.css?v=1.3.14">
 <link rel="stylesheet" href="sidebar-collapse.css?v=1.3.14">
@@ -288,37 +289,37 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
 
     <nav class="sidebar-nav" id="sidebarNav">
       <a class="nav-item nav-item-beranda" data-view="beranda" onclick="navigate('beranda')" style="font-weight:700;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
+        <span class="material-symbols-outlined nav-item-icon">home</span>
         <span>Beranda</span>
       </a>
       <a class="nav-item" data-view="task_calendar" onclick="navigate('task_calendar')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><circle cx="8" cy="15" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg>
+        <span class="material-symbols-outlined nav-item-icon">calendar_month</span>
         <span>Task Calendar</span>
       </a>
       <div class="nav-section" id="navSection_ringkasan">
         <button type="button" class="nav-section-label" onclick="toggleNavSection('ringkasan')" aria-expanded="true">
           <span>Ringkasan</span>
-          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="material-symbols-outlined nav-section-chevron">expand_more</span>
         </button>
         <div class="nav-section-body" id="navSectionBody_ringkasan"><div class="nav-section-body-inner">
           <a class="nav-item" data-view="dashboard" onclick="navigate('dashboard')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">dashboard</span>
             <span>Dashboard Gabungan</span>
           </a>
           <a class="nav-item" data-view="rkh" onclick="navigate('rkh')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">fact_check</span>
             <span>Rencana Kerja Harian</span>
           </a>
           <a class="nav-item" data-view="pra_spa" onclick="navigate('pra_spa')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">task_alt</span>
             <span>Pengecekan Pra SPA</span>
           </a>
           <a class="nav-item" data-view="qc_by_proses" onclick="navigate('qc_by_proses')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">grid_view</span>
             <span>QC By Proses</span>
           </a>
           <a class="nav-item" data-view="monitoring_plantation" onclick="navigate('monitoring_plantation')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">agriculture</span>
             <span>Monitoring Pekerjaan Plantation</span>
           </a>
         </div></div>
@@ -327,23 +328,23 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
       <div class="nav-section" id="navSection_produktivitas">
         <button type="button" class="nav-section-label" onclick="toggleNavSection('produktivitas')" aria-expanded="true">
           <span>Produktivitas</span>
-          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="material-symbols-outlined nav-section-chevron">expand_more</span>
         </button>
         <div class="nav-section-body" id="navSectionBody_produktivitas"><div class="nav-section-body-inner">
           <a class="nav-item" data-view="produktivitas_harian" onclick="navigate('produktivitas_harian')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M7 19V9m5 10V5m5 14v-7"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">bar_chart</span>
             <span>Prod Harian</span><span class="count-badge" id="countBadge_produktivitas_harian">–</span>
           </a>
           <a class="nav-item" data-view="produktivitas_kontraktor" onclick="navigate('produktivitas_kontraktor')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">engineering</span>
             <span>Prod Kontraktor</span><span class="count-badge" id="countBadge_produktivitas_kontraktor">–</span>
           </a>
           <a class="nav-item" data-view="produktivitas_he_rental" onclick="navigate('produktivitas_he_rental')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="18" r="2"/><path d="M4 18h-1v-4l3-3h4l4-5 3 2-3 4h2l2 3v3h-2"/><path d="M11 11l2 4"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">construction</span>
             <span>Prod HE — Rental</span><span class="count-badge" id="countBadge_produktivitas_he_rental">–</span>
           </a>
           <a class="nav-item" data-view="produktivitas_he_internal" onclick="navigate('produktivitas_he_internal')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="17" r="3"/><circle cx="17" cy="17" r="2"/><path d="M6 14V8h5l3 4h3a2 2 0 0 1 2 2v2h-2"/><path d="M11 14H8"/><path d="M4 8H2v4"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">build</span>
             <span>Prod HE — Internal</span><span class="count-badge" id="countBadge_produktivitas_he_internal">–</span>
           </a>
         </div></div>
@@ -352,43 +353,43 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
       <div class="nav-section" id="navSection_menu_data">
         <button type="button" class="nav-section-label" onclick="toggleNavSection('menu_data')" aria-expanded="true">
           <span>Menu Data</span>
-          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="material-symbols-outlined nav-section-chevron">expand_more</span>
         </button>
         <div class="nav-section-body" id="navSectionBody_menu_data"><div class="nav-section-body-inner">
           <a class="nav-item" data-view="pasca_harvest" onclick="navigate('pasca_harvest')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M12 2c-3 3-6 4-6 8s3 5 6 5 6-1 6-5-3-5-6-8Z"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">eco</span>
             <span>Pasca Harvest</span><span class="count-badge" id="countBadge_pasca_harvest">–</span>
           </a>
           <a class="nav-item" data-view="rpc_after_giling" onclick="navigate('rpc_after_giling')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 12a9 9 0 0 1 9-9M3 12a9 9 0 0 0 9 9m0-18a9 9 0 0 1 9 9m-9-9v18m0 0a9 9 0 0 0 9-9"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">sync</span>
             <span>RPC After Giling</span><span class="count-badge" id="countBadge_rpc_after_giling">–</span>
           </a>
           <a class="nav-item" data-view="extra_planting_after_giling" onclick="navigate('extra_planting_after_giling')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-8M12 14c-4 0-7-2-7-6 4 0 7 1 7 4M12 14c4 0 7-2 7-6-4 0-7 1-7 4M12 8V2"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">park</span>
             <span>Extra Planting</span><span class="count-badge" id="countBadge_extra_planting_after_giling">–</span>
           </a>
           <a class="nav-item" data-view="blanking" onclick="navigate('blanking')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9h.01M15 15h.01M9 15l6-6"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">block</span>
             <span>Blanking</span><span class="count-badge" id="countBadge_blanking">–</span>
           </a>
           <a class="nav-item" data-view="ratoon" onclick="navigate('ratoon')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M12 10C8 10 6 8 6 4c4 0 6 2 6 6Zm0 0c0-4 2-6 6-6 0 4-2 6-6 6Z"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">grass</span>
             <span>Ratoon</span><span class="count-badge" id="countBadge_ratoon">–</span>
           </a>
           <a class="nav-item" data-view="maintenance" onclick="navigate('maintenance')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m14.7 6.3 3 3L8 19H5v-3Z"/><path d="m17.5 3.5 3 3M2 22l3-1 12-12-2-2L3 19Z"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">handyman</span>
             <span>Maintenance</span><span class="count-badge" id="countBadge_maintenance">–</span>
           </a>
           <a class="nav-item" data-view="pc_rpc_eks_non_rkt" onclick="navigate('pc_rpc_eks_non_rkt')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v7.5M12 9.5 6 21h12L12 9.5Z"/><path d="M9 15h6"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">warning</span>
             <span>PC &amp; RPC Eks Non RKT</span><span class="count-badge" id="countBadge_pc_rpc_eks_non_rkt">–</span>
           </a>
           <a class="nav-item" data-view="tebang_bibit" onclick="navigate('tebang_bibit')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 20 20 7M9 4 4 9l3 3 5-5-3-3Z"/><path d="m14 15 5 5"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">content_cut</span>
             <span>Tebang Bibit</span><span class="count-badge" id="countBadge_tebang_bibit">–</span>
           </a>
           <a class="nav-item" data-view="posisi_unit" onclick="navigate('posisi_unit')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="10" width="14" height="7" rx="1.5"/><path d="M16 12h4l2 3v2h-6z"/><circle cx="6.5" cy="19" r="1.8"/><circle cx="17.5" cy="19" r="1.8"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">local_shipping</span>
             <span>Data Posisi Unit</span>
           </a>
         </div></div>
@@ -398,11 +399,11 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
       <div class="nav-section" id="navSection_approval" style="display:none;">
         <button type="button" class="nav-section-label" onclick="toggleNavSection('approval')" aria-expanded="true">
           <span>Approval</span>
-          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="material-symbols-outlined nav-section-chevron">expand_more</span>
         </button>
         <div class="nav-section-body" id="navSectionBody_approval"><div class="nav-section-body-inner">
           <a class="nav-item" data-view="approval" onclick="navigate('approval')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">check_circle</span>
             <span>Approval</span><span class="count-badge" id="countBadge_approval">–</span>
           </a>
         </div></div>
@@ -411,11 +412,11 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
       <div class="nav-section" id="navSection_justifikasi">
         <button type="button" class="nav-section-label" onclick="toggleNavSection('justifikasi')" aria-expanded="true">
           <span>Justifikasi</span>
-          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="material-symbols-outlined nav-section-chevron">expand_more</span>
         </button>
         <div class="nav-section-body" id="navSectionBody_justifikasi"><div class="nav-section-body-inner">
           <a class="nav-item" data-view="justifikasi_tch_under70" onclick="navigate('justifikasi_tch_under70')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">report_problem</span>
             <span>Justifikasi TCH Under 70</span><span class="count-badge" id="countBadge_justifikasi_tch_under70">–</span>
           </a>
         </div></div>
@@ -424,15 +425,15 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
       <div class="nav-section" id="navSection_tenaga_kerja">
         <button type="button" class="nav-section-label" onclick="toggleNavSection('tenaga_kerja')" aria-expanded="true">
           <span>Tenaga Kerja</span>
-          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="material-symbols-outlined nav-section-chevron">expand_more</span>
         </button>
         <div class="nav-section-body" id="navSectionBody_tenaga_kerja"><div class="nav-section-body-inner">
           <a class="nav-item" data-view="actual_tk" onclick="navigate('actual_tk')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M2.5 21c0-3.5 3-6.5 6.5-6.5s6.5 3 6.5 6.5"/><path d="M17 11a3 3 0 1 0 0-6M21.5 21c0-3-2-5.2-4.5-6"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">groups</span>
             <span>Actual TK</span><span class="count-badge" id="countBadge_actual_tk">–</span>
           </a>
           <a class="nav-item" data-view="plan_kedatangan_tk" onclick="navigate('plan_kedatangan_tk')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">event</span>
             <span>Plan Kedatangan TK</span><span class="count-badge" id="countBadge_plan_kedatangan_tk">–</span>
           </a>
         </div></div>
@@ -441,19 +442,19 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
       <div class="nav-section" id="navSection_armada_aset">
         <button type="button" class="nav-section-label" onclick="toggleNavSection('armada_aset')" aria-expanded="true">
           <span>Armada &amp; Aset</span>
-          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="material-symbols-outlined nav-section-chevron">expand_more</span>
         </button>
         <div class="nav-section-body" id="navSectionBody_armada_aset"><div class="nav-section-body-inner">
           <a class="nav-item" data-view="monitoring_motor" onclick="navigate('monitoring_motor')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6M6 17 9 8h5l3 6M9 8V5h3"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">two_wheeler</span>
             <span>Monitoring Motor</span><span class="count-badge" id="countBadge_monitoring_motor">–</span>
           </a>
           <a class="nav-item" data-view="monitoring_aset" onclick="navigate('monitoring_aset')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">inventory_2</span>
             <span>Monitoring Aset</span><span class="count-badge" id="countBadge_monitoring_aset">–</span>
           </a>
           <a class="nav-item" data-view="he_implement" onclick="navigate('he_implement')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20h20M4 20V10l4-3 4 3v10M12 20v-6l4-3 4 3v6"/><circle cx="6" cy="20" r="0"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">precision_manufacturing</span>
             <span>Monitoring HE &amp; Implement</span><span class="count-badge" id="countBadge_he_implement">–</span>
           </a>
         </div></div>
@@ -462,19 +463,19 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
       <div class="nav-section" id="navSection_kondisi_petak">
         <button type="button" class="nav-section-label" onclick="toggleNavSection('kondisi_petak')" aria-expanded="true">
           <span>Kondisi Petak</span>
-          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="material-symbols-outlined nav-section-chevron">expand_more</span>
         </button>
         <div class="nav-section-body" id="navSectionBody_kondisi_petak"><div class="nav-section-body-inner">
           <a class="nav-item" data-view="dashboard_kondisi" onclick="navigate('dashboard_kondisi')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">grid_view</span>
             <span>Dashboard Kondisi Petak</span>
           </a>
           <a class="nav-item" data-view="kondisi_bulanan" onclick="navigate('kondisi_bulanan')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 9h18"/><rect x="3" y="4" width="18" height="18" rx="2"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">calendar_view_month</span>
             <span>Kondisi Bulanan</span><span class="count-badge" id="countBadge_kondisi_bulanan">–</span>
           </a>
           <a class="nav-item" data-view="analisa_12_bulan" onclick="navigate('analisa_12_bulan')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20V4M3 20h18M7 16l4-6 4 3 4-8"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">insights</span>
             <span>Analisa 12 Bulan</span>
           </a>
         </div></div>
@@ -483,11 +484,11 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
       <div class="nav-section" id="navSection_kontrol">
         <button type="button" class="nav-section-label" onclick="toggleNavSection('kontrol')" aria-expanded="true">
           <span>Kontrol &amp; Analitik</span>
-          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="material-symbols-outlined nav-section-chevron">expand_more</span>
         </button>
         <div class="nav-section-body" id="navSectionBody_kontrol"><div class="nav-section-body-inner">
           <a class="nav-item" data-view="target_actual" onclick="navigate('target_actual')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">bar_chart</span>
             <span>Target vs Actual</span>
           </a>
         </div></div>
@@ -496,15 +497,15 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
       <div class="nav-section" id="navSection_administrasi" style="display:none;">
         <button type="button" class="nav-section-label" onclick="toggleNavSection('administrasi')" aria-expanded="true">
           <span>Administrasi</span>
-          <svg class="nav-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="material-symbols-outlined nav-section-chevron">expand_more</span>
         </button>
         <div class="nav-section-body" id="navSectionBody_administrasi"><div class="nav-section-body-inner">
           <a class="nav-item" data-view="users" onclick="navigate('users')" id="usersNavItem">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M17 8.5a3 3 0 1 0 0-6M21.5 20c0-3-2-5-4.5-5.7"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">manage_accounts</span>
             <span>Kelola Pengguna</span>
           </a>
           <a class="nav-item" data-view="log_history" onclick="navigate('log_history')" id="logHistoryNavItem">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            <span class="material-symbols-outlined nav-item-icon">history</span>
             <span>Log History</span>
           </a>
         </div></div>
