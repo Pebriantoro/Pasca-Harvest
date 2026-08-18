@@ -374,8 +374,8 @@ async function renderMPStaff(){
   $('#pageContent').innerHTML = `
     <div class="card" style="margin-bottom:16px;">
       <div class="card-body" style="padding:12px 18px; font-size:13px; color:var(--text-muted); display:flex; gap:18px; flex-wrap:wrap;">
-        <span>Atasan Langsung: <b style="color:var(--text-strong,#fff);">${esc(hier.supervisor_name || '-')}</b></span>
-        <span>Kadep: <b style="color:var(--text-strong,#fff);">${esc(hier.superintendent_name || '-')}</b></span>
+        <span>Atasan Langsung: <b style="color:var(--text-primary);">${esc(hier.supervisor_name || '-')}</b></span>
+        <span>Kadep: <b style="color:var(--text-primary);">${esc(hier.superintendent_name || '-')}</b></span>
       </div>
     </div>
     ${mpSummaryCards(s)}

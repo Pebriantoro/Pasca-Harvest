@@ -1,55 +1,50 @@
-/* ===================== GLASS TOGGLE — addon ala Apple/iOS liquid glass =====================
-   Override .ui-switch (dipakai di Tampilan / Suara Notifikasi / Push / Bahasa / Mode TV).
+/* ===================== M3 SWITCH — addon =====================
+   Override .ui-switch (dipakai di Tampilan / Suara Notifikasi / Push / Bahasa / Mode TV)
+   jadi Switch resmi Material 3 (https://m3.material.io/components/switch).
+   Sebelumnya file ini bikin toggle ala Apple/iOS liquid glass (blur, transparan) —
+   diganti total ke spec M3: track pill flat, thumb solid, centang di knob saat aktif.
    Additive, tidak sentuh core styles.css. Load setelah styles.css & theme-palettes.css. */
 
 .ui-switch{
-  --w:46px; --h:27px;
-  background: color-mix(in srgb, var(--bg-elevated) 55%, transparent);
-  backdrop-filter: blur(14px) saturate(160%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
-  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
-  box-shadow:
-    inset 0 1px 3px rgba(0,0,0,.22),
-    inset 0 0 0 1px rgba(255,255,255,.04),
-    0 1px 1px rgba(255,255,255,.06);
-  transition: background .35s cubic-bezier(.4,0,.2,1), border-color .35s ease, box-shadow .35s ease;
+  --w:52px; --h:32px;
+  background: var(--m3-surface-container-highest);
+  border: 2px solid var(--m3-outline);
+  box-shadow: none;
+  transition: background .2s cubic-bezier(.2,0,0,1), border-color .2s cubic-bezier(.2,0,0,1);
 }
 
-/* hilangkan ikon check/silang bawaan biar clean kaca ala Apple */
+/* buang ikon check/silang teks bawaan, ikon M3 ditaruh langsung di knob (::after) */
 .ui-switch::before{ content:none; }
 
-/* knob kaca: putih pekat + highlight atas + shadow lembut, terasa "melayang" */
+/* knob: unselected kecil warna outline, selected besar warna on-primary + centang */
 .ui-switch::after{
-  top:2px; left:2px; width:23px; height:23px;
-  background:
-    radial-gradient(circle at 32% 28%, rgba(255,255,255,1) 0%, rgba(255,255,255,.94) 45%, rgba(240,240,240,.92) 100%);
-  box-shadow:
-    0 2px 4px rgba(0,0,0,.28),
-    0 1px 1px rgba(0,0,0,.12),
-    inset 0 1px 1px rgba(255,255,255,.9);
-  transition: transform .38s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease, width .16s ease;
+  top:50%; left:4px; width:16px; height:16px;
+  transform: translateY(-50%);
+  background: var(--m3-outline);
+  box-shadow: none;
+  transition: transform .2s cubic-bezier(.2,0,0,1), width .15s cubic-bezier(.2,0,0,1),
+              height .15s cubic-bezier(.2,0,0,1), left .15s cubic-bezier(.2,0,0,1),
+              background .2s ease;
 }
 
 .ui-switch.on{
-  background: color-mix(in srgb, var(--accent-gold) 78%, transparent);
-  backdrop-filter: blur(14px) saturate(180%);
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
-  border-color: color-mix(in srgb, var(--accent-gold) 55%, transparent);
-  box-shadow:
-    inset 0 1px 3px rgba(0,0,0,.15),
-    inset 0 0 0 1px rgba(255,255,255,.12),
-    0 0 10px color-mix(in srgb, var(--accent-gold) 45%, transparent);
+  background: var(--m3-primary);
+  border-color: var(--m3-primary);
+  box-shadow: none;
 }
 .ui-switch.on::after{
-  transform: translateX(19px);
-  box-shadow:
-    0 2px 5px rgba(0,0,0,.32),
-    0 0 8px color-mix(in srgb, var(--accent-gold) 55%, transparent),
-    inset 0 1px 1px rgba(255,255,255,.95);
+  top:50%; left:calc(100% - 4px - 24px); width:24px; height:24px;
+  transform: translateY(-50%);
+  background: var(--m3-on-primary);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E") center/14px no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E") center/14px no-repeat;
+  background: var(--m3-primary);
 }
 
-.settings-row:active .ui-switch::after{ width:27px; }
+.settings-row:hover .ui-switch{ border-color: var(--m3-on-surface); }
+.settings-row:hover .ui-switch.on{ border-color: var(--m3-primary); }
+.settings-row:active .ui-switch::after{ width:24px; height:24px; }
 
 @media (prefers-reduced-motion: reduce){
-  .ui-switch::after{ transition:none; }
+  .ui-switch::after, .ui-switch{ transition:none; }
 }
