@@ -367,8 +367,9 @@ h1,h2,h3,h4,.font-display{ letter-spacing: -.005em; font-weight: 600; }
 .topbar{ background: var(--m3-surface); border-bottom: 1px solid var(--border-soft); }
 .topbar-icon-row .btn-icon{ color: var(--m3-on-surface-variant); }
 .user-chip, .user-chip-topbar{
-  border-radius: var(--m3-shape-full); background: var(--m3-surface-container-high);
+  border-radius: var(--m3-shape-full);
 }
+.menu-toggle{ display: none; }
 
 .bottom-nav{
   background: var(--m3-surface-container); border-top: 1px solid var(--border-soft);
