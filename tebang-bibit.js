@@ -370,7 +370,7 @@ function paintTebangBibit(allRows){
   drawDonut('chart_tb_status', statusAgg, true);
   drawDonut('chart_tb_varietas', varietasAgg, false);
   drawBar('chart_tb_phasing', Object.fromEntries(PHASING_CHART_MONTHS.map(m=>[m, +(phasingAgg[m]||0).toFixed(2)])), undefined, { hideYAxis:true });
-  drawGroupedBar('chart_tb_populasi', zonaOrder, populasiSeries, ['#5B8FA8','#D9A94A'], { hideYAxis:true });
+  drawGroupedBar('chart_tb_populasi', zonaOrder, populasiSeries, [cssVar('--accent-blue','#5B8FA8'), cssVar('--accent-gold','#D9A94A')], { hideYAxis:true });
 }
 
 function openTebangBibitModal(id){

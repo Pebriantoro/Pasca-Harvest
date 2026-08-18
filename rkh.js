@@ -94,7 +94,7 @@ function isValidPetakFormat(val){
   return /^(PNS|KDS)\d{6}$/i.test((val || '').toString().trim());
 }
 function petakFormatWarnHTML(id){
-  return `<div id="${id}" class="hidden" style="color:#F0A392; font-size:11.5px; margin-top:4px;">⚠️ Format kode petak harus diawali "PNS" atau "KDS" + 6 digit angka, contoh: PNS051902 / KDS074802</div>`;
+  return `<div id="${id}" class="hidden" style="color:var(--accent-red-text); font-size:11.5px; margin-top:4px;">⚠️ Format kode petak harus diawali "PNS" atau "KDS" + 6 digit angka, contoh: PNS051902 / KDS074802</div>`;
 }
 function checkPetakFormatInput(inputEl, warnId){
   const warn = document.getElementById(warnId);
@@ -467,7 +467,7 @@ async function openRKHFormModal(id){
           <div><label class="field-label">Jumlah Tenaga Kerja</label><input class="input" type="number" min="0" name="jumlah_tk" value="${esc(existing?.jumlah_tk ?? '')}"></div>
           <div><label class="field-label">Keterangan</label><input class="input" name="keterangan" value="${esc(existing?.keterangan||'')}" placeholder="START / PROGRESS / PRA SPA / SERVIS / dll"></div>
         </form>
-        <div id="rkhFormError" class="hidden" style="background:var(--accent-red-soft); color:#F0A392; padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;"></div>
+        <div id="rkhFormError" class="hidden" style="background:var(--accent-red-soft); color:var(--accent-red-text); padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;"></div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="closeModal()">Batal</button>

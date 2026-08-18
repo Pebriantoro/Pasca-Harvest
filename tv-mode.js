@@ -220,9 +220,10 @@ function tvDestroyCharts(){ TV_STATE.charts.forEach(c => { try{ c.destroy(); }ca
 function tvChartDefaults(){
   return {
     ink: tvColor('--text-primary','#EDEBE2'), muted: tvColor('--text-muted','#93A79A'),
-    grid: 'rgba(147,167,154,0.12)', green: tvColor('--accent-green','#5FAE7D'),
+    grid: tvColor('--chart-grid','rgba(147,167,154,0.12)'), green: tvColor('--accent-green','#5FAE7D'),
     gold: tvColor('--accent-gold','#D9A94A'), red: tvColor('--accent-red','#C1543C'),
-    redText: tvColor('--accent-red-text','#F0A392'), blue: tvColor('--accent-blue','#5B8FA8'), sage:'#8FAE93',
+    redText: tvColor('--accent-red-text','#F0A392'), blue: tvColor('--accent-blue','#5B8FA8'),
+    sage: tvColor('--m3-tertiary','#8FAE93'),
   };
 }
 

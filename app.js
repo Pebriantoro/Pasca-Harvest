@@ -2556,14 +2556,25 @@ function aggregatePivot(rows, groupKey, statusKey, categories){
   });
   return result;
 }
+// Warna semantik & palet grafik dibaca dari token M3 (m3-theme.css), bukan
+// hex tetap, jadi otomatis ikut skema warna Material (role green/gold/red/
+// blue + tonal container) dan ikut ganti saat tema terang/gelap ditoggle.
 function colorForLabel(label){
   const v = (label||'').toString().trim().toLowerCase();
-  if(v === 'done' || v === 'sudah' || v === 'baik') return '#5FAE7D';
-  if(v === 'progress' || v === 'cukup') return '#D9A94A';
-  if(v === 'not yet' || v === 'belum' || v === 'kurang' || v === 'not yet bapp') return '#C1543C';
-  return '#5B8FA8';
+  if(v === 'done' || v === 'sudah' || v === 'baik') return cssVar('--accent-green', '#5FAE7D');
+  if(v === 'progress' || v === 'cukup') return cssVar('--accent-gold', '#D9A94A');
+  if(v === 'not yet' || v === 'belum' || v === 'kurang' || v === 'not yet bapp') return cssVar('--accent-red', '#C1543C');
+  return cssVar('--accent-blue', '#5B8FA8');
 }
-const CHART_PALETTE = ['#D9A94A','#5FAE7D','#5B8FA8','#C1543C','#9C7FBD','#7FB5A3','#D8886B','#8AA0C9'];
+function buildChartPalette(){
+  return [
+    cssVar('--accent-gold', '#D9A94A'), cssVar('--accent-green', '#5FAE7D'),
+    cssVar('--accent-blue', '#5B8FA8'), cssVar('--accent-red', '#C1543C'),
+    cssVar('--m3-tertiary', '#9C7FBD'), cssVar('--m3-secondary', '#7FB5A3'),
+    cssVar('--m3-red-container', '#D8886B'), cssVar('--m3-blue-container', '#8AA0C9'),
+  ];
+}
+let CHART_PALETTE = buildChartPalette();
 
 function uniqueValues(rows, field){
   return Array.from(new Set(rows.map(r => (r[field] ?? '').toString().trim()).filter(v => v !== '')))
@@ -3002,7 +3013,7 @@ ${renderPagerPills(st.page, totalPages, d => `changePage('${table}', ${d})`)}
   } else {
     drawStatusProgressBar('chart_status_'+table, statusAgg);
     if(isPascaHarvest){
-      drawLineMulti('chart_month_'+table, PHASING_CHART_MONTHS, monthCompareSeries, ['#D9A94A','#5FAE7D'], true, undefined, true);
+      drawLineMulti('chart_month_'+table, PHASING_CHART_MONTHS, monthCompareSeries, [cssVar('--accent-gold','#D9A94A'), cssVar('--accent-green','#5FAE7D')], true, undefined, true);
     } else {
       drawBar('chart_month_'+table, monthAgg, MONTHS, { hideYAxis:true });
     }
@@ -3180,6 +3191,7 @@ function toggleTheme(){
   CHART_TEXT = cssVar('--chart-text', CHART_TEXT);
   CHART_GRID = cssVar('--chart-grid', CHART_GRID);
   CHART_BORDER = cssVar('--chart-border', CHART_BORDER);
+  CHART_PALETTE = buildChartPalette();
   DL_STYLE = { ...DL_STYLE, color: cssVar('--chart-dl-text', DL_STYLE.color), textStrokeColor: cssVar('--chart-dl-stroke', DL_STYLE.textStrokeColor) };
   applyChartTheme();
   if(typeof currentView !== 'undefined' && currentView && typeof navigate === 'function') navigate(currentView);
@@ -3200,7 +3212,7 @@ function drawDonut(canvasId, dataMap, semantic, customColors){
   destroyChart(canvasId);
   const ctx = document.getElementById(canvasId); if(!ctx) return;
   const labels = Object.keys(dataMap), values = Object.values(dataMap);
-  const colors = customColors ? labels.map(l => customColors[l] || '#5B8FA8') : (semantic ? labels.map(colorForLabel) : CHART_PALETTE);
+  const colors = customColors ? labels.map(l => customColors[l] || cssVar('--accent-blue', '#5B8FA8')) : (semantic ? labels.map(colorForLabel) : CHART_PALETTE);
   chartInstances[canvasId] = new Chart(ctx, {
     type:'doughnut',
     data:{ labels, datasets:[{ data:values, backgroundColor:colors, borderColor:CHART_BORDER, borderWidth:2, borderRadius:4, spacing:2, hoverOffset:8, hoverBorderWidth:0 }] },
@@ -3220,7 +3232,7 @@ function drawStatusProgressBar(canvasId, dataMap){
   // berdasarkan warna semantik colorForLabel, jadi dipakai untuk pasangan status apapun
   // (Done/Progress/Not Yet, Baik/Cukup/Kurang, BELUM/SUDAH, dst) tanpa perlu daftar label tetap.
   // Urutan ikut referensi: Merah(Not Yet/Belum/Kurang) -> Kuning(Progress/Cukup) -> Hijau(Done/Sudah/Baik)
-  const RANK = { '#C1543C':0, '#D9A94A':1, '#5FAE7D':2 };
+  const RANK = {}; RANK[cssVar('--accent-red','#C1543C')]=0; RANK[cssVar('--accent-gold','#D9A94A')]=1; RANK[cssVar('--accent-green','#5FAE7D')]=2;
   const orderedLabels = Object.keys(dataMap).sort((a,b) => (RANK[colorForLabel(a)] ?? 3) - (RANK[colorForLabel(b)] ?? 3));
   const values = orderedLabels.map(l => dataMap[l] || 0);
   const colors = orderedLabels.map(colorForLabel);
@@ -3594,7 +3606,7 @@ async function renderDashboard(){
   // pola tabel "Tebang Giling (Aktual Bulan)" existing, hanya sumbu barisnya
   // diganti dari Bulan Tebang Aktual menjadi Phasing/Plan Tebang).
   const tebangPivotMonths = PHASING_CHART_MONTHS; // ['APR'..'OCT']
-  const tebangPivotColors = ['#D9A94A','#5FAE7D','#5B8FA8','#C1543C','#3F6E86','#D08A3E','#9C6FB0'];
+  const tebangPivotColors = CHART_PALETTE;
   const tebangPivot = {};
   tebangPivotMonths.forEach(rm => { tebangPivot[rm] = {}; tebangPivotMonths.forEach(cm => tebangPivot[rm][cm] = 0); });
   masterRows.forEach(r => {
@@ -5109,7 +5121,7 @@ ${renderPagerPills(st.page, totalPages, d => `changeProduktivitasPage(${d})`)}
   // muncul karena tidak lagi ketahan/gagal ikut oleh error yang tidak terkait.
   drawHBar('chart_prod_pekerja', pekerjaPctMap, { hideXAxis:true });
   drawDonut('chart_prod_kegiatan', kegiatanAgg);
-  drawStackedBar('chart_prod_tren', dateKeys.map(fmtDDMMM), trendSeries, false, ['#5FAE7D','#C1543C'], { hideYAxis:true });
+  drawStackedBar('chart_prod_tren', dateKeys.map(fmtDDMMM), trendSeries, false, [cssVar('--accent-green','#5FAE7D'), cssVar('--accent-red','#C1543C')], { hideYAxis:true });
   drawBar('chart_prod_kegiatan_pct', kegiatanPctMap, undefined, { hideYAxis:true });
 
   try{
@@ -6161,8 +6173,8 @@ ${renderPagerPills(st.page, totalPages, d => `changeHeImplementPage(${d})`)}
     </div>
   `;
 
-  drawDonut('chart_he_kondisi', kondisiAgg, false, { 'Baik':'#5FAE7D', 'Breakdown':'#C1543C' });
-  drawDonut('chart_he_kategori', kategoriAgg, false, { 'HE':'#5B8FA8', 'Implement':'#D9A94A' });
+  drawDonut('chart_he_kondisi', kondisiAgg, false, { 'Baik':cssVar('--accent-green','#5FAE7D'), 'Breakdown':cssVar('--accent-red','#C1543C') });
+  drawDonut('chart_he_kategori', kategoriAgg, false, { 'HE':cssVar('--accent-blue','#5B8FA8'), 'Implement':cssVar('--accent-gold','#D9A94A') });
   drawHBar('chart_he_type', typeAgg, { hideXAxis:true });
   drawHBar('chart_he_vendor', vendorAgg, { hideXAxis:true });
 
@@ -9057,13 +9069,17 @@ function prGerminasiBucket(rows){
   return m;
 }
 
-// Warna tetap untuk grafik Sebaran % Germinasi (sesuai permintaan: Baik=hijau, Cukup=kuning, Belum Germinasi=oranye)
-const PR_GERMINASI_COLORS = {
-  '≥95% (Baik)': '#5FAE7D',
-  '80–95% (Cukup)': '#D9A94A',
-  '<80% (Kurang)': '#C1543C',
-  'Belum Germinasi': '#E08D3C',
-};
+// Warna untuk grafik Sebaran % Germinasi (Baik=hijau, Cukup=kuning, Kurang=merah,
+// Belum Germinasi=oranye tersier) — dibaca dari token M3 tiap kali dipanggil,
+// biar konsisten sama grafik lain dan ikut tema terang/gelap.
+function prGerminasiColors(){
+  return {
+    '≥95% (Baik)': cssVar('--accent-green', '#5FAE7D'),
+    '80–95% (Cukup)': cssVar('--accent-gold', '#D9A94A'),
+    '<80% (Kurang)': cssVar('--accent-red', '#C1543C'),
+    'Belum Germinasi': cssVar('--m3-tertiary', '#E08D3C'),
+  };
+}
 
 state[PC_RPC_TABLE] = {
   data:[], loaded:false, search:'', sortKey:'petak', sortDir:'asc', page:1, pageSize:14,
@@ -9297,7 +9313,7 @@ ${renderPagerPills(st.page, totalPages, d => `changePcRpcPage(${d})`)}
   drawDonut('chart_pr_future', futureAgg, false);
   drawCategoryProgressBar('chart_pr_action_plan', actionPlanAgg, PR_ACTION_PLAN_OPTIONS);
   drawBar('chart_pr_phasing', Object.fromEntries(PHASING_CHART_MONTHS.map(m=>[m, +(phasingAgg[m]||0).toFixed(2)])), undefined, { hideYAxis:true });
-  if(Object.keys(germinasiBucketAgg).length) drawDonut('chart_pr_germinasi', germinasiBucketAgg, false, PR_GERMINASI_COLORS);
+  if(Object.keys(germinasiBucketAgg).length) drawDonut('chart_pr_germinasi', germinasiBucketAgg, false, prGerminasiColors());
   else destroyChart('chart_pr_germinasi');
 
   try{

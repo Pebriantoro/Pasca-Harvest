@@ -60,10 +60,10 @@ const PETA_MODULES = [
     bappFilter: true,
     petaRowFilter: row => !!row && petaNormStatus(row.status_progress) === 'done',
     legend: [
-      ['baik', '#5FAE7D', 'Baik'],
-      ['cukup', '#D9A94A', 'Cukup'],
-      ['kurang', '#C1543C', 'Kurang'],
-      ['kosong', '#9aa1ab', 'Belum Disurvey'],
+      ['baik', cssVar('--accent-green','#5FAE7D'), 'Baik'],
+      ['cukup', cssVar('--accent-gold','#D9A94A'), 'Cukup'],
+      ['kurang', cssVar('--accent-red','#C1543C'), 'Kurang'],
+      ['kosong', cssVar('--m3-outline','#9aa1ab'), 'Belum Disurvey'],
     ] },
   // Done Planting / Progress Planting / Not Yet Planting saja (petak tanpa data disembunyikan).
   { key: 'rpc_after_giling', label: 'RPC After Giling', view: 'rpc_after_giling', stateKey: 'rpc_after_giling',
@@ -72,9 +72,9 @@ const PETA_MODULES = [
     areaField: 'luas_rpc',
     petaRowFilter: row => !!row && !!petaNormStatus(row.status_planting),
     legend: [
-      ['baik', '#5FAE7D', 'Done Planting'],
-      ['cukup', '#D9A94A', 'Progress Planting'],
-      ['kurang', '#C1543C', 'Not Yet Planting'],
+      ['baik', cssVar('--accent-green','#5FAE7D'), 'Done Planting'],
+      ['cukup', cssVar('--accent-gold','#D9A94A'), 'Progress Planting'],
+      ['kurang', cssVar('--accent-red','#C1543C'), 'Not Yet Planting'],
     ] },
   { key: 'extra_planting_after_giling', label: 'Extra Planting', view: 'extra_planting_after_giling', stateKey: 'extra_planting_after_giling',
     statusField: 'status_planting', statusLabel: 'Status Planting',
@@ -82,9 +82,9 @@ const PETA_MODULES = [
     areaField: 'luas_rpc',
     petaRowFilter: row => !!row && !!petaNormStatus(row.status_planting),
     legend: [
-      ['baik', '#5FAE7D', 'Done Planting'],
-      ['cukup', '#D9A94A', 'Progress Planting'],
-      ['kurang', '#C1543C', 'Not Yet Planting'],
+      ['baik', cssVar('--accent-green','#5FAE7D'), 'Done Planting'],
+      ['cukup', cssVar('--accent-gold','#D9A94A'), 'Progress Planting'],
+      ['kurang', cssVar('--accent-red','#C1543C'), 'Not Yet Planting'],
     ] },
   // Done Planting, Progress Planting, dan Not Yet Planting (tanpa data tetap disembunyikan).
   { key: 'blanking', label: 'Blanking', view: 'blanking', stateKey: 'blanking',
@@ -93,9 +93,9 @@ const PETA_MODULES = [
     areaField: 'luas_blanking',
     petaRowFilter: row => !!row && !!petaNormStatus(row.status_planting),
     legend: [
-      ['baik', '#5FAE7D', 'Done Planting'],
-      ['cukup', '#D9A94A', 'Progress Planting'],
-      ['kurang', '#C1543C', 'Not Yet Planting'],
+      ['baik', cssVar('--accent-green','#5FAE7D'), 'Done Planting'],
+      ['cukup', cssVar('--accent-gold','#D9A94A'), 'Progress Planting'],
+      ['kurang', cssVar('--accent-red','#C1543C'), 'Not Yet Planting'],
     ] },
   // Done Harvest / Progress Harvest / Not Yet Harvest saja.
   { key: 'ratoon', label: 'Ratoon', view: 'ratoon', stateKey: 'ratoon',
@@ -104,9 +104,9 @@ const PETA_MODULES = [
     areaField: 'size_rkt',
     petaRowFilter: row => !!row && !!petaNormStatus(row.status_progress),
     legend: [
-      ['baik', '#5FAE7D', 'Done Harvest'],
-      ['cukup', '#D9A94A', 'Progress Harvest'],
-      ['kurang', '#C1543C', 'Not Yet Harvest'],
+      ['baik', cssVar('--accent-green','#5FAE7D'), 'Done Harvest'],
+      ['cukup', cssVar('--accent-gold','#D9A94A'), 'Progress Harvest'],
+      ['kurang', cssVar('--accent-red','#C1543C'), 'Not Yet Harvest'],
     ] },
   // Peta Maintenance: warna/legend pakai Status Harvest. 6 filter tambahan
   // (dropdown) buat nyaring petak sesuai Next Action & status per grup aktivitas.
@@ -116,9 +116,9 @@ const PETA_MODULES = [
     areaField: 'size_rkt',
     petaRowFilter: row => !!row,
     legend: [
-      ['baik', '#5FAE7D', 'Done Harvest'],
-      ['cukup', '#D9A94A', 'Progress Harvest'],
-      ['kurang', '#C1543C', 'Not Yet Harvest'],
+      ['baik', cssVar('--accent-green','#5FAE7D'), 'Done Harvest'],
+      ['cukup', cssVar('--accent-gold','#D9A94A'), 'Progress Harvest'],
+      ['kurang', cssVar('--accent-red','#C1543C'), 'Not Yet Harvest'],
     ],
     bappFilter: true,
     // key dipakai id dropdown, label buat UI, values null = ambil otomatis dari data
@@ -152,9 +152,9 @@ const PETA_MODULES = [
     areaField: 'pr_size_rkt_2024',
     petaRowFilter: row => !!row,
     legend: [
-      ['baik', '#5FAE7D', 'Done Planting'],
-      ['cukup', '#D9A94A', 'Progress Planting'],
-      ['kurang', '#C1543C', 'Not Yet Planting'],
+      ['baik', cssVar('--accent-green','#5FAE7D'), 'Done Planting'],
+      ['cukup', cssVar('--accent-gold','#D9A94A'), 'Progress Planting'],
+      ['kurang', cssVar('--accent-red','#C1543C'), 'Not Yet Planting'],
     ] },
   // Peta Tebang Bibit: warna/legend pakai Status Tebang Bibit. Semua petak yang
   // sudah ada datanya ditampilkan (zona dibatasi via ensureTebangBibitData()).
@@ -164,9 +164,9 @@ const PETA_MODULES = [
     areaField: 'tb_size_rkt',
     petaRowFilter: row => !!row,
     legend: [
-      ['baik', '#5FAE7D', 'Done'],
-      ['cukup', '#D9A94A', 'Progress'],
-      ['kurang', '#C1543C', 'Not Yet'],
+      ['baik', cssVar('--accent-green','#5FAE7D'), 'Done'],
+      ['cukup', cssVar('--accent-gold','#D9A94A'), 'Progress'],
+      ['kurang', cssVar('--accent-red','#C1543C'), 'Not Yet'],
     ] },
   // Data justifikasi sudah otomatis cuma berisi petak TCH Under 70, jadi tinggal sembunyikan
   // petak yang tidak ada di daftar itu (tanpa data = bukan TCH Under 70).
@@ -179,8 +179,8 @@ const PETA_MODULES = [
     },
     petaRowFilter: row => !!row,
     legend: [
-      ['cukup', '#D9A94A', 'Sudah Dijustifikasi'],
-      ['kurang', '#C1543C', 'Perlu Justifikasi'],
+      ['cukup', cssVar('--accent-gold','#D9A94A'), 'Sudah Dijustifikasi'],
+      ['kurang', cssVar('--accent-red','#C1543C'), 'Perlu Justifikasi'],
     ] },
   // Cuma petak yang sudah Harvest & sudah dinilai bulan ini (status_bulan Baik/Cukup/Kurang).
   { key: 'kondisi_bulanan', label: 'Kondisi Petak (Bulanan)', view: 'kondisi_bulanan', stateKey: 'kondisi_bulanan',
@@ -189,9 +189,9 @@ const PETA_MODULES = [
     fetch: () => ensureData('kondisi_bulanan'),
     petaRowFilter: row => !!row && !!petaNormStatus(row.status_bulan),
     legend: [
-      ['baik', '#5FAE7D', 'Baik'],
-      ['cukup', '#D9A94A', 'Cukup'],
-      ['kurang', '#C1543C', 'Kurang'],
+      ['baik', cssVar('--accent-green','#5FAE7D'), 'Baik'],
+      ['cukup', cssVar('--accent-gold','#D9A94A'), 'Cukup'],
+      ['kurang', cssVar('--accent-red','#C1543C'), 'Kurang'],
     ] },
   // Data Posisi Unit: bukan status baik/cukup/kurang, tapi 4 jenis unit alat
   // berat. Warna & key legend custom lewat statusKeyFn/colorFn (lihat
@@ -201,13 +201,13 @@ const PETA_MODULES = [
     areaField: null,
     fetch: () => (typeof ensurePosisiUnitData === 'function' ? ensurePosisiUnitData() : []),
     petaRowFilter: row => !!row,
-    colorFn: row => ({ 'SK-75':'#5FAE7D', 'WT':'#4C9AE0', 'Dozer':'#D9A94A', 'SK-130':'#C1543C' }[row?.jenis_unit] || '#9aa1ab'),
+    colorFn: row => ({ 'SK-75':cssVar('--accent-green','#5FAE7D'), 'WT':cssVar('--accent-blue','#4C9AE0'), 'Dozer':cssVar('--accent-gold','#D9A94A'), 'SK-130':cssVar('--accent-red','#C1543C') }[row?.jenis_unit] || cssVar('--m3-outline','#9aa1ab')),
     statusKeyFn: row => ({ 'SK-75':'sk75', 'WT':'wt', 'Dozer':'dozer', 'SK-130':'sk130' }[row?.jenis_unit] || 'lainnya'),
     legend: [
-      ['sk75', '#5FAE7D', 'SK-75'],
-      ['wt', '#4C9AE0', 'WT'],
-      ['dozer', '#D9A94A', 'Dozer'],
-      ['sk130', '#C1543C', 'SK-130'],
+      ['sk75', cssVar('--accent-green','#5FAE7D'), 'SK-75'],
+      ['wt', cssVar('--accent-blue','#4C9AE0'), 'WT'],
+      ['dozer', cssVar('--accent-gold','#D9A94A'), 'Dozer'],
+      ['sk130', cssVar('--accent-red','#C1543C'), 'SK-130'],
     ] },
 ];
 
@@ -319,29 +319,29 @@ function petaBuildDataMap(rows) {
 }
 
 function petaColorFor(module, row) {
-  if (!row) return '#9aa1ab';
+  if (!row) return cssVar('--m3-outline','#9aa1ab');
   if (module.colorFn) return module.colorFn(row);
   if (module.isJustifikasi) {
     return (row.keterangan && row.keterangan.toString().trim()) ? colorForLabel('cukup') : colorForLabel('kurang');
   }
   const val = row[module.statusField];
-  if (!val) return '#9aa1ab';
+  if (!val) return cssVar('--m3-outline','#9aa1ab');
   // Modul Pasca Harvest pakai kategori_pasca_harvest, di mana 'Not Yet' artinya
   // "belum disurvey" (3 kategori kondisi lapangan belum lengkap terisi) — beda
   // makna dari 'Not Yet'/'Belum' di modul lain (progress belum selesai).
   // colorForLabel() umum menyamakan 'not yet' dengan 'kurang'/'belum' (sama-sama
   // merah), jadi petak yang BELUM disurvey ikut kehitung/kewarnain sebagai Kurang.
   // Override khusus modul ini supaya 'Not Yet' tetap abu-abu (Belum Disurvey).
-  if (module.key === 'pasca_harvest' && val.toString().trim().toLowerCase() === 'not yet') return '#9aa1ab';
+  if (module.key === 'pasca_harvest' && val.toString().trim().toLowerCase() === 'not yet') return cssVar('--m3-outline','#9aa1ab');
   return colorForLabel(val);
 }
 
 // Petakan warna hasil petaColorFor() ke key filter (dipakai buat cocokin sama legend)
 function petaStatusKeyFor(color) {
-  if (color === '#5FAE7D') return 'baik';
-  if (color === '#D9A94A') return 'cukup';
-  if (color === '#C1543C') return 'kurang';
-  if (color === '#9aa1ab') return 'kosong';
+  if (color === cssVar('--accent-green','#5FAE7D')) return 'baik';
+  if (color === cssVar('--accent-gold','#D9A94A')) return 'cukup';
+  if (color === cssVar('--accent-red','#C1543C')) return 'kurang';
+  if (color === cssVar('--m3-outline','#9aa1ab')) return 'kosong';
   return 'kosong';
 }
 
@@ -367,7 +367,7 @@ function petaLegendHTML(module) {
     ${items.map(([key, c, l]) => {
       const active = petaState.activeStatuses.has(key);
       return `<button type="button" onclick="petaToggleStatusFilter('${key}')" title="Klik buat tampil/sembunyi"
-        style="display:inline-flex; align-items:center; gap:6px; border:1px solid ${active ? 'transparent' : '#d5d8dd'};
+        style="display:inline-flex; align-items:center; gap:6px; border:1px solid ${active ? 'transparent' : 'var(--border)'};
         background:${active ? 'rgba(0,0,0,.04)' : 'transparent'}; border-radius:20px; padding:4px 10px 4px 6px;
         cursor:pointer; opacity:${active ? '1' : '.45'}; font-size:12px; color:inherit;">
         <span style="width:12px; height:12px; border-radius:3px; background:${c}; display:inline-block;"></span>${esc(l)}
@@ -586,7 +586,7 @@ function petaRenderSummary(module, summary) {
   const cards = module.legend.map(([key, color, label]) => {
     const s = summary[key] || { count: 0, ha: 0 };
     return `
-      <div style="flex:1; min-width:140px; border:1px solid #e7e9ec; border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:10px;">
+      <div style="flex:1; min-width:140px; border:1px solid var(--border-soft); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:10px;">
         <span style="width:10px; height:10px; border-radius:3px; background:${color}; flex-shrink:0;"></span>
         <div>
           <div style="font-size:11px; color:var(--text-muted);">${esc(label)}</div>
@@ -596,7 +596,7 @@ function petaRenderSummary(module, summary) {
   }).join('');
   holder.innerHTML = `
     <div class="card-body" style="display:flex; gap:10px; flex-wrap:wrap; padding:14px 18px;">
-      <div style="flex:1; min-width:140px; border:1px solid #e7e9ec; border-radius:10px; padding:10px 14px; background:rgba(0,0,0,.02);">
+      <div style="flex:1; min-width:140px; border:1px solid var(--border-soft); border-radius:10px; padding:10px 14px; background:rgba(0,0,0,.02);">
         <div style="font-size:11px; color:var(--text-muted);">Total Petak</div>
         <div style="font-size:16px; font-weight:700;">${totalCount} petak${module.areaField ? ` <span style="font-size:12px; font-weight:500; color:var(--text-muted);">(${petaFmtHa(totalHa)} Ha)</span>` : ''}</div>
       </div>
@@ -641,7 +641,7 @@ function petaDrawMap(module, geojson, dataMap, visibleSet, pascaRefMap) {
     visibleCount++;
 
     const layer = L.geoJSON(f, {
-      style: { color: '#2b2f36', weight: 1, fillColor: color, fillOpacity: 0.55 },
+      style: { color: cssVar('--m3-outline','#2b2f36'), weight: 1, fillColor: color, fillOpacity: 0.55 },
     });
 
     const statusVal = petaStatusValueFor(module, row);
@@ -697,7 +697,7 @@ function petaDrawMap(module, geojson, dataMap, visibleSet, pascaRefMap) {
   const warnHolder = document.getElementById('petaMissingWarn');
   if (warnHolder) {
     warnHolder.innerHTML = missingPetak.length
-      ? `<div style="padding:8px 18px; font-size:12px; color:#8a5a1a; background:#fff6e6; border-top:1px solid #f0dfb8;">
+      ? `<div style="padding:8px 18px; font-size:12px; color:var(--accent-gold); background:var(--accent-gold-soft); border-top:1px solid var(--accent-gold);">
           ⚠ ${missingPetak.length} petak (${esc(missingPetak.slice(0, 8).join(', '))}${missingPetak.length > 8 ? ', …' : ''}) ada datanya tapi belum ada shape/boundary di peta — cek console (F12) buat daftar lengkapnya.
         </div>`
       : '';

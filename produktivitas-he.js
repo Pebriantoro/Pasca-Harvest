@@ -470,14 +470,14 @@ function paintProduktivitasHE(allRowsRaw, mode){
   $('#filterSampai_'+idPrefix)?.addEventListener('change', function(){ st.filterSampai = this.value; st.page = 1; paintProduktivitasHE(state[PHE_TABLE].data, mode); });
 
   drawHBar('chart_'+idPrefix+'_hmha', hmHaByUnit, { hideXAxis:true });
-  drawGroupedBar('chart_'+idPrefix+'_target', targetVsRealCategories, targetVsRealSeries, ['#5B8FA8','#D9A94A'], { hideYAxis:true });
+  drawGroupedBar('chart_'+idPrefix+'_target', targetVsRealCategories, targetVsRealSeries, [cssVar('--accent-blue','#5B8FA8'), cssVar('--accent-gold','#D9A94A')], { hideYAxis:true });
   drawHBar('chart_'+idPrefix+'_avail', avaibilityByUnit, { hideXAxis:true });
   if(mode === 'internal') drawHBar('chart_'+idPrefix+'_ltrhm', ltrHmByUnit);
   else drawDonut('chart_'+idPrefix+'_kontraktor', aggregateCount(filteredRows, 'kontraktor_he2'));
 
   drawHBar('chart_'+idPrefix+'_hmha_jenis', hmHaByJenis, { hideXAxis:true });
   drawHBar('chart_'+idPrefix+'_avail_jenis', avaibilityByJenis, { hideXAxis:true });
-  drawGroupedBar('chart_'+idPrefix+'_target_jenis', targetVsRealCategoriesJenis, targetVsRealSeriesJenis, ['#5B8FA8','#D9A94A'], { hideYAxis:true });
+  drawGroupedBar('chart_'+idPrefix+'_target_jenis', targetVsRealCategoriesJenis, targetVsRealSeriesJenis, [cssVar('--accent-blue','#5B8FA8'), cssVar('--accent-gold','#D9A94A')], { hideYAxis:true });
 }
 
 function openPHEModal(mode, id){

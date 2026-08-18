@@ -123,8 +123,8 @@ let praSpaState = {
     .praspa-resume-table th, .praspa-resume-table td{ padding:6px 8px; text-align:center; border:1px solid var(--border-soft); }
     .praspa-resume-table th:first-child, .praspa-resume-table td:first-child{ text-align:left; }
     .praspa-verdict{ display:inline-block; padding:4px 12px; border-radius:20px; font-weight:700; font-size:13px; }
-    .praspa-verdict.lulus{ background:rgba(67,160,71,.18); color:#6FCB74; }
-    .praspa-verdict.tidak-lulus{ background:rgba(229,57,53,.18); color:#F0A392; }
+    .praspa-verdict.lulus{ background:var(--accent-green-soft); color:var(--accent-green); }
+    .praspa-verdict.tidak-lulus{ background:var(--accent-red-soft); color:var(--accent-red-text); }
     .praspa-chk{ width:16px; height:16px; cursor:pointer; }
     .praspa-chk:disabled{ opacity:.25; cursor:not-allowed; }
   `;
@@ -630,7 +630,7 @@ async function openPraSpaFormModal(id){
           <div id="praSpaResumeBox">${existing ? praSpaResumeTableHTML(praSpaComputeResume(existing.kegiatan, existing.transek)) : ''}</div>
         </div>
 
-        <div id="praSpaFormError" class="hidden" style="background:var(--accent-red-soft); color:#F0A392; padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;"></div>
+        <div id="praSpaFormError" class="hidden" style="background:var(--accent-red-soft); color:var(--accent-red-text); padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;"></div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="closeModal()">Batal</button>
@@ -757,7 +757,7 @@ function openPraSpaDetailModal(id){
         <label class="field-label" style="margin-top:14px; display:block;">III. Resume Sampling</label>
         ${praSpaResumeTableHTML(resume)}
 
-        ${row.status===PRASPA_STATUS.REJECTED && row.rejection_reason ? `<div style="background:var(--accent-red-soft); color:#F0A392; padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;">Alasan ditolak (${esc(row.rejected_by_stage||'-')}): ${esc(row.rejection_reason)}</div>` : ''}
+        ${row.status===PRASPA_STATUS.REJECTED && row.rejection_reason ? `<div style="background:var(--accent-red-soft); color:var(--accent-red-text); padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;">Alasan ditolak (${esc(row.rejected_by_stage||'-')}): ${esc(row.rejection_reason)}</div>` : ''}
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="closeModal()">Tutup</button>

@@ -21,10 +21,10 @@
     if(document.getElementById('versionUpdateBanner')) return;
     const bar = document.createElement('div');
     bar.id = 'versionUpdateBanner';
-    bar.style.cssText = 'position:fixed; top:0; left:0; right:0; z-index:99999; background:linear-gradient(90deg,#D9A94A,#C9985E); color:#1B1405; font-size:13px; font-weight:600; padding:10px 16px; display:flex; align-items:center; justify-content:center; gap:14px; box-shadow:0 2px 10px rgba(0,0,0,.25);';
+    bar.style.cssText = 'position:fixed; top:0; left:0; right:0; z-index:99999; background:var(--m3-primary,#D9A94A); color:var(--m3-on-primary,#1B1405); font-size:13px; font-weight:600; padding:10px 16px; display:flex; align-items:center; justify-content:center; gap:14px; box-shadow:0 2px 10px rgba(0,0,0,.25);';
     bar.innerHTML = `
       <span>🔄 Update baru tersedia${newVersion ? ' (v'+newVersion+')' : ''} — muat ulang untuk pakai versi terbaru.</span>
-      <button type="button" style="background:#1B1405; color:#F5D98A; border:none; padding:6px 14px; border-radius:6px; font-weight:700; cursor:pointer;" onclick="location.reload()">Muat Ulang</button>
+      <button type="button" style="background:var(--m3-on-primary,#1B1405); color:var(--m3-primary,#F5D98A); border:none; padding:6px 14px; border-radius:6px; font-weight:700; cursor:pointer;" onclick="location.reload()">Muat Ulang</button>
     `;
     document.body.prepend(bar);
   }

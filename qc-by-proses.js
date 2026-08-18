@@ -178,9 +178,9 @@ let qcpState = {
     .qcp-param-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 12px; background:var(--panel-soft, rgba(255,255,255,.04)); border-radius:9px; font-size:12.5px; }
     .qcp-param-row select{ max-width:130px; }
     .qcp-kategori{ display:inline-block; padding:3px 11px; border-radius:20px; font-weight:700; font-size:12px; }
-    .qcp-kategori.baik{ background:rgba(67,160,71,.18); color:#6FCB74; }
-    .qcp-kategori.cukup{ background:rgba(253,216,53,.18); color:#E3C33C; }
-    .qcp-kategori.kurang{ background:rgba(229,57,53,.18); color:#F0A392; }
+    .qcp-kategori.baik{ background:var(--accent-green-soft); color:var(--accent-green); }
+    .qcp-kategori.cukup{ background:var(--accent-gold-soft); color:var(--accent-gold); }
+    .qcp-kategori.kurang{ background:var(--accent-red-soft); color:var(--accent-red-text); }
     .qcp-filter-bar{
       display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr));
       gap:10px 12px; align-items:end; padding:14px; margin-bottom:14px;
@@ -572,7 +572,7 @@ async function renderQcpSummaryOnly(){
                 <td style="text-align:right;">${perZona[z].approved}</td>
                 <td style="text-align:right;">${perZona[z].rejected}</td>
                 <td style="text-align:right;"><b>${perZona[z].avgAll || '-'}</b></td>
-                <td style="text-align:right;"><b style="color:#6FCB74;">${perZona[z].baik}</b> / <b style="color:#E3C33C;">${perZona[z].cukup}</b> / <b style="color:#F0A392;">${perZona[z].kurang}</b></td>
+                <td style="text-align:right;"><b style="color:var(--accent-green);">${perZona[z].baik}</b> / <b style="color:var(--accent-gold);">${perZona[z].cukup}</b> / <b style="color:var(--accent-red-text);">${perZona[z].kurang}</b></td>
               </tr>
             `).join('') : `<tr><td colspan="8" style="text-align:center; color:var(--text-faint); padding:24px;">Belum ada data sesuai filter.</td></tr>`}
           </tbody>
@@ -590,7 +590,7 @@ async function renderQcpSummaryOnly(){
                 <td>${esc(k)}</td>
                 <td style="text-align:center;">${perKegiatan[k].total}</td>
                 <td style="text-align:center;"><b>${perKegiatan[k].avgAll || '-'}</b></td>
-                <td><b style="color:#6FCB74;">${perKegiatan[k].baik}</b> / <b style="color:#E3C33C;">${perKegiatan[k].cukup}</b> / <b style="color:#F0A392;">${perKegiatan[k].kurang}</b></td>
+                <td><b style="color:var(--accent-green);">${perKegiatan[k].baik}</b> / <b style="color:var(--accent-gold);">${perKegiatan[k].cukup}</b> / <b style="color:var(--accent-red-text);">${perKegiatan[k].kurang}</b></td>
               </tr>
             `).join('')}
           </tbody>
@@ -642,7 +642,7 @@ async function openQcpFormModal(id){
           <div id="qcpParamArea">${existing ? qcpParamFormHTML(existing.kegiatan, existing.scores) : ''}</div>
         </div>
 
-        <div id="qcpFormError" class="hidden" style="background:var(--accent-red-soft); color:#F0A392; padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;"></div>
+        <div id="qcpFormError" class="hidden" style="background:var(--accent-red-soft); color:var(--accent-red-text); padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;"></div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="closeModal()">Batal</button>
@@ -775,7 +775,7 @@ function openQcpDetailModal(id){
           <span>Nilai QC: <b>${row.nilai_qc ?? '-'}</b></span>
         </div>
 
-        ${row.status===QCP_STATUS.REJECTED && row.rejection_reason ? `<div style="background:var(--accent-red-soft); color:#F0A392; padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;">Alasan ditolak (${esc(row.rejected_by_stage||'-')}): ${esc(row.rejection_reason)}</div>` : ''}
+        ${row.status===QCP_STATUS.REJECTED && row.rejection_reason ? `<div style="background:var(--accent-red-soft); color:var(--accent-red-text); padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;">Alasan ditolak (${esc(row.rejected_by_stage||'-')}): ${esc(row.rejection_reason)}</div>` : ''}
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="closeModal()">Tutup</button>

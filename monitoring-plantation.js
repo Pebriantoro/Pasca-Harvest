@@ -496,7 +496,7 @@ async function openMPFormModal(id = null){
           </div>
           <div style="grid-column:1/-1;"><label class="field-label">Keterangan (opsional)</label><input class="input" name="keterangan" value="${esc(item?.keterangan || '')}"></div>
         </form>
-        <div id="mpFormError" class="hidden" style="background:var(--accent-red-soft); color:#F0A392; padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;"></div>
+        <div id="mpFormError" class="hidden" style="background:var(--accent-red-soft); color:var(--accent-red-text); padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;"></div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="closeModal()">Batal</button>

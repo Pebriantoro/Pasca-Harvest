@@ -19,7 +19,7 @@
     .diff-old{ color:var(--text-faint); text-decoration:line-through; }
     .diff-new{ color:var(--accent-gold, #D9A94A); font-weight:600; }
     .validation-box{ background:var(--accent-red-soft); color:var(--accent-red-text); padding:9px 12px; border-radius:8px; font-size:12.5px; margin-bottom:14px; }
-    .offline-banner{ position:fixed; top:0; left:0; right:0; z-index:500; background:#C1543C; color:#fff; text-align:center;
+    .offline-banner{ position:fixed; top:0; left:0; right:0; z-index:500; background:var(--accent-red,#C1543C); color:#fff; text-align:center;
       font-size:12.5px; font-weight:600; padding:7px 10px; font-family:'IBM Plex Mono', monospace; display:none;
       line-height:1.4; }
     .offline-banner.show{ display:block; }
@@ -387,9 +387,9 @@ async function renderTargetActual(){
     </div>
 
     <div class="kpi-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:16px;">
-      ${kpiCard('Target (Ha)', fmtNum(totalTarget), cfg.label, '#D9A94A')}
-      ${kpiCard('Actual (Ha)', fmtNum(totalActual), cfg.label, '#5FAE7D')}
-      ${kpiCard('Pencapaian', pct + '%', totalActual >= totalTarget && totalTarget ? 'Tercapai' : 'Belum tercapai', pct>=100?'#5FAE7D':'#C1543C')}
+      ${kpiCard('Target (Ha)', fmtNum(totalTarget), cfg.label, cssVar('--accent-gold','#D9A94A'))}
+      ${kpiCard('Actual (Ha)', fmtNum(totalActual), cfg.label, cssVar('--accent-green','#5FAE7D'))}
+      ${kpiCard('Pencapaian', pct + '%', totalActual >= totalTarget && totalTarget ? 'Tercapai' : 'Belum tercapai', pct>=100?cssVar('--accent-green','#5FAE7D'):cssVar('--accent-red','#C1543C'))}
     </div>
 
     <div class="card" style="margin-bottom:16px;">
@@ -411,7 +411,7 @@ async function renderTargetActual(){
                 <td><span class="petak-tag">Zona ${z}</span></td>
                 <td>${fmtNum(t)}</td>
                 <td>${fmtNum(a)}</td>
-                <td style="color:${diff>=0?'#5FAE7D':'#C1543C'}">${diff>=0?'+':''}${fmtNum(diff)}</td>
+                <td style="color:${diff>=0?'var(--accent-green)':'var(--accent-red-text)'}">${diff>=0?'+':''}${fmtNum(diff)}</td>
                 <td>${badgeForStatus(p>=100?'Baik':(p>=70?'Cukup':'Kurang'))} <span style="font-size:11px; color:var(--text-faint);">${p}%</span></td>
               </tr>`;
             }).join('')}
@@ -423,7 +423,7 @@ async function renderTargetActual(){
 
   drawGroupedBar('chart_target_actual', ZONA_LIST.map(z=>'Zona '+z),
     { Target: ZONA_LIST.map(z=>targetByZona[z]), Actual: ZONA_LIST.map(z=>actualByZona[z]) },
-    ['#D9A94A', '#5FAE7D'], { hideYAxis:true });
+    [cssVar('--accent-gold','#D9A94A'), cssVar('--accent-green','#5FAE7D')], { hideYAxis:true });
 
   $('#targetModuleSelect').addEventListener('change', function(){ TARGET_STATE.module = this.value; renderTargetActual(); });
   $('#targetBulanSelect').addEventListener('change', function(){ TARGET_STATE.bulan = this.value; renderTargetActual(); });

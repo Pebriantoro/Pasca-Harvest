@@ -31,11 +31,12 @@
     .btn:hover svg{ transform: scale(1.08); }
 
     .btn-primary{
-      background: linear-gradient(135deg, #EEC569 0%, var(--accent-gold) 55%, #C1943E 100%);
+      background: var(--accent-gold);
       box-shadow: 0 1px 0 rgba(0,0,0,0.1), 0 6px 16px rgba(217,169,74,0.22);
     }
     .btn-primary:hover{
-      background: linear-gradient(135deg, #F4D488 0%, #E8B85C 55%, #D2A24C 100%);
+      background: var(--accent-gold);
+      filter: brightness(1.08);
       box-shadow: var(--shadow-glow-gold), 0 10px 24px rgba(217,169,74,0.28);
       transform: translateY(-2px);
     }
@@ -210,7 +211,7 @@ async function exportDataToJPEG(data, title, filePrefix){
     <div style="font-family:'Space Grotesk',Arial,sans-serif; font-size:19px; font-weight:700; margin-bottom:2px;">${esc(_exportTitleWithZona(title))}</div>
     <div style="font-size:11px; color:#8A8272; margin-bottom:14px;">${esc(_exportActorLine())} • ${esc(new Date().toLocaleDateString('id-ID'))}</div>
     <table style="border-collapse:collapse; font-size:12px;">
-      <thead><tr>${cols.map(c=>`<th style="background:#D9A94A; color:#1B1405; text-align:left; padding:8px 12px; border:1px solid #C9985E; white-space:nowrap;">${esc(c)}</th>`).join('')}</tr></thead>
+      <thead><tr>${cols.map(c=>`<th style="background:${cssVar('--m3-primary','#D9A94A')}; color:${cssVar('--m3-on-primary','#1B1405')}; text-align:left; padding:8px 12px; border:1px solid #C9985E; white-space:nowrap;">${esc(c)}</th>`).join('')}</tr></thead>
       <tbody>${data.map((row,i)=>`<tr style="background:${i%2 ? '#F7F4EB' : '#FFFFFF'};">${cols.map(c=>`<td style="padding:7px 12px; border:1px solid #E5DFCE; white-space:nowrap;">${esc(row[c])}</td>`).join('')}</tr>`).join('')}</tbody>
     </table>`;
   document.body.appendChild(wrap);

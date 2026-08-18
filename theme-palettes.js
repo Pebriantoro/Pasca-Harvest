@@ -7,7 +7,7 @@
    ===================================================================== */
 (function(){
   const PALETTES = [
-    { id: 'default', name: 'Estate Gold',   primary: '#D9A94A', secondary: '#5B8FA8' },
+    { id: 'default', name: 'Estate Gold',   primary: 'var(--m3-primary)', secondary: 'var(--accent-blue)' },
     { id: 'royal',   name: 'Royal Indigo',  primary: '#6C63FF', secondary: '#3F8EFD' },
     { id: 'sunset',  name: 'Sunset Coral',  primary: '#E8794A', secondary: '#F2B84B' },
     { id: 'rose',    name: 'Rose Violet',   primary: '#D6698A', secondary: '#8A6FD1' },
