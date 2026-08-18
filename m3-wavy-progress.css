@@ -1,0 +1,43 @@
+/* ===================== M3 EXPRESSIVE WAVY PROGRESS — addon =====================
+   Override .import-progress-bar/.import-progress-fill (toast "Membaca file...").
+   Dipakai bareng SATU fungsi showImportProgress()/setImportProgress() di app.js,
+   jadi otomatis kepakai di SEMUA modul import (RKH, Pasca Harvest, Produktivitas HE,
+   Tebang Bibit, QC, dst) tanpa nyentuh app.js.
+   Ref bentuk: Material 3 Expressive linear wavy progress indicator (m3.material.io).
+   Additive, load PALING TERAKHIR (setelah m3-theme.css). */
+
+.import-progress-bar{
+  position: relative; height: 14px; border-radius: var(--m3-shape-full);
+  background: var(--m3-surface-container-highest);
+  overflow: visible;
+}
+
+.import-progress-fill{
+  position: relative; height: 100%; border-radius: var(--m3-shape-full);
+  background: var(--m3-primary);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12'%3E%3Cpath d='M0 6 C 2.5 1 7.5 1 10 6 C 12.5 11 17.5 11 20 6' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12'%3E%3Cpath d='M0 6 C 2.5 1 7.5 1 10 6 C 12.5 11 17.5 11 20 6' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: repeat-x; mask-repeat: repeat-x;
+  -webkit-mask-size: 20px 12px; mask-size: 20px 12px;
+  animation: m3WavyMove .85s linear infinite;
+  transition: width .25s cubic-bezier(.4,0,.2,1);
+  box-shadow: none;
+}
+
+/* titik target di ujung kanan track, ciri khas M3 wavy indicator */
+.import-progress-bar::after{
+  content:''; position:absolute; top:50%; right:0; width:4px; height:4px;
+  border-radius:999px; background: var(--m3-outline); transform: translateY(-50%);
+}
+
+@keyframes m3WavyMove{
+  from{ -webkit-mask-position-x:0; mask-position-x:0; }
+  to{ -webkit-mask-position-x:-20px; mask-position-x:-20px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .import-progress-fill{
+    animation:none;
+    -webkit-mask-image:none; mask-image:none; /* balik jadi bar flat biasa */
+  }
+}
