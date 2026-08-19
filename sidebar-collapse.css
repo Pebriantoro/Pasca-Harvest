@@ -10,7 +10,7 @@
 .sidebar-header .cane-mark > div,
 .nav-section-label span:first-child,
 .nav-section-chevron,
-.nav-item span:not(.count-badge),
+.nav-item span:not(.count-badge):not(.nav-item-icon),
 .count-badge,
 .sidebar-footer .user-chip > div:not(.avatar):not(.avatar-circle) {
   transition: opacity .18s ease, max-width .26s ease, margin .26s ease, transform .22s ease;
@@ -62,14 +62,16 @@
   content:''; position:absolute; left:0; top:8px; bottom:8px; width:3px;
   border-radius:0 3px 3px 0; background: var(--accent-gold);
 }
-.sidebar.collapsed .nav-item span:not(.count-badge){
+.sidebar.collapsed .nav-item span:not(.count-badge):not(.nav-item-icon){
   opacity:0; max-width:0; margin:0; overflow:hidden; pointer-events:none;
 }
 /* Bigger icons when collapsed */
-.sidebar.collapsed .nav-item svg{
-  width:22px; height:22px; transition: width .26s cubic-bezier(.4,0,.2,1), height .26s cubic-bezier(.4,0,.2,1), transform .18s ease;
+.sidebar.collapsed .nav-item svg,
+.sidebar.collapsed .nav-item .nav-item-icon{
+  width:22px; height:22px; font-size:22px; transition: width .26s cubic-bezier(.4,0,.2,1), height .26s cubic-bezier(.4,0,.2,1), font-size .26s cubic-bezier(.4,0,.2,1), transform .18s ease;
 }
-.sidebar.collapsed .nav-item:hover svg{ transform: scale(1.12); }
+.sidebar.collapsed .nav-item:hover svg,
+.sidebar.collapsed .nav-item:hover .nav-item-icon{ transform: scale(1.12); }
 
 /* Unread/count badge -> small floating dot instead of full pill */
 .sidebar.collapsed .nav-item .count-badge{
