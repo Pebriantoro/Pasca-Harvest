@@ -36,9 +36,7 @@
   top:50%; left:calc(100% - 4px - 24px); width:24px; height:24px;
   transform: translateY(-50%);
   background: var(--m3-on-primary);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E") center/14px no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E") center/14px no-repeat;
-  background: var(--m3-primary);
+  box-shadow: none;
 }
 
 .settings-row:hover .ui-switch{ border-color: var(--m3-on-surface); }

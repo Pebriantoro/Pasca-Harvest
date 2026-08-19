@@ -631,7 +631,6 @@ h1,h2,h3,h4,.font-display{ letter-spacing: -.005em; font-weight: 600; }
 .tab-toggle button.active{
   background: var(--m3-secondary-container); color: var(--m3-on-secondary-container);
 }
-.tab-toggle button.active::before{ content: '\2713'; margin-right: 6px; font-size: 12px; }
 
 /* =====================================================================
    TABS — M3 Primary Tabs dengan indicator bar (component baru, belum
