@@ -50,7 +50,7 @@
   --accent-gold: #A8A29E;
   --accent-gold-soft: color-mix(in srgb, var(--accent-gold) 16%, transparent);
   --shadow-glow-gold: 0 0 0 1px color-mix(in srgb, var(--accent-gold) 30%, transparent), 0 8px 22px color-mix(in srgb, var(--accent-gold) 14%, transparent);
-  --accent-blue: #78716C;
+  --accent-blue: #4C7A94;
   --accent-blue-soft: color-mix(in srgb, var(--accent-blue) 16%, transparent);
   --accent-blue-text: color-mix(in srgb, var(--accent-blue) 78%, black);
 }
