@@ -505,6 +505,7 @@ svg.icon-clicked{ transform-box: view-box; transform-origin: center; }
   transform: translateY(-1px);
 }
 .login-card .field-label{ color:rgba(27,20,5,0.72); text-shadow:none; }
+:root[data-theme="dark"] .login-card .field-label{ color: var(--text-primary); }
 .login-card .btn-primary{
   background: linear-gradient(155deg, #FFEFC4 0%, #E8B85C 42%, #C9932F 78%, #A9761F 100%);
   backdrop-filter: blur(10px) saturate(1.8); -webkit-backdrop-filter: blur(10px) saturate(1.8);
