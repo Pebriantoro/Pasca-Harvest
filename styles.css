@@ -558,8 +558,7 @@ svg.icon-clicked{ transform-box: view-box; transform-origin: center; }
 }
 .login-card .tab-toggle button{ border-radius:999px; color:rgba(27,20,5,0.55); font-weight:600; transition: background .25s ease, color .25s ease, box-shadow .25s ease; }
 .login-card .tab-toggle button.active{
-  background: linear-gradient(155deg, #FFF3D2 0%, #EFC26C 55%, #D2A24A 100%); color:#3A2705;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), inset 0 -1px 2px rgba(120,80,10,0.15), 0 3px 10px rgba(184,138,49,0.35);
+  background: var(--accent-gold); color:#1B1405;
 }
 .input{
   width:100%; background: var(--bg-elevated); border:1px solid var(--border);

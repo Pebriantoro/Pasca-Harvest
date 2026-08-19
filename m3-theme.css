@@ -606,9 +606,8 @@ h1,h2,h3,h4,.font-display{ letter-spacing: -.005em; font-weight: 600; }
   background: var(--m3-primary); border-color: var(--m3-primary); box-shadow: none;
 }
 .ui-switch.on::after{
-  content: '\2713'; display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700; color: var(--m3-on-primary);
-  width: 24px; height: 24px; background: var(--m3-on-primary-container);
+  background: var(--m3-on-primary-container);
+  width: 24px; height: 24px;
   transform: translate(20px, -50%);
 }
 .settings-row:active .ui-switch::after{ width: 28px; }
