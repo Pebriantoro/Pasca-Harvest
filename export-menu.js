@@ -108,7 +108,12 @@
 const EXPORT_LIB_URLS = {
   jspdf: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js',
   jspdfAutotable: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js',
-  html2canvas: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+  // html2canvas 1.4.1 (cdnjs) tidak bisa parse warna CSS modern (color-mix()/oklch())
+  // yang dipakai di seluruh tema M3 app ini (m3-theme.css, styles.css) — begitu ada satu
+  // saja elemen di halaman pakai fungsi warna itu, export JPEG gagal total dengan error
+  // "Attempting to parse an unsupported color function". html2canvas-pro adalah fork
+  // drop-in (API sama persis) yang sudah mendukung color-mix()/oklch()/color()/lab()/lch().
+  html2canvas: 'https://cdn.jsdelivr.net/npm/html2canvas-pro@2.3.9/dist/html2canvas-pro.min.js',
 };
 const _exportLibPromises = {};
 function loadExportLib(key, url, checkFn){
