@@ -608,7 +608,8 @@ h1,h2,h3,h4,.font-display{ letter-spacing: -.005em; font-weight: 600; }
 .ui-switch.on::after{
   background: var(--m3-on-primary-container);
   width: 24px; height: 24px;
-  transform: translate(20px, -50%);
+  left: calc(100% - 4px - 24px);
+  transform: translateY(-50%);
 }
 .settings-row:active .ui-switch::after{ width: 28px; }
 .settings-row:hover .ui-switch{ border-color: var(--m3-primary); }
