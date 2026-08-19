@@ -110,6 +110,29 @@ setAuthTab = function(tab){
 };
 
 /* ---------------------------------------------------------------------
+   1b. AUTO-HIDE tab Passcode & Scan QR — cuma tampil kalau device ini
+       SUDAH PERNAH punya passcode tersimpan (vault tidak kosong).
+       Device baru/browser baru cuma lihat tab "Masuk" doang, biar rapi.
+       Dipanggil pas load & tiap kali vault berubah (buat/hapus passcode).
+   --------------------------------------------------------------------- */
+function pcHasAnyLocalPasscode(){
+  return Object.keys(_pcGetVault()).length > 0;
+}
+function refreshQuickLoginTabsVisibility(){
+  const show = pcHasAnyLocalPasscode();
+  const tabPasscode = $('#tabPasscode');
+  const tabQr = $('#tabQrLogin');
+  tabPasscode?.classList.toggle('hidden', !show);
+  tabQr?.classList.toggle('hidden', !show);
+  // kalau tab yg lagi aktif jadi disembunyikan, balik ke tab Masuk
+  if(!show && (tabPasscode?.classList.contains('active') || tabQr?.classList.contains('active'))){
+    setAuthTab('login');
+  }
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', refreshQuickLoginTabsVisibility);
+else refreshQuickLoginTabsVisibility();
+
+/* ---------------------------------------------------------------------
    2. RENDER 4 KOTAK PIN — dipakai ulang untuk 3 baris pin di form.
    --------------------------------------------------------------------- */
 function renderPinRow(containerId, { onComplete } = {}){
@@ -182,6 +205,7 @@ function resetPasscodeForAccount(){
   if(!username) return;
   removePasscodeForAccount(username);
   toast('Passcode di perangkat ini dihapus. Silakan buat passcode baru.');
+  refreshQuickLoginTabsVisibility();
   clearPinRow('passcodeNewPinRow'); clearPinRow('passcodeConfirmPinRow');
   refreshPasscodeStage();
 }
@@ -248,6 +272,7 @@ async function submitCreatePasscode(username){
   }
   await savePasscodeForAccount(username, email, password, pin);
   toast('Passcode berhasil dibuat untuk perangkat ini');
+  refreshQuickLoginTabsVisibility();
   await onAuthenticated(data.user);
 }
 
@@ -319,11 +344,13 @@ async function submitChangePasscode(){
   }
   await savePasscodeForAccount(username, email, password, pin);
   toast('Passcode berhasil disimpan untuk perangkat ini');
+  refreshQuickLoginTabsVisibility();
   closeChangePasscodeModal();
 }
 function removeOwnPasscodeFromSettings(){
   const username = (currentProfile?.email || '').split('@')[0] || '';
   removePasscodeForAccount(username);
   toast('Passcode di perangkat ini dihapus');
+  refreshQuickLoginTabsVisibility();
   closeChangePasscodeModal();
 }

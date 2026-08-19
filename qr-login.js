@@ -57,6 +57,7 @@ function buildQrLoginTab(){
   btn.textContent = 'Scan QR';
   btn.onclick = () => setAuthTab('qr');
   toggle.appendChild(btn);
+  refreshQuickLoginTabsVisibility?.();
 
   const form = document.createElement('div');
   form.id = 'qrLoginForm';
