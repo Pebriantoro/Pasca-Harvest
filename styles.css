@@ -640,16 +640,12 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
    ke dot ke bawah, dot warna beda per sumber (RKH/Pra SPA/QC By Proses). */
 .beranda-timeline{ position:relative; padding-left:0; }
 .beranda-timeline::before{
-  content:''; position:absolute; left:89px; top:8px; bottom:8px; width:3px;
+  content:''; position:absolute; left:19px; top:8px; bottom:8px; width:3px;
   background:var(--text-faint); opacity:.35; z-index:0; border-radius:2px;
 }
 .beranda-timeline-item{
   position:relative; display:flex; align-items:center; gap:10px;
   margin-bottom:14px;
-}
-.beranda-timeline-time{
-  flex:0 0 60px; font-size:11px; color:var(--text-faint);
-  font-family:var(--font-mono); white-space:nowrap; text-align:right;
 }
 .beranda-timeline-dot{
   flex:0 0 38px; position:relative; z-index:1; width:38px; height:38px;
@@ -659,7 +655,6 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 .beranda-timeline-content{ flex:1; min-width:0; }
 @media (max-width:640px){
   .beranda-timeline::before{ left:17px; }
-  .beranda-timeline-time{ display:none; }
   .beranda-timeline-dot{ flex:0 0 34px; width:34px; height:34px; }
 }
 

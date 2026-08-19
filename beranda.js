@@ -109,7 +109,6 @@ function berandaCardHTML(item){
   const svg = BERANDA_SOURCE_SVG[item.source] || '';
   return `
     <div class="beranda-timeline-item">
-      <div class="beranda-timeline-time">${esc(typeof timeAgo === 'function' ? timeAgo(item.created_at) : fmtTanggalRKH(item.tanggal))}</div>
       <div class="beranda-timeline-dot" style="background:${color};">${svg}</div>
       <div class="card card-hoverable beranda-timeline-content" style="position:relative; cursor:pointer; padding:16px;" onclick="${item.onClick}">
         <div style="position:absolute; top:14px; right:16px;">${item.statusHtml}</div>
@@ -118,7 +117,7 @@ function berandaCardHTML(item){
           <div style="flex:1; min-width:0; padding-right:120px;">
             <div style="font-weight:700; font-size:13.5px;">${esc(item.staff_name || 'Staff')}</div>
             <div style="font-size:11.5px; color:var(--text-faint); margin-top:2px;">
-              ${esc(item.sourceLabel)} ${item.zona ? '· Zona '+esc(item.zona) : ''}
+              ${esc(item.sourceLabel)} ${item.zona ? '· Zona '+esc(item.zona) : ''} · ${esc(typeof timeAgo === 'function' ? timeAgo(item.created_at) : fmtTanggalRKH(item.tanggal))}
             </div>
             <div style="font-size:13px; color:var(--text-muted); margin-top:10px; line-height:1.5;">${item.body}</div>
           </div>
