@@ -521,7 +521,7 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
 
   <div class="main-area">
     <div class="topbar">
-      <button class="menu-toggle btn btn-outline btn-icon" onclick="toggleSidebar()">
+      <button class="menu-toggle btn btn-outline btn-icon" onclick="if(window.innerWidth>880){document.getElementById('sidebarCollapseToggle')?.click();}else{toggleSidebar();}" style="display:flex;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
       <div>
