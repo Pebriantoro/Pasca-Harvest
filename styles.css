@@ -556,8 +556,8 @@ svg.icon-clicked{ transform-box: view-box; transform-origin: center; }
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   padding:3px; overflow:hidden;
 }
-.login-card .tab-toggle button{ border-radius:999px; color:rgba(27,20,5,0.55); font-weight:600; transition: background .25s ease, color .25s ease, box-shadow .25s ease; }
-.login-card .tab-toggle button.active{
+.login-card .tab-toggle > div{ border-radius:999px; color:rgba(27,20,5,0.55); font-weight:600; transition: background .25s ease, color .25s ease, box-shadow .25s ease; cursor:pointer; }
+.login-card .tab-toggle > div.active{
   background: var(--accent-gold); color:#1B1405;
 }
 .input{
@@ -688,8 +688,8 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 }
 
 .tab-toggle{ display:flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:20px; }
-.tab-toggle button{ flex:1; padding:9px 0; background:transparent; border:none; color:var(--text-muted); font-size:13px; font-weight:600; }
-.tab-toggle button.active{ background: var(--accent-gold-soft); color: var(--accent-gold); }
+.tab-toggle > div{ flex:1; padding:9px 0; background:transparent; text-align:center; color:var(--text-muted); font-size:13px; font-weight:600; cursor:pointer; user-select:none; }
+.tab-toggle > div.active{ background: var(--accent-gold-soft); color: var(--accent-gold); }
 
 /* ===================== APP SHELL ===================== */
 .app-shell{ display:flex; min-height:100vh; position:relative; z-index:1; }

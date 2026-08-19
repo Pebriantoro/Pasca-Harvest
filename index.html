@@ -170,8 +170,8 @@
     </div>
 
     <div class="tab-toggle">
-      <button id="tabLogin" class="active" onclick="setAuthTab('login')">Masuk</button>
-      <button id="tabPasscode" onclick="setAuthTab('passcode')">Passcode</button>
+      <div id="tabLogin" class="active" role="button" tabindex="0" onclick="setAuthTab('login')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setAuthTab('login');}">Masuk</div>
+      <div id="tabPasscode" role="button" tabindex="0" onclick="setAuthTab('passcode')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setAuthTab('passcode');}">Passcode</div>
     </div>
 
     <form id="loginForm" onsubmit="return handleLogin(event)">
