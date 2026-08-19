@@ -319,7 +319,7 @@ async function renderRKHAtasan(role){
   const perluAksi = rows.filter(r => r.status === stage.pendingStatus);
   const filteredTim = rkhState.useDateFilter ? rows.filter(r => r.tanggal === rkhState.filterDate) : rows;
   const exportSource = rkhState.tab === 'aksi' ? perluAksi : filteredTim;
-  rkhSetExportRows(exportSource.filter(r => r.status === RKH_STATUS.APPROVED));
+  rkhSetExportRows(exportSource);
 
   $('#pageContent').innerHTML = `
     ${rkhSummaryCards(s)}
