@@ -1,7 +1,7 @@
 /* m3-ripple.js — efek ripple ala Material 3 (state layer on press).
    Murni tambahan visual, event delegation, TIDAK ubah logic app.js manapun. */
 (function(){
-  var SELECTOR = '.btn, .nav-item, .bottom-nav-item, .pill-btn, .tab-toggle > *, .btn-icon';
+  var SELECTOR = '.btn, .nav-item, .bottom-nav-item, .pill-btn, .btn-icon';
   var css = document.createElement('style');
   css.textContent =
     '.m3-ripple{position:absolute;border-radius:50%;transform:scale(0);' +
