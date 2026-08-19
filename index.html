@@ -526,7 +526,10 @@ function closeChangelog(){ document.getElementById('changelogModal').classList.a
       </button>
       <div>
         <div class="page-eyebrow" id="pageEyebrow" style="display:none;">MODUL</div>
-        <div class="page-title" id="pageTitle" style="color:var(--text-primary); font-size:26px;">Dashboard Gabungan</div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="material-symbols-outlined page-title-icon" id="pageTitleIcon" style="display:none; font-size:24px; color:var(--text-primary);"></span>
+          <div class="page-title" id="pageTitle" style="color:var(--text-primary); font-size:26px;">Dashboard Gabungan</div>
+        </div>
       </div>
       <div id="topbarUtilityCluster" style="margin-left:auto; display:flex; align-items:center; gap:14px;">
         <div class="topbar-icon-row" style="display:flex; align-items:center; gap:14px;">
@@ -714,5 +717,6 @@ function toggleAppLanguage(){
 <script src="theme-palettes.js?v=1.0.0"></script>
 <script src="monitoring-plantation.js?v=1.0.0"></script>
 <script src="m3-ripple.js?v=1.0.0"></script>
+<script src="page-title-icon.js?v=1.0.0"></script>
 </body>
 </html>
