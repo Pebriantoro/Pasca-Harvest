@@ -102,23 +102,27 @@
 .wf-peek-track{
   display:flex; gap:12px; overflow-x:auto;
   scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
-  scrollbar-width:none; padding:4px 12% 10px;
+  scrollbar-width:none; padding:4px 16% 10px;
 }
 .wf-peek-track::-webkit-scrollbar{ display:none; }
 .wf-peek-card{
-  flex:0 0 76%; scroll-snap-align:center; scroll-snap-stop:always;
+  flex:0 0 68%; scroll-snap-align:center; scroll-snap-stop:always;
   background:var(--bg-card); border:1px solid var(--border-soft);
   border-radius:20px; overflow:hidden;
-  opacity:.5; transform:scale(.88);
+  opacity:.4; transform:scale(.8);
   transition:opacity .3s ease, transform .3s ease;
   box-shadow:0 6px 18px rgba(0,0,0,0.08);
 }
 .wf-peek-card.wf-peek-active{
-  opacity:1; transform:scale(1);
+  opacity:1; transform:scale(1.06);
   box-shadow:0 10px 26px rgba(0,0,0,0.14);
 }
 .wf-peek-media{ position:relative; aspect-ratio:16/10; background:#0d1a14; overflow:hidden; }
 .wf-peek-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+.wf-peek-media::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(11,20,16,0) 55%, var(--bg-card) 100%);
+}
 .wf-peek-body{ padding:14px 16px 18px; }
 .wf-peek-step{
   font-family:var(--font-display); font-weight:700; font-size:10.5px;
