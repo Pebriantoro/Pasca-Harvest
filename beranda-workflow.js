@@ -107,6 +107,7 @@ function wfRenderSlideHTML(idOrLetter){
 }
 
 function wfHeroHTML(){
+  if(wfIsMobile()) return wfPeekHeroHTML();
   return `
     <div class="wf-hero" id="wfHero">
       ${wfRenderSlideHTML('A')}
@@ -115,6 +116,64 @@ function wfHeroHTML(){
         ${WF_SLIDES.map((_,i)=>`<button aria-label="Slide ${i+1}" onclick="wfGoTo(${i})"></button>`).join('')}
       </div>
     </div>`;
+}
+
+/* ---- Peek-card carousel (mobile/Android) — kartu tengah penuh, kartu
+   kiri/kanan ngintip sebagian, swipe pakai scroll-snap native. ---- */
+function wfPeekHeroHTML(){
+  return `
+    <div class="wf-hero wf-hero-mobile" id="wfHero">
+      <div class="wf-peek-track" id="wfPeekTrack">
+        ${WF_SLIDES.map((s,i) => `
+          <div class="wf-peek-card" data-idx="${i}">
+            <div class="wf-peek-media">
+              <img src="${s.imgM}" alt="${s.title}" decoding="async" loading="${i===0?'eager':'lazy'}" fetchpriority="${i===0?'high':'low'}">
+            </div>
+            <div class="wf-peek-body">
+              <div class="wf-peek-step">${s.step}</div>
+              <div class="wf-peek-title">${s.title}</div>
+              <div class="wf-peek-desc">${s.desc}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div class="wf-dots" id="wfDots">
+        ${WF_SLIDES.map((_,i)=>`<button aria-label="Slide ${i+1}" onclick="wfGoTo(${i})"></button>`).join('')}
+      </div>
+    </div>`;
+}
+
+let wfPeekObserver = null;
+
+function wfInitPeekCarousel(){
+  const track = document.getElementById('wfPeekTrack');
+  if(!track) return;
+  const cards = Array.from(track.querySelectorAll('.wf-peek-card'));
+
+  if(wfPeekObserver) wfPeekObserver.disconnect();
+  wfPeekObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      entry.target.classList.toggle('wf-peek-active', entry.intersectionRatio > 0.6);
+      if(entry.intersectionRatio > 0.6){
+        wfIndex = Number(entry.target.dataset.idx);
+        wfUpdateDots(wfIndex);
+      }
+    });
+  }, { root: track, threshold: [0, 0.6, 1] });
+  cards.forEach(c => wfPeekObserver.observe(c));
+
+  wfIndex = 0;
+  wfUpdateDots(0);
+  wfPreloadAll();
+  wfStopTimer(); wfStartTimer();
+
+  track.addEventListener('touchstart', wfStopTimer, { passive:true });
+  track.addEventListener('touchend', () => { wfStopTimer(); wfStartTimer(); }, { passive:true });
+}
+
+function wfPeekGoTo(idx){
+  const track = document.getElementById('wfPeekTrack');
+  const card = track && track.querySelectorAll('.wf-peek-card')[idx];
+  if(card) card.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
 }
 
 function wfFillLayer(letter, idx){
@@ -138,6 +197,7 @@ function wfUpdateDots(idx){
 
 function wfAdvance(){
   const nextIdx = (wfIndex + 1) % WF_SLIDES.length;
+  if(document.getElementById('wfPeekTrack')){ wfPeekGoTo(nextIdx); return; }
   const showLetter = wfActiveLayer === 'A' ? 'B' : 'A';
   const hideLetter = wfActiveLayer;
   wfFillLayer(showLetter, nextIdx);
@@ -152,6 +212,7 @@ function wfAdvance(){
 
 function wfGoTo(idx){
   if(idx === wfIndex) return;
+  if(document.getElementById('wfPeekTrack')){ wfPeekGoTo(idx); wfStopTimer(); wfStartTimer(); return; }
   const showLetter = wfActiveLayer === 'A' ? 'B' : 'A';
   const hideLetter = wfActiveLayer;
   wfFillLayer(showLetter, idx);
@@ -175,6 +236,7 @@ function wfStopTimer(){
 }
 
 function wfInitHero(){
+  if(document.getElementById('wfPeekTrack')){ wfInitPeekCarousel(); return; }
   wfIndex = 0; wfActiveLayer = 'A';
   wfFillLayer('A', 0);
   document.getElementById('wfSlideA')?.classList.add('wf-active');
