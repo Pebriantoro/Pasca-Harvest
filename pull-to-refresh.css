@@ -1,0 +1,33 @@
+.ptr-indicator{
+  position:fixed; top:0; left:50%;
+  width:40px; height:40px;
+  transform:translate(-50%, -44px);
+  opacity:0;
+  z-index:60; pointer-events:none;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg-card);
+  border-radius:50%;
+  box-shadow:0 4px 14px rgba(0,0,0,0.2), 0 0 0 1px var(--border-soft);
+  will-change:transform, opacity;
+}
+.ptr-spinner{ width:24px; height:24px; }
+.ptr-spinner-track{
+  fill:none; stroke:var(--border-soft); stroke-width:3;
+}
+.ptr-spinner-arc{
+  fill:none; stroke:var(--accent-gold); stroke-width:3;
+  stroke-linecap:round;
+  transform-origin:20px 20px;
+  transform:rotate(-90deg);
+  transition:stroke-dashoffset .05s linear;
+}
+.ptr-indicator.ptr-ready .ptr-spinner-arc{ stroke:var(--accent-green, var(--accent-gold)); }
+.ptr-indicator.ptr-active .ptr-spinner{
+  animation:ptrSpin .85s linear infinite;
+}
+@keyframes ptrSpin{
+  to{ transform:rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce){
+  .ptr-indicator.ptr-active .ptr-spinner{ animation:none; }
+}
