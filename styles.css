@@ -498,6 +498,7 @@ svg.icon-clicked{ transform-box: view-box; transform-origin: center; }
   transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .15s ease;
 }
 .login-card .input::placeholder{ color:rgba(27,20,5,0.72); font-weight:600; }
+:root[data-theme="light"] .login-card .input::placeholder{ color:#000; font-weight:700; }
 .login-card .input:focus{
   background: linear-gradient(160deg, rgba(255,246,225,0.55), rgba(255,255,255,0.3) 55%, rgba(217,169,74,0.16));
   border-color: rgba(255,222,150,0.9);
@@ -552,12 +553,12 @@ svg.icon-clicked{ transform-box: view-box; transform-origin: center; }
   .pin-input-row{ gap:8px; }
 }
 .login-card .tab-toggle{
-  border-radius: 10px; border:1px solid rgba(255,229,168,0.4);
+  border-radius: 0; border:1px solid rgba(255,229,168,0.4);
   background: rgba(255,255,255,0.08);
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   padding:3px; overflow:hidden;
 }
-.login-card .tab-toggle > div{ border-radius:7px; color:rgba(27,20,5,0.55); font-weight:600; transition: background .25s ease, color .25s ease, box-shadow .25s ease; cursor:pointer; }
+.login-card .tab-toggle > div{ border-radius:0; color:rgba(27,20,5,0.55); font-weight:600; transition: background .25s ease, color .25s ease, box-shadow .25s ease; cursor:pointer; }
 .login-card .tab-toggle > div.active{
   background: var(--accent-gold); color:#1B1405;
 }
