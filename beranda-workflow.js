@@ -121,11 +121,20 @@ function wfHeroHTML(){
 /* ---- Peek-card carousel (mobile/Android) — kartu tengah penuh, kartu
    kiri/kanan ngintip sebagian, swipe pakai scroll-snap native. ---- */
 function wfPeekHeroHTML(){
+  const last = WF_SLIDES[WF_SLIDES.length - 1];
   return `
     <div class="wf-hero wf-hero-mobile" id="wfHero">
       <div class="wf-peek-track" id="wfPeekTrack">
+        <div class="wf-peek-card wf-peek-clone" aria-hidden="true" tabindex="-1">
+          <div class="wf-peek-media"><img src="${last.imgM}" alt="" decoding="async" loading="lazy"></div>
+          <div class="wf-peek-body">
+            <div class="wf-peek-step">${last.step}</div>
+            <div class="wf-peek-title">${last.title}</div>
+            <div class="wf-peek-desc">${last.desc}</div>
+          </div>
+        </div>
         ${WF_SLIDES.map((s,i) => `
-          <div class="wf-peek-card" data-idx="${i}">
+          <div class="wf-peek-card wf-peek-real" data-idx="${i}">
             <div class="wf-peek-media">
               <img src="${s.imgM}" alt="${s.title}" decoding="async" loading="${i===0?'eager':'lazy'}" fetchpriority="${i===0?'high':'low'}">
             </div>
@@ -147,7 +156,11 @@ let wfPeekObserver = null;
 function wfInitPeekCarousel(){
   const track = document.getElementById('wfPeekTrack');
   if(!track) return;
-  const cards = Array.from(track.querySelectorAll('.wf-peek-card'));
+  const cards = Array.from(track.querySelectorAll('.wf-peek-card.wf-peek-real'));
+
+  // Posisikan awal: kartu pertama (index 0) di tengah, tanpa animasi,
+  // supaya kartu terakhir (clone) langsung ngintip di sisi kiri sejak awal.
+  cards[0]?.scrollIntoView({ behavior:'auto', inline:'center', block:'nearest' });
 
   if(wfPeekObserver) wfPeekObserver.disconnect();
   wfPeekObserver = new IntersectionObserver((entries) => {
@@ -172,7 +185,7 @@ function wfInitPeekCarousel(){
 
 function wfPeekGoTo(idx){
   const track = document.getElementById('wfPeekTrack');
-  const card = track && track.querySelectorAll('.wf-peek-card')[idx];
+  const card = track && track.querySelectorAll('.wf-peek-card.wf-peek-real')[idx];
   if(card) card.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
 }
 
