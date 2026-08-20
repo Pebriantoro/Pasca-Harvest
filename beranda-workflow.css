@@ -109,12 +109,13 @@
   flex:0 0 68%; scroll-snap-align:center; scroll-snap-stop:always;
   background:var(--bg-card); border:1px solid var(--border-soft);
   border-radius:20px; overflow:hidden;
-  opacity:.4; transform:scale(.8);
+  opacity:.4; transform:scaleX(.8);
+  transform-origin:center;
   transition:opacity .3s ease, transform .3s ease;
   box-shadow:0 6px 18px rgba(0,0,0,0.08);
 }
 .wf-peek-card.wf-peek-active{
-  opacity:1; transform:scale(1.06);
+  opacity:1; transform:scaleX(1.06);
   box-shadow:0 10px 26px rgba(0,0,0,0.14);
 }
 .wf-peek-media{ position:relative; aspect-ratio:16/10; background:#0d1a14; overflow:hidden; }
