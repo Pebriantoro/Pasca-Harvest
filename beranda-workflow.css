@@ -102,20 +102,20 @@
 .wf-peek-track{
   display:flex; gap:12px; overflow-x:auto;
   scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
-  scrollbar-width:none; padding:4px 16% 10px;
+  scrollbar-width:none; padding:4px 20% 10px;
 }
 .wf-peek-track::-webkit-scrollbar{ display:none; }
 .wf-peek-card{
-  flex:0 0 68%; scroll-snap-align:center; scroll-snap-stop:always;
+  flex:0 0 58%; scroll-snap-align:center; scroll-snap-stop:always;
   background:var(--bg-card); border:1px solid var(--border-soft);
   border-radius:20px; overflow:hidden;
-  opacity:.4; transform:scaleX(.8);
+  opacity:.35; transform:scaleX(.72);
   transform-origin:center;
   transition:opacity .3s ease, transform .3s ease;
   box-shadow:0 6px 18px rgba(0,0,0,0.08);
 }
 .wf-peek-card.wf-peek-active{
-  opacity:1; transform:scaleX(1.06);
+  opacity:1; transform:scaleX(1.18);
   box-shadow:0 10px 26px rgba(0,0,0,0.14);
 }
 .wf-peek-media{ position:relative; aspect-ratio:16/10; background:#0d1a14; overflow:hidden; }
