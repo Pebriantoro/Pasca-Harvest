@@ -94,7 +94,7 @@ function wfPreloadAll(){
 
 function wfRenderSlideHTML(idOrLetter){
   return `
-    <div class="wf-slide" id="wfSlide${idOrLetter}">
+    <div class="wf-slide" id="wfSlide${idOrLetter}" onclick="wfOpenModalFromSlide(this)">
       <div class="wf-slide-media">
         <img id="wfImg${idOrLetter}" alt="" decoding="async" fetchpriority="${idOrLetter==='A' ? 'high':'low'}">
       </div>
@@ -122,10 +122,11 @@ function wfHeroHTML(){
    kiri/kanan ngintip sebagian, swipe pakai scroll-snap native. ---- */
 function wfPeekHeroHTML(){
   const last = WF_SLIDES[WF_SLIDES.length - 1];
+  const first = WF_SLIDES[0];
   return `
     <div class="wf-hero wf-hero-mobile" id="wfHero">
       <div class="wf-peek-track" id="wfPeekTrack">
-        <div class="wf-peek-card wf-peek-clone" aria-hidden="true" tabindex="-1">
+        <div class="wf-peek-card wf-peek-clone wf-peek-clone-start" aria-hidden="true" tabindex="-1">
           <div class="wf-peek-media"><img src="${last.imgM}" alt="" decoding="async" loading="lazy"></div>
           <div class="wf-peek-body">
             <div class="wf-peek-step">${last.step}</div>
@@ -134,7 +135,7 @@ function wfPeekHeroHTML(){
           </div>
         </div>
         ${WF_SLIDES.map((s,i) => `
-          <div class="wf-peek-card wf-peek-real" data-idx="${i}">
+          <div class="wf-peek-card wf-peek-real" data-idx="${i}" onclick="wfOpenModal(${i})">
             <div class="wf-peek-media">
               <img src="${s.imgM}" alt="${s.title}" decoding="async" loading="${i===0?'eager':'lazy'}" fetchpriority="${i===0?'high':'low'}">
             </div>
@@ -144,6 +145,14 @@ function wfPeekHeroHTML(){
               <div class="wf-peek-desc">${s.desc}</div>
             </div>
           </div>`).join('')}
+        <div class="wf-peek-card wf-peek-clone wf-peek-clone-end" aria-hidden="true" tabindex="-1">
+          <div class="wf-peek-media"><img src="${first.imgM}" alt="" decoding="async" loading="lazy"></div>
+          <div class="wf-peek-body">
+            <div class="wf-peek-step">${first.step}</div>
+            <div class="wf-peek-title">${first.title}</div>
+            <div class="wf-peek-desc">${first.desc}</div>
+          </div>
+        </div>
       </div>
       <div class="wf-dots" id="wfDots">
         ${WF_SLIDES.map((_,i)=>`<button aria-label="Slide ${i+1}" onclick="wfGoTo(${i})"></button>`).join('')}
@@ -152,6 +161,7 @@ function wfPeekHeroHTML(){
 }
 
 let wfPeekObserver = null;
+let wfPeekScrollTimer = null;
 
 function wfInitPeekCarousel(){
   const track = document.getElementById('wfPeekTrack');
@@ -166,13 +176,25 @@ function wfInitPeekCarousel(){
   wfPeekObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       entry.target.classList.toggle('wf-peek-active', entry.intersectionRatio > 0.6);
-      if(entry.intersectionRatio > 0.6){
+      if(entry.intersectionRatio > 0.6 && entry.target.dataset.idx !== undefined){
         wfIndex = Number(entry.target.dataset.idx);
         wfUpdateDots(wfIndex);
       }
     });
   }, { root: track, threshold: [0, 0.6, 1] });
   cards.forEach(c => wfPeekObserver.observe(c));
+  const cloneStart = track.querySelector('.wf-peek-clone-start');
+  const cloneEnd = track.querySelector('.wf-peek-clone-end');
+  if(cloneStart) wfPeekObserver.observe(cloneStart);
+  if(cloneEnd) wfPeekObserver.observe(cloneEnd);
+
+  // Loop tak berujung: kalau swipe nyampe kartu clone (ujung kiri/kanan),
+  // begitu scroll berhenti, lompat instan (tanpa animasi) ke kartu asli
+  // yang sepadan — jadi kerasa muter terus tanpa "mentok".
+  track.addEventListener('scroll', () => {
+    clearTimeout(wfPeekScrollTimer);
+    wfPeekScrollTimer = setTimeout(wfPeekSnapIfClone, 120);
+  }, { passive:true });
 
   wfIndex = 0;
   wfUpdateDots(0);
@@ -181,6 +203,21 @@ function wfInitPeekCarousel(){
 
   track.addEventListener('touchstart', wfStopTimer, { passive:true });
   track.addEventListener('touchend', () => { wfStopTimer(); wfStartTimer(); }, { passive:true });
+}
+
+function wfPeekSnapIfClone(){
+  const track = document.getElementById('wfPeekTrack');
+  if(!track) return;
+  const cloneStart = track.querySelector('.wf-peek-clone-start');
+  const cloneEnd = track.querySelector('.wf-peek-clone-end');
+  const reals = track.querySelectorAll('.wf-peek-card.wf-peek-real');
+  if(cloneStart && cloneStart.classList.contains('wf-peek-active')){
+    reals[reals.length - 1].scrollIntoView({ behavior:'auto', inline:'center', block:'nearest' });
+    wfIndex = WF_SLIDES.length - 1; wfUpdateDots(wfIndex);
+  } else if(cloneEnd && cloneEnd.classList.contains('wf-peek-active')){
+    reals[0].scrollIntoView({ behavior:'auto', inline:'center', block:'nearest' });
+    wfIndex = 0; wfUpdateDots(0);
+  }
 }
 
 function wfPeekGoTo(idx){
@@ -195,6 +232,8 @@ function wfFillLayer(letter, idx){
   if(!img) return;
   img.src = wfImgFor(s);
   img.alt = s.title;
+  const slideEl = document.getElementById('wfSlide'+letter);
+  if(slideEl) slideEl.dataset.idx = idx;
   const stepEl = document.getElementById('wfStep'+letter);
   const titleEl = document.getElementById('wfTitle'+letter);
   const descEl = document.getElementById('wfDesc'+letter);
@@ -277,3 +316,54 @@ navigate = async function(view){
   if(view !== 'beranda') wfStopTimer();
   return _wfPrevNavigate(view);
 };
+
+/* ===================== MODAL DETAIL (klik kartu) ===================== */
+function wfEnsureModal(){
+  if(document.getElementById('wfModal')) return;
+  const div = document.createElement('div');
+  div.id = 'wfModal';
+  div.className = 'wf-modal';
+  div.setAttribute('role','dialog');
+  div.setAttribute('aria-modal','true');
+  div.innerHTML = `
+    <div class="wf-modal-backdrop" onclick="wfCloseModal()"></div>
+    <div class="wf-modal-card">
+      <button type="button" class="wf-modal-close" onclick="wfCloseModal()" aria-label="Tutup">&times;</button>
+      <div class="wf-modal-media"><img id="wfModalImg" alt=""></div>
+      <div class="wf-modal-body">
+        <div class="wf-modal-step" id="wfModalStep"></div>
+        <div class="wf-modal-title" id="wfModalTitle"></div>
+        <div class="wf-modal-desc" id="wfModalDesc"></div>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') wfCloseModal();
+  });
+}
+
+function wfOpenModal(idx){
+  const s = WF_SLIDES[idx];
+  if(!s) return;
+  wfEnsureModal();
+  wfStopTimer();
+  document.getElementById('wfModalImg').src = wfIsMobile() ? s.imgM : s.img;
+  document.getElementById('wfModalImg').alt = s.title;
+  document.getElementById('wfModalStep').textContent = s.step;
+  document.getElementById('wfModalTitle').textContent = s.title;
+  document.getElementById('wfModalDesc').textContent = s.desc;
+  document.getElementById('wfModal').classList.add('wf-modal-open');
+  document.body.classList.add('wf-modal-noscroll');
+}
+
+function wfOpenModalFromSlide(el){
+  const idx = Number(el.dataset.idx || 0);
+  wfOpenModal(idx);
+}
+
+function wfCloseModal(){
+  const modal = document.getElementById('wfModal');
+  if(modal) modal.classList.remove('wf-modal-open');
+  document.body.classList.remove('wf-modal-noscroll');
+  if(currentView === 'beranda') wfStartTimer();
+}
