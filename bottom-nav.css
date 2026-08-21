@@ -57,6 +57,10 @@
     transition:color .2s var(--ease-out);
   }
   .bottom-nav-item svg{ width:19px; height:19px; flex-shrink:0; }
+  /* Tanpa ini, browser mobile nyisain focus ring/background bawaan
+     nempel di tombol abis di-tap sampe user tap elemen lain. */
+  .bottom-nav-item:focus,
+  .bottom-nav-item:focus-visible{ outline:none; background:transparent; box-shadow:none; }
   .bn-icon-wrap .material-symbols-outlined{ font-size:19px; line-height:1; }
 
   /* Bubble ikon: yang aktif "ngambang" naik ke atas garis bar, mirip

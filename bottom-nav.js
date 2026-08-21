@@ -43,7 +43,10 @@
     document.querySelectorAll('.sidebar-nav .nav-item[data-view]').forEach(function(a){
       var view = a.getAttribute('data-view');
       var icon = a.querySelector('.nav-item-icon');
-      var label = a.querySelector('span:last-child');
+      // Nav-item yang punya count-badge (mis. "Prod Harian" + <span class="count-badge">241</span>)
+      // punya 2 span sesudah ikon; span:last-child ke-nya jatuh ke count-badge,
+      // bukan ke teks label. Jadi cari span teks labelnya secara spesifik.
+      var label = a.querySelector('span:not(.nav-item-icon):not(.count-badge)');
       if(view && icon) out[view] = { view: view, icon: icon.textContent.trim(), label: (label ? label.textContent.trim() : view) };
     });
     return out;
@@ -70,7 +73,7 @@
   }
 
   function shortcutBtnHTML(item){
-    return '<button type="button" class="bottom-nav-item bnav-shortcut" data-view="' + item.view + '" onclick="navigate(\'' + item.view + '\')">' +
+    return '<button type="button" class="bottom-nav-item bnav-shortcut" data-view="' + item.view + '" onclick="this.blur(); navigate(\'' + item.view + '\')">' +
       '<span class="bn-icon-wrap"><span class="material-symbols-outlined">' + item.icon + '</span></span>' +
       '<span class="bn-label">' + item.label + '</span>' +
     '</button>';
@@ -92,7 +95,7 @@
     bar.className = 'bottom-nav';
     bar.id = 'bottomNav';
     bar.innerHTML =
-      '<button type="button" class="bottom-nav-item" id="bnavMenu" onclick="toggleSidebar()">' +
+      '<button type="button" class="bottom-nav-item" id="bnavMenu" onclick="this.blur(); toggleSidebar()">' +
         '<span class="bn-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></span>' +
         '<span class="bn-label">Menu</span>' +
       '</button>';
@@ -211,7 +214,7 @@
         '</div>' +
         '<div class="modal-body">' +
           '<p style="font-size:11.5px; color:var(--text-faint); margin:-4px 0 10px;">Pilih maksimal ' + SHORTCUT_COUNT + ' menu yang mau tampil di bar mengambang. Kosongkan semua buat balik ke mode otomatis (menu tersering dipakai).</p>' +
-          '<div id="bnavPickerList">' +
+          '<div id="bnavPickerList" style="padding-bottom:10px;">' +
             Object.keys(navItems).map(function(v){ return pickerRowHTML(navItems[v], selected.indexOf(v) !== -1); }).join('') +
           '</div>' +
         '</div>' +
