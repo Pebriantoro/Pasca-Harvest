@@ -586,85 +586,26 @@ svg.icon-clicked{ transform-box: view-box; transform-origin: center; }
   text-shadow: 0 1px 0 rgba(255,255,255,0.35);
 }
 .login-card .tab-toggle > div.active .cane-plant-label{ position:relative; z-index:2; }
-/* Ladang tebu yang overlap penuh di dalam pil "Masuk" -- beberapa batang
-   goyang independen + hembusan angin lewat berkala, sama persis kayak
-   kebun tebu di tombol "Masuk ke Dashboard" (inset penuh, gak nyembul,
-   biar gak kepotong sama overflow:hidden punya .tab-toggle). */
-.login-card .cane-tab-scene{
-  position:absolute; inset:0; z-index:0; overflow:hidden;
-  opacity:.6; pointer-events:none;
-}
-.login-card .cane-tab-svg{ width:100%; height:100%; display:block; }
 
-.login-card .cane-tab-stalk{ transform-box: fill-box; }
-.login-card .cane-tab-stalk.s1{ animation: caneBtnSway 2.3s ease-in-out infinite alternate; }
-.login-card .cane-tab-stalk.s2{ animation: caneBtnSway 2.7s ease-in-out infinite alternate; animation-delay:-.6s; }
-.login-card .cane-tab-stalk.s3{ animation: caneBtnSwayWide 2.1s ease-in-out infinite alternate; animation-delay:-1.3s; }
-.login-card .cane-tab-stalk.s4{ animation: caneBtnSway 2.9s ease-in-out infinite alternate; animation-delay:-.3s; }
-.login-card .cane-tab-stalk.s5{ animation: caneBtnSwayWide 2.4s ease-in-out infinite alternate; animation-delay:-1.8s; }
-.login-card .cane-tab-stalk.s6{ animation: caneBtnSway 2.6s ease-in-out infinite alternate; animation-delay:-1s; }
-.login-card .cane-tab-stalk.s7{ animation: caneBtnSwayWide 2.8s ease-in-out infinite alternate; animation-delay:-2.1s; }
-
-.login-card .cane-tab-leaf{ transform-box: fill-box; transform-origin: 50% 100%; }
-.login-card .cane-tab-stalk.s1 .cane-tab-leaf{ animation: caneBtnLeaf 1.9s ease-in-out infinite alternate; }
-.login-card .cane-tab-stalk.s2 .cane-tab-leaf{ animation: caneBtnLeaf 2.2s ease-in-out infinite alternate; animation-delay:-.4s; }
-.login-card .cane-tab-stalk.s3 .cane-tab-leaf{ animation: caneBtnLeaf 1.7s ease-in-out infinite alternate; animation-delay:-.9s; }
-.login-card .cane-tab-stalk.s4 .cane-tab-leaf{ animation: caneBtnLeaf 2.4s ease-in-out infinite alternate; animation-delay:-.2s; }
-.login-card .cane-tab-stalk.s5 .cane-tab-leaf{ animation: caneBtnLeaf 2s ease-in-out infinite alternate; animation-delay:-1.4s; }
-.login-card .cane-tab-stalk.s6 .cane-tab-leaf{ animation: caneBtnLeaf 2.3s ease-in-out infinite alternate; animation-delay:-.7s; }
-.login-card .cane-tab-stalk.s7 .cane-tab-leaf{ animation: caneBtnLeaf 1.8s ease-in-out infinite alternate; animation-delay:-1.6s; }
-
-.login-card .cane-tab-gust{ transform-box: fill-box; }
-.login-card .cane-tab-gust.g1{ animation: caneBtnGust 5.5s linear infinite; }
-.login-card .cane-tab-gust.g2{ animation: caneBtnGust 6.2s linear infinite; animation-delay:-3s; }
-
-.login-card .cane-tab-leafdrift{ transform-box: fill-box; }
-.login-card .cane-tab-leafdrift.d1{ animation: caneBtnDrift1 4.6s ease-in-out infinite; animation-delay:-.5s; }
-.login-card .cane-tab-leafdrift.d2{ animation: caneBtnDrift2 5.4s ease-in-out infinite; animation-delay:-2s; }
-.login-card .cane-tab-leafdrift.d3{ animation: caneBtnDrift1 6.1s ease-in-out infinite; animation-delay:-3.4s; }
-.login-card .cane-tab-leafdrift.d4{ animation: caneBtnDrift2 5s ease-in-out infinite; animation-delay:-1.1s; }
-@media (prefers-reduced-motion: reduce){
-  .login-card .cane-tab-stalk, .login-card .cane-tab-leaf,
-  .login-card .cane-tab-gust, .login-card .cane-tab-leafdrift{ animation:none; }
-}
-
-/* ===================== KEBUN TEBU DI DALAM PIL TOMBOL LOGIN =====================
-   Ladang tebu mini yang tumbuh & bergoyang penuh di dalam pil "Masuk ke
-   Dashboard" / "Masuk dengan Passcode" -- beberapa batang goyang independen,
-   hembusan angin lewat berkala, & daun-daun lepas melayang menyeberangi pil. */
+/* ===================== MODERN GLOW OVERLAY (pil "Masuk" & tombol login) =====================
+   Overlay animasi modern -- shimmer sweep diagonal + partikel cahaya
+   yang mengambang naik-turun, dipakai di dalam pil "Masuk" (tab) dan
+   tombol "Masuk ke Dashboard" / "Masuk dengan Passcode" / dsb. Gantiin
+   tema kebun tebu, sekarang gaya glass/particle modern. */
 .cane-btn{ position:relative; }
+.login-card .cane-tab-scene,
 .cane-btn-scene{
   position:absolute; inset:0; z-index:0; overflow:hidden;
   opacity:.6; pointer-events:none;
 }
+.login-card .cane-tab-svg,
 .cane-btn-svg{ width:100%; height:100%; display:block; }
 .cane-btn-text{ position:relative; z-index:2; }
 
-.cane-btn-stalk{ transform-box: fill-box; }
-.cane-btn-stalk.s1{ animation: caneBtnSway 2.3s ease-in-out infinite alternate; }
-.cane-btn-stalk.s2{ animation: caneBtnSway 2.7s ease-in-out infinite alternate; animation-delay:-.6s; }
-.cane-btn-stalk.s3{ animation: caneBtnSwayWide 2.1s ease-in-out infinite alternate; animation-delay:-1.3s; }
-.cane-btn-stalk.s4{ animation: caneBtnSway 2.9s ease-in-out infinite alternate; animation-delay:-.3s; }
-.cane-btn-stalk.s5{ animation: caneBtnSwayWide 2.4s ease-in-out infinite alternate; animation-delay:-1.8s; }
-.cane-btn-stalk.s6{ animation: caneBtnSway 2.6s ease-in-out infinite alternate; animation-delay:-1s; }
-.cane-btn-stalk.s7{ animation: caneBtnSwayWide 2.8s ease-in-out infinite alternate; animation-delay:-2.1s; }
-@keyframes caneBtnSway{ from{ transform: rotate(-6deg) scaleY(.97); } to{ transform: rotate(6deg) scaleY(1.02); } }
-@keyframes caneBtnSwayWide{ from{ transform: rotate(-9deg) scaleY(.96); } to{ transform: rotate(8deg) scaleY(1.03); } }
-
-.cane-btn-leaf{ transform-box: fill-box; transform-origin: 50% 100%; }
-.cane-btn-stalk.s1 .cane-btn-leaf{ animation: caneBtnLeaf 1.9s ease-in-out infinite alternate; }
-.cane-btn-stalk.s2 .cane-btn-leaf{ animation: caneBtnLeaf 2.2s ease-in-out infinite alternate; animation-delay:-.4s; }
-.cane-btn-stalk.s3 .cane-btn-leaf{ animation: caneBtnLeaf 1.7s ease-in-out infinite alternate; animation-delay:-.9s; }
-.cane-btn-stalk.s4 .cane-btn-leaf{ animation: caneBtnLeaf 2.4s ease-in-out infinite alternate; animation-delay:-.2s; }
-.cane-btn-stalk.s5 .cane-btn-leaf{ animation: caneBtnLeaf 2s ease-in-out infinite alternate; animation-delay:-1.4s; }
-.cane-btn-stalk.s6 .cane-btn-leaf{ animation: caneBtnLeaf 2.3s ease-in-out infinite alternate; animation-delay:-.7s; }
-.cane-btn-stalk.s7 .cane-btn-leaf{ animation: caneBtnLeaf 1.8s ease-in-out infinite alternate; animation-delay:-1.6s; }
-@keyframes caneBtnLeaf{ from{ transform: rotate(-12deg) skewX(-4deg); } to{ transform: rotate(10deg) skewX(4deg); } }
-
-.cane-btn-gust{ transform-box: fill-box; }
-.cane-btn-gust.g1{ animation: caneBtnGust 5.5s linear infinite; }
-.cane-btn-gust.g2{ animation: caneBtnGust 6.2s linear infinite; animation-delay:-3s; }
-@keyframes caneBtnGust{
+.cane-btn-sweep{ transform-box: fill-box; }
+.cane-btn-sweep.sw1{ animation: glowSweep 5.5s linear infinite; }
+.cane-btn-sweep.sw2{ animation: glowSweep 6.2s linear infinite; animation-delay:-3s; }
+@keyframes glowSweep{
   0%{ transform: translateX(-60px); opacity:0; }
   8%{ opacity:.55; }
   50%{ opacity:.35; }
@@ -672,27 +613,30 @@ svg.icon-clicked{ transform-box: view-box; transform-origin: center; }
   100%{ transform: translateX(420px); opacity:0; }
 }
 
-.cane-btn-leafdrift{ transform-box: fill-box; }
-.cane-btn-leafdrift.d1{ animation: caneBtnDrift1 4.6s ease-in-out infinite; animation-delay:-.5s; }
-.cane-btn-leafdrift.d2{ animation: caneBtnDrift2 5.4s ease-in-out infinite; animation-delay:-2s; }
-.cane-btn-leafdrift.d3{ animation: caneBtnDrift1 6.1s ease-in-out infinite; animation-delay:-3.4s; }
-.cane-btn-leafdrift.d4{ animation: caneBtnDrift2 5s ease-in-out infinite; animation-delay:-1.1s; }
-@keyframes caneBtnDrift1{
-  0%{ transform: translate(-24px,6px) rotate(0deg); opacity:0; }
-  12%{ opacity:.8; }
-  50%{ transform: translate(190px,-10px) rotate(160deg); opacity:.7; }
-  88%{ opacity:.5; }
-  100%{ transform: translate(410px,10px) rotate(320deg); opacity:0; }
+.cane-btn-dot{ transform-box: fill-box; transform-origin:50% 50%; }
+.cane-btn-dot.p1{ animation: glowDotRise 2.4s ease-in-out infinite; animation-delay:-.2s; }
+.cane-btn-dot.p2{ animation: glowDotRise 2.8s ease-in-out infinite; animation-delay:-1.1s; }
+.cane-btn-dot.p3{ animation: glowDotRise 2.2s ease-in-out infinite; animation-delay:-.6s; }
+.cane-btn-dot.p4{ animation: glowDotRise 3s ease-in-out infinite; animation-delay:-1.8s; }
+.cane-btn-dot.p5{ animation: glowDotRise 2.5s ease-in-out infinite; animation-delay:-.4s; }
+.cane-btn-dot.p6{ animation: glowDotRise 2.9s ease-in-out infinite; animation-delay:-1.4s; }
+.cane-btn-dot.p7{ animation: glowDotRise 2.3s ease-in-out infinite; animation-delay:-.9s; }
+@keyframes glowDotRise{
+  0%,100%{ transform: translateY(0) scale(.75); opacity:.3; }
+  50%{ transform: translateY(-9px) scale(1.2); opacity:1; }
 }
-@keyframes caneBtnDrift2{
-  0%{ transform: translate(-20px,-8px) rotate(0deg); opacity:0; }
-  15%{ opacity:.7; }
-  50%{ transform: translate(210px,10px) rotate(-150deg); opacity:.65; }
-  85%{ opacity:.45; }
-  100%{ transform: translate(420px,-8px) rotate(-300deg); opacity:0; }
+
+/* garis grid tipis yang berdenyut pelan -- aksen tech/modern */
+.cane-btn-gridline{ transform-box: fill-box; }
+.cane-btn-gridline.gl1{ animation: glowGridPulse 3.4s ease-in-out infinite; }
+.cane-btn-gridline.gl2{ animation: glowGridPulse 3.4s ease-in-out infinite; animation-delay:-1.7s; }
+@keyframes glowGridPulse{
+  0%,100%{ opacity:.12; }
+  50%{ opacity:.4; }
 }
+
 @media (prefers-reduced-motion: reduce){
-  .cane-btn-stalk, .cane-btn-leaf, .cane-btn-gust, .cane-btn-leafdrift{ animation:none; }
+  .cane-btn-sweep, .cane-btn-dot, .cane-btn-gridline{ animation:none; }
 }
 @media(max-width:420px){ .cane-btn-scene{ opacity:.5; } }
 .input{
