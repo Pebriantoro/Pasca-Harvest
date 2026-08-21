@@ -114,10 +114,12 @@ function berandaCardHTML(item){
         <div style="position:absolute; top:14px; right:16px;">${item.statusHtml}</div>
         <div style="display:flex; gap:12px; align-items:flex-start;">
           <div class="chat-avatar" style="width:36px; height:36px; font-size:14px; flex-shrink:0;">${esc(berandaInitial(item.staff_name))}</div>
-          <div style="flex:1; min-width:0; padding-right:120px;">
-            <div style="font-weight:700; font-size:13.5px;">${esc(item.staff_name || 'Staff')}</div>
-            <div style="font-size:11.5px; color:var(--text-faint); margin-top:2px;">
-              ${esc(item.sourceLabel)} ${item.zona ? '· Zona '+esc(item.zona) : ''} · ${esc(typeof timeAgo === 'function' ? timeAgo(item.created_at) : fmtTanggalRKH(item.tanggal))}
+          <div style="flex:1; min-width:0;">
+            <div style="padding-right:120px;">
+              <div style="font-weight:700; font-size:13.5px;">${esc(item.staff_name || 'Staff')}</div>
+              <div style="font-size:11.5px; color:var(--text-faint); margin-top:2px;">
+                ${esc(item.sourceLabel)} ${item.zona ? '· Zona '+esc(item.zona) : ''} · ${esc(typeof timeAgo === 'function' ? timeAgo(item.created_at) : fmtTanggalRKH(item.tanggal))}
+              </div>
             </div>
             <div style="font-size:13px; color:var(--text-muted); margin-top:10px; line-height:1.5;">${item.body}</div>
           </div>
