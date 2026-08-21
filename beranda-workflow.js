@@ -163,6 +163,19 @@ function wfPeekHeroHTML(){
 let wfPeekObserver = null;
 let wfPeekScrollTimer = null;
 
+// Scroll HORIZONTAL SAJA di dalam track, tanpa scrollIntoView.
+// scrollIntoView (walau block:'nearest') tetap bisa ikut geser scroll
+// vertikal ancestor/halaman kalau track belum 100% masuk viewport saat
+// dipanggil — race ini yang bikin layar "lompat ke atas" pas user lagi
+// scroll ke bawah bareng auto-advance carousel. scrollTo pada elemen
+// track sendiri tidak pernah menyentuh scroll halaman.
+function wfPeekScrollToCard(card, behavior){
+  const track = document.getElementById('wfPeekTrack');
+  if(!track || !card) return;
+  const target = card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2;
+  track.scrollTo({ left: target, behavior });
+}
+
 function wfInitPeekCarousel(){
   const track = document.getElementById('wfPeekTrack');
   if(!track) return;
@@ -170,7 +183,7 @@ function wfInitPeekCarousel(){
 
   // Posisikan awal: kartu pertama (index 0) di tengah, tanpa animasi,
   // supaya kartu terakhir (clone) langsung ngintip di sisi kiri sejak awal.
-  cards[0]?.scrollIntoView({ behavior:'auto', inline:'center', block:'nearest' });
+  wfPeekScrollToCard(cards[0], 'auto');
 
   if(wfPeekObserver) wfPeekObserver.disconnect();
   wfPeekObserver = new IntersectionObserver((entries) => {
@@ -212,10 +225,10 @@ function wfPeekSnapIfClone(){
   const cloneEnd = track.querySelector('.wf-peek-clone-end');
   const reals = track.querySelectorAll('.wf-peek-card.wf-peek-real');
   if(cloneStart && cloneStart.classList.contains('wf-peek-active')){
-    reals[reals.length - 1].scrollIntoView({ behavior:'auto', inline:'center', block:'nearest' });
+    wfPeekScrollToCard(reals[reals.length - 1], 'auto');
     wfIndex = WF_SLIDES.length - 1; wfUpdateDots(wfIndex);
   } else if(cloneEnd && cloneEnd.classList.contains('wf-peek-active')){
-    reals[0].scrollIntoView({ behavior:'auto', inline:'center', block:'nearest' });
+    wfPeekScrollToCard(reals[0], 'auto');
     wfIndex = 0; wfUpdateDots(0);
   }
 }
@@ -223,7 +236,7 @@ function wfPeekSnapIfClone(){
 function wfPeekGoTo(idx){
   const track = document.getElementById('wfPeekTrack');
   const card = track && track.querySelectorAll('.wf-peek-card.wf-peek-real')[idx];
-  if(card) card.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+  if(card) wfPeekScrollToCard(card, 'smooth');
 }
 
 function wfFillLayer(letter, idx){
