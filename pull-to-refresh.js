@@ -3,18 +3,34 @@
    view yang lagi dibuka, animasi spinner gaya Google/Material (SwipeRefresh).
    Additif, tidak mengubah file lain. Aman dipasang di semua halaman karena
    cuma aktif kalau: layar mobile (<=760px) DAN window.scrollY === 0.
+
+   v2: konten ikut "gerak" turun pas ditarik (bukan cuma indikator diem
+   di atas), pakai kurva elastis (rubber-band, resistensi makin gede
+   makin ditarik jauh) + rAF batching biar gak jank pas jari gerak cepat,
+   plus spring bounce pas dilepas.
    ===================================================================== */
 
 const PTR_THRESHOLD = 70;   // px tarikan buat trigger refresh
 const PTR_MAX_PULL  = 110;  // batas jarak indikator turun
+const PTR_MAX_CONTENT_PULL = 46; // batas konten ikut turun (lebih kecil dari indikator, biar ga lebay)
+const PTR_SPRING = 'cubic-bezier(.34,1.56,.64,1)'; // sama kayak bnavPop, kesan "mantul"
 
 let ptrStartY = 0;
 let ptrPulling = false;
 let ptrRefreshing = false;
 let ptrEl = null;
+let ptrContentEl = null;
+let ptrRAF = null;
+let ptrLastDy = 0;
 const PTR_CIRC = 2 * Math.PI * 16;
 
 function ptrIsMobile(){ return window.matchMedia('(max-width:760px)').matches; }
+
+// Resistensi elastis: makin jauh ditarik, makin "berat"/lambat
+// nambahnya — kesan rubber-band asli, bukan gerak lurus 1:1 jari.
+function ptrElastic(dy, limit){
+  return limit * (1 - Math.exp(-dy / limit));
+}
 
 function ptrEnsureEl(){
   if(ptrEl) return ptrEl;
@@ -32,34 +48,70 @@ function ptrEnsureEl(){
   return wrap;
 }
 
-function ptrSetProgress(dist){
+function ptrContent(){
+  if(ptrContentEl && document.body.contains(ptrContentEl)) return ptrContentEl;
+  ptrContentEl = document.querySelector('.main-area');
+  return ptrContentEl;
+}
+
+function ptrApplyProgress(dy){
   const el = ptrEnsureEl();
-  const pct = Math.max(0, Math.min(dist / PTR_THRESHOLD, 1));
-  const translate = Math.min(dist * 0.55, PTR_MAX_PULL);
-  el.style.transform = `translate(-50%, ${translate - 44}px) rotate(${pct * 180}deg)`;
+  const content = ptrContent();
+  const pulled = ptrElastic(Math.max(0, dy), PTR_MAX_PULL);
+  const pct = Math.max(0, Math.min(pulled / PTR_THRESHOLD, 1));
+
+  el.style.transform = `translate(-50%, ${pulled - 44}px) rotate(${pct * 180}deg)`;
   el.style.opacity = String(Math.min(pct * 1.3, 1));
   const arc = el.querySelector('.ptr-spinner-arc');
   arc.style.strokeDashoffset = String(PTR_CIRC * (1 - pct * 0.78));
   el.classList.toggle('ptr-ready', pct >= 1);
+
+  if(content){
+    const contentPull = ptrElastic(Math.max(0, dy), PTR_MAX_CONTENT_PULL);
+    content.style.transform = `translateY(${contentPull}px)`;
+  }
+}
+
+function ptrSetProgress(dy){
+  ptrLastDy = dy;
+  if(ptrRAF) return; // udah ada frame nunggu, cukup update ptrLastDy, gak usah numpuk request
+  ptrRAF = requestAnimationFrame(() => {
+    ptrApplyProgress(ptrLastDy);
+    ptrRAF = null;
+  });
 }
 
 function ptrReset(){
+  if(ptrRAF){ cancelAnimationFrame(ptrRAF); ptrRAF = null; }
   const el = ptrEnsureEl();
+  const content = ptrContent();
   el.classList.remove('ptr-active');
-  el.style.transition = 'transform .25s ease, opacity .25s ease';
+  el.style.transition = `transform .38s ${PTR_SPRING}, opacity .25s ease`;
   el.style.transform = 'translate(-50%, -44px) rotate(0deg)';
   el.style.opacity = '0';
   el.classList.remove('ptr-ready');
-  setTimeout(() => { if(el) el.style.transition = ''; }, 260);
+  if(content){
+    content.style.transition = `transform .38s ${PTR_SPRING}`;
+    content.style.transform = 'translateY(0px)';
+  }
+  setTimeout(() => {
+    if(el) el.style.transition = '';
+    if(content) content.style.transition = '';
+  }, 390);
 }
 
 async function ptrTriggerRefresh(){
   const el = ptrEnsureEl();
+  const content = ptrContent();
   ptrRefreshing = true;
   el.classList.add('ptr-active');
-  el.style.transition = 'transform .2s ease';
+  el.style.transition = `transform .22s ${PTR_SPRING}`;
   el.style.transform = 'translate(-50%, 20px)';
   el.style.opacity = '1';
+  if(content){
+    content.style.transition = `transform .22s ${PTR_SPRING}`;
+    content.style.transform = `translateY(${PTR_MAX_CONTENT_PULL * 0.6}px)`;
+  }
 
   const startedAt = Date.now();
   try{

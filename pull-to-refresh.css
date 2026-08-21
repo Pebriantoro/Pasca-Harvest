@@ -31,3 +31,4 @@
 @media (prefers-reduced-motion: reduce){
   .ptr-indicator.ptr-active .ptr-spinner{ animation:none; }
 }
+.main-area{ will-change:transform; }
