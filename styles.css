@@ -558,30 +558,36 @@ svg.icon-clicked{ transform-box: view-box; transform-origin: center; }
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.25);
 }
 .login-card .tab-toggle > div{
-  border-radius:999px; background:transparent;
+  position:relative; border-radius:999px; background:transparent;
   color:rgba(27,20,5,0.55); font-weight:600; letter-spacing:.01em;
   transition: background .28s cubic-bezier(.65,0,.35,1), color .25s ease, box-shadow .25s ease;
 }
 .login-card .tab-toggle > div.active{
-  position:relative; overflow:visible;
-  background:
-    repeating-linear-gradient(90deg, rgba(58,39,5,0.16) 0 1.5px, transparent 1.5px 7px),
-    linear-gradient(155deg, #FFEFC4 0%, #E8B85C 45%, #C9932F 100%);
+  overflow:visible; isolation:isolate;
+  background: linear-gradient(155deg, #FFEFC4 0%, #E8B85C 45%, #C9932F 100%);
   box-shadow: 0 3px 10px rgba(184,138,49,0.45), inset 0 1px 0 rgba(255,255,255,0.7);
   color:#3A2705; font-weight:800; letter-spacing:.03em;
   text-shadow: 0 1px 0 rgba(255,255,255,0.35);
 }
-/* Daun tebu kecil nyembul dari pucuk pil, goyang pelan (pakai keyframe
-   caneSway yang sudah dipakai di header/login-bg biar motifnya konsisten). */
-.login-card .tab-toggle > div.active::after{
-  content:''; position:absolute; top:-7px; right:14px; width:9px; height:15px;
-  background: var(--accent-green);
-  clip-path: polygon(50% 0%, 100% 55%, 50% 100%, 0% 55%);
-  transform-origin: 50% 100%;
-  animation: caneSway 3.4s ease-in-out infinite alternate;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+.login-card .tab-toggle > div.active .cane-plant-label{ position:relative; z-index:2; }
+/* Batang tebu yang nyembul & overlap di atas pil "Masuk" -- ruas, daun
+   melengkung kiri-kanan, pucuk muda -- goyang ketiup angin. */
+.login-card .cane-plant{
+  position:absolute; left:50%; bottom:58%; width:30px; height:46px;
+  transform:translateX(-50%); z-index:1; pointer-events:none;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
 }
-@media (prefers-reduced-motion: reduce){ .login-card .tab-toggle > div.active::after{ animation:none; } }
+.login-card .cane-plant-sway{ transform-origin:50% 100%; animation: canePlantSway 3.6s ease-in-out infinite alternate; }
+.login-card .cane-leaf{ transform-origin:22px 20px; }
+.login-card .cane-leaf-a{ animation: caneLeafSwayA 3.6s ease-in-out infinite alternate; }
+.login-card .cane-leaf-b{ animation: caneLeafSwayB 3.1s ease-in-out infinite alternate; animation-delay:-1.1s; }
+.login-card .cane-leaf-c{ transform-origin:22px 8px; animation: caneLeafSwayA 2.6s ease-in-out infinite alternate; animation-delay:-.6s; }
+@keyframes canePlantSway{ from{ transform: rotate(-3.5deg); } to{ transform: rotate(3.5deg); } }
+@keyframes caneLeafSwayA{ from{ transform: rotate(-7deg) scaleY(.98); } to{ transform: rotate(4deg) scaleY(1.02); } }
+@keyframes caneLeafSwayB{ from{ transform: rotate(6deg) scaleY(1.02); } to{ transform: rotate(-5deg) scaleY(.98); } }
+@media (prefers-reduced-motion: reduce){
+  .login-card .cane-plant-sway, .login-card .cane-leaf{ animation:none; }
+}
 .input{
   width:100%; background: var(--bg-elevated); border:1px solid var(--border);
   color: var(--text-primary); padding:10px 12px; border-radius: var(--radius-sm);

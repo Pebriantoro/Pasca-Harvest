@@ -171,7 +171,36 @@
     </div>
 
     <div class="tab-toggle">
-      <div id="tabLogin" class="active" role="button" tabindex="0" onclick="setAuthTab('login')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setAuthTab('login');}">Masuk</div>
+      <div id="tabLogin" class="active" role="button" tabindex="0" onclick="setAuthTab('login')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setAuthTab('login');}">
+        <svg class="cane-plant" viewBox="0 0 44 66" aria-hidden="true">
+          <defs>
+            <linearGradient id="caneStalkGrad" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stop-color="#B8862F"/>
+              <stop offset="45%" stop-color="#D9A94A"/>
+              <stop offset="100%" stop-color="#8FBF6E"/>
+            </linearGradient>
+            <linearGradient id="caneLeafGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7FBE6A"/>
+              <stop offset="100%" stop-color="#3E8B5C"/>
+            </linearGradient>
+          </defs>
+          <g class="cane-plant-sway">
+            <!-- batang beruas -->
+            <path d="M22 66 C21 52 23 46 21.5 38 C20.5 32 23 28 22 20 L22 4" fill="none" stroke="url(#caneStalkGrad)" stroke-width="4.2" stroke-linecap="round"/>
+            <line x1="17.5" y1="38.5" x2="26.5" y2="37.5" stroke="#7A5A22" stroke-width="1.1" stroke-linecap="round" opacity=".65"/>
+            <line x1="17.7" y1="26.5" x2="26.3" y2="25.7" stroke="#7A5A22" stroke-width="1.1" stroke-linecap="round" opacity=".55"/>
+            <!-- daun kiri -->
+            <path class="cane-leaf cane-leaf-a" d="M21 26 C10 22 3 13 2 1 C13 6 20 13 22 24Z" fill="url(#caneLeafGrad)"/>
+            <path d="M21 26 C13 20 8 13 4 4" fill="none" stroke="#2E6E48" stroke-width=".7" opacity=".5"/>
+            <!-- daun kanan -->
+            <path class="cane-leaf cane-leaf-b" d="M22 18 C33 15 40 7 42 0 C32 3 24 8 21 16Z" fill="url(#caneLeafGrad)"/>
+            <path d="M22 18 C30 13 36 8 40 2" fill="none" stroke="#2E6E48" stroke-width=".7" opacity=".5"/>
+            <!-- pucuk / tassel -->
+            <path class="cane-leaf cane-leaf-c" d="M22 8 C19 3 20 -2 22 -6 C24 -2 25 3 22 8Z" fill="#C9E3B0" opacity=".9"/>
+          </g>
+        </svg>
+        <span class="cane-plant-label">Masuk</span>
+      </div>
       <div id="tabPasscode" role="button" tabindex="0" onclick="setAuthTab('passcode')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setAuthTab('passcode');}">Passcode</div>
     </div>
 
