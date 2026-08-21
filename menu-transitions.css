@@ -51,16 +51,29 @@
   }
   @keyframes mtRipple{ to{ transform: scale(1); opacity:0; } }
 
-  /* ---------- 5. Sidebar active indicator — hidup & smooth ----------- */
+  /* ---------- 5. Sidebar active indicator — drop-in + ring pulse ----- */
   .nav-item{ transition: background .18s var(--ease-out,ease), color .18s var(--ease-out,ease), border-color .18s var(--ease-out,ease), box-shadow .22s var(--ease-out,ease), transform .18s var(--ease-out,ease); }
-  .nav-item.active{ animation: mtNavActivate .35s cubic-bezier(.22,.68,.35,1); }
-  @keyframes mtNavActivate{
-    0%{ transform: translateX(-3px); }
-    60%{ transform: translateX(1px); }
-    100%{ transform: translateX(0); }
+  .nav-item.active{ animation: mtNavDrop .4s cubic-bezier(.22,.68,.35,1); }
+  @keyframes mtNavDrop{
+    0%{ transform: translateY(-7px); opacity:.5; }
+    65%{ transform: translateY(2px); opacity:1; }
+    100%{ transform: translateY(0); }
   }
-  .nav-item.active svg{ animation: mtIconPop .35s cubic-bezier(.34,1.56,.64,1); }
-  @keyframes mtIconPop{ 0%{ transform: scale(.8); } 60%{ transform: scale(1.15); } 100%{ transform: scale(1); } }
+  .nav-item.active::after{
+    content:''; position:absolute; inset:0; border-radius:inherit;
+    box-shadow:0 0 0 0 rgba(217,169,74,.55); pointer-events:none;
+    animation: mtNavRing .5s ease-out;
+  }
+  @keyframes mtNavRing{
+    0%{ box-shadow:0 0 0 0 rgba(217,169,74,.55); }
+    100%{ box-shadow:0 0 0 8px rgba(217,169,74,0); }
+  }
+  .nav-item.active svg{ animation: mtIconWiggle .4s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes mtIconWiggle{
+    0%{ transform: rotate(-16deg) scale(.85); }
+    55%{ transform: rotate(9deg) scale(1.1); }
+    100%{ transform: rotate(0) scale(1); }
+  }
 
   /* ---------- 6. Tabel: baris muncul halus (dipakai ringan) ---------- */
   #pageContent.mt-fade-in table tbody tr{
