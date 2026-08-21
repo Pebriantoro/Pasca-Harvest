@@ -1028,6 +1028,11 @@ select.input{ appearance:none; background-image: url("data:image/svg+xml;utf8,<s
 @media(max-width:1000px){ .chart-grid, .chart-grid-3{ grid-template-columns:1fr; } }
 .chart-box{ height:230px; position:relative; }
 .chart-box-sm{ height:190px; position:relative; }
+/* Card yang isinya langsung chart-box (grafik) dikasih padding lebih kecil
+   dari .card-body default — grafik sendiri udah punya jarak internal
+   (layout.padding di Chart.js, lihat drawLineMulti dkk di app.js), jadi
+   padding luar ga perlu setebal card konten teks/tabel biasa. */
+.card-body:has(> .chart-box), .card-body:has(> .chart-box-sm){ padding:10px 14px 14px; }
 
 /* ---- Peta Grid Kondisi Petak (mosaik status per petak) ---- */
 .petak-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(14px, 1fr)); gap:3px; }

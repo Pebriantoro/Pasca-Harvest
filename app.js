@@ -3451,7 +3451,7 @@ function drawLineMulti(canvasId, categories, seriesMap, colors, showLabels, line
       // supaya angka 2 garis yang berdekatan tidak saling tumpuk.
       datalabels: showLabels ? { anchor: i % 2 === 0 ? 'end' : 'start', align: i % 2 === 0 ? 'top' : 'bottom' } : { display:false },
     })) },
-    options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22, bottom:14 } },
+    options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:30, bottom:14 } },
       plugins:{ legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:9, font:{size:11} } },
         datalabels: showLabels ? { ...DL_STYLE, offset:4, formatter:dlValue } : { display:false } },
       scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ display: hideYAxis ? false : true, ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
