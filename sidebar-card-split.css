@@ -18,6 +18,10 @@
     border-radius:16px; box-shadow: var(--shadow-sm);
     flex-shrink:0;
   }
+  /* user-chip jangan bawa card sendiri lagi, sidebar-top-utility udah jadi kartunya */
+  .sidebar-top-utility #topbarUtilityCluster.in-sidebar .user-chip{
+    background:none; border:none; padding:0;
+  }
   .sidebar-nav{
     flex:1; min-height:0; overflow-y:auto;
     background: var(--bg-card); border:1px solid var(--border-soft);
