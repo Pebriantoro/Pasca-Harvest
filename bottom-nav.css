@@ -42,7 +42,7 @@
     transform:translateX(-50%);
     z-index:45;
     gap:2px;
-    padding:10px 6px 6px;
+    padding:8px 6px 6px;
     border-radius:28px;
     background:var(--bg-card);
     border:1px solid var(--border-soft);
