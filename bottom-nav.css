@@ -42,8 +42,8 @@
     transform:translateX(-50%);
     z-index:45;
     gap:2px;
-    padding:6px;
-    border-radius:999px;
+    padding:10px 6px 6px;
+    border-radius:28px;
     background:var(--bg-card);
     border:1px solid var(--border-soft);
     box-shadow:var(--shadow-md), 0 0 0 1px rgba(217,169,74,.28), 0 0 14px rgba(217,169,74,.22);
@@ -86,7 +86,7 @@
 
   .bottom-nav-item.active{ color:var(--accent-green); }
   .bottom-nav-item.active .bn-icon-wrap{
-    transform:translateY(-13px) scale(1.14);
+    transform:translateY(-10px) scale(1.14);
     background:var(--accent-green);
     color:#fff;
     box-shadow:0 6px 14px -2px rgba(0,0,0,.35), 0 0 0 4px color-mix(in srgb, var(--bg-card) 92%, transparent);
@@ -98,8 +98,8 @@
 
   @keyframes bnavPop{
     0%{ transform:translateY(0) scale(1); }
-    55%{ transform:translateY(-17px) scale(1.22); }
-    100%{ transform:translateY(-13px) scale(1.14); }
+    55%{ transform:translateY(-13px) scale(1.22); }
+    100%{ transform:translateY(-10px) scale(1.14); }
   }
 
   /* Kasih jarak biar konten paling bawah nggak ketutup bar mengambang */
