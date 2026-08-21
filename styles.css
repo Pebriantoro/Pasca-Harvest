@@ -588,6 +588,74 @@ svg.icon-clicked{ transform-box: view-box; transform-origin: center; }
 @media (prefers-reduced-motion: reduce){
   .login-card .cane-plant-sway, .login-card .cane-leaf{ animation:none; }
 }
+
+/* ===================== KEBUN TEBU DI DALAM PIL TOMBOL LOGIN =====================
+   Ladang tebu mini yang tumbuh & bergoyang penuh di dalam pil "Masuk ke
+   Dashboard" / "Masuk dengan Passcode" -- beberapa batang goyang independen,
+   hembusan angin lewat berkala, & daun-daun lepas melayang menyeberangi pil. */
+.cane-btn{ position:relative; }
+.cane-btn-scene{
+  position:absolute; inset:0; z-index:0; overflow:hidden;
+  opacity:.6; pointer-events:none;
+}
+.cane-btn-svg{ width:100%; height:100%; display:block; }
+.cane-btn-text{ position:relative; z-index:2; }
+
+.cane-btn-stalk{ transform-box: fill-box; }
+.cane-btn-stalk.s1{ animation: caneBtnSway 2.3s ease-in-out infinite alternate; }
+.cane-btn-stalk.s2{ animation: caneBtnSway 2.7s ease-in-out infinite alternate; animation-delay:-.6s; }
+.cane-btn-stalk.s3{ animation: caneBtnSwayWide 2.1s ease-in-out infinite alternate; animation-delay:-1.3s; }
+.cane-btn-stalk.s4{ animation: caneBtnSway 2.9s ease-in-out infinite alternate; animation-delay:-.3s; }
+.cane-btn-stalk.s5{ animation: caneBtnSwayWide 2.4s ease-in-out infinite alternate; animation-delay:-1.8s; }
+.cane-btn-stalk.s6{ animation: caneBtnSway 2.6s ease-in-out infinite alternate; animation-delay:-1s; }
+.cane-btn-stalk.s7{ animation: caneBtnSwayWide 2.8s ease-in-out infinite alternate; animation-delay:-2.1s; }
+@keyframes caneBtnSway{ from{ transform: rotate(-6deg) scaleY(.97); } to{ transform: rotate(6deg) scaleY(1.02); } }
+@keyframes caneBtnSwayWide{ from{ transform: rotate(-9deg) scaleY(.96); } to{ transform: rotate(8deg) scaleY(1.03); } }
+
+.cane-btn-leaf{ transform-box: fill-box; transform-origin: 50% 100%; }
+.cane-btn-stalk.s1 .cane-btn-leaf{ animation: caneBtnLeaf 1.9s ease-in-out infinite alternate; }
+.cane-btn-stalk.s2 .cane-btn-leaf{ animation: caneBtnLeaf 2.2s ease-in-out infinite alternate; animation-delay:-.4s; }
+.cane-btn-stalk.s3 .cane-btn-leaf{ animation: caneBtnLeaf 1.7s ease-in-out infinite alternate; animation-delay:-.9s; }
+.cane-btn-stalk.s4 .cane-btn-leaf{ animation: caneBtnLeaf 2.4s ease-in-out infinite alternate; animation-delay:-.2s; }
+.cane-btn-stalk.s5 .cane-btn-leaf{ animation: caneBtnLeaf 2s ease-in-out infinite alternate; animation-delay:-1.4s; }
+.cane-btn-stalk.s6 .cane-btn-leaf{ animation: caneBtnLeaf 2.3s ease-in-out infinite alternate; animation-delay:-.7s; }
+.cane-btn-stalk.s7 .cane-btn-leaf{ animation: caneBtnLeaf 1.8s ease-in-out infinite alternate; animation-delay:-1.6s; }
+@keyframes caneBtnLeaf{ from{ transform: rotate(-12deg) skewX(-4deg); } to{ transform: rotate(10deg) skewX(4deg); } }
+
+.cane-btn-gust{ transform-box: fill-box; }
+.cane-btn-gust.g1{ animation: caneBtnGust 5.5s linear infinite; }
+.cane-btn-gust.g2{ animation: caneBtnGust 6.2s linear infinite; animation-delay:-3s; }
+@keyframes caneBtnGust{
+  0%{ transform: translateX(-60px); opacity:0; }
+  8%{ opacity:.55; }
+  50%{ opacity:.35; }
+  92%{ opacity:0; }
+  100%{ transform: translateX(420px); opacity:0; }
+}
+
+.cane-btn-leafdrift{ transform-box: fill-box; }
+.cane-btn-leafdrift.d1{ animation: caneBtnDrift1 4.6s ease-in-out infinite; animation-delay:-.5s; }
+.cane-btn-leafdrift.d2{ animation: caneBtnDrift2 5.4s ease-in-out infinite; animation-delay:-2s; }
+.cane-btn-leafdrift.d3{ animation: caneBtnDrift1 6.1s ease-in-out infinite; animation-delay:-3.4s; }
+.cane-btn-leafdrift.d4{ animation: caneBtnDrift2 5s ease-in-out infinite; animation-delay:-1.1s; }
+@keyframes caneBtnDrift1{
+  0%{ transform: translate(-24px,6px) rotate(0deg); opacity:0; }
+  12%{ opacity:.8; }
+  50%{ transform: translate(190px,-10px) rotate(160deg); opacity:.7; }
+  88%{ opacity:.5; }
+  100%{ transform: translate(410px,10px) rotate(320deg); opacity:0; }
+}
+@keyframes caneBtnDrift2{
+  0%{ transform: translate(-20px,-8px) rotate(0deg); opacity:0; }
+  15%{ opacity:.7; }
+  50%{ transform: translate(210px,10px) rotate(-150deg); opacity:.65; }
+  85%{ opacity:.45; }
+  100%{ transform: translate(420px,-8px) rotate(-300deg); opacity:0; }
+}
+@media (prefers-reduced-motion: reduce){
+  .cane-btn-stalk, .cane-btn-leaf, .cane-btn-gust, .cane-btn-leafdrift{ animation:none; }
+}
+@media(max-width:420px){ .cane-btn-scene{ opacity:.5; } }
 .input{
   width:100%; background: var(--bg-elevated); border:1px solid var(--border);
   color: var(--text-primary); padding:10px 12px; border-radius: var(--radius-sm);
