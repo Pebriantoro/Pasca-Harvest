@@ -1,9 +1,8 @@
 /* =====================================================================
    BOTTOM NAV MENGAMBANG (mode HP, gaya mirip WhatsApp)
-   Ganti hamburger topbar di layar <=880px jadi 1 tombol mengambang di
-   bawah: Menu. Tombol Menu buka ulang sidebar yang sudah ada (isinya
-   sudah semua menu, termasuk Langsung & Chat Tim) — jadi nggak ada
-   markup menu dobel.
+   Ganti hamburger topbar di layar <=880px jadi bar mengambang di bawah:
+   Menu (kiri, buka sidebar lama, isinya semua menu) + 3 shortcut menu
+   tersering dipake user (dihitung otomatis, lihat bottom-nav.js).
    ===================================================================== */
 .bottom-nav{ display:none; }
 .bottom-nav.is-hidden{ display:none !important; }
@@ -58,6 +57,7 @@
     transition:color .2s var(--ease-out);
   }
   .bottom-nav-item svg{ width:19px; height:19px; flex-shrink:0; }
+  .bn-icon-wrap .material-symbols-outlined{ font-size:19px; line-height:1; }
 
   /* Bubble ikon: yang aktif "ngambang" naik ke atas garis bar, mirip
      bump-nav di video referensi. Non-aktif tetap flat. */
@@ -104,6 +104,7 @@
 @media (max-width:420px){
   .bottom-nav-item{ width:57px; height:54px; font-size:9px; }
   .bottom-nav-item svg{ width:18px; height:18px; }
+  .bn-icon-wrap .material-symbols-outlined{ font-size:18px; }
 }
 
 /* Chat Tim & Pesan Langsung dicabut dari bottom-nav, jadi menu ini
