@@ -478,13 +478,14 @@ function setAuthTab(tab){
 
 async function handleLogin(e){
   e.preventDefault();
-  const btn = $('#loginBtn'); btn.disabled = true; btn.textContent = 'Memproses…';
+  const btn = $('#loginBtn'); const btnLabel = btn.querySelector('.cane-btn-text');
+  btn.disabled = true; if(btnLabel) btnLabel.textContent = 'Memproses…'; else btn.textContent = 'Memproses…';
   $('#loginError').classList.add('hidden');
   const username = $('#loginUsername').value.trim();
   const email = usernameToEmail(username);
   const password = $('#loginPassword').value;
   const { data, error } = await supa.auth.signInWithPassword({ email, password });
-  btn.disabled = false; btn.textContent = 'Masuk ke Dashboard';
+  btn.disabled = false; if(btnLabel) btnLabel.textContent = 'Masuk ke Dashboard'; else btn.textContent = 'Masuk ke Dashboard';
   if(error){
     $('#loginError').textContent = 'Gagal masuk: Username atau kata sandi salah.';
     $('#loginError').classList.remove('hidden');

@@ -229,17 +229,18 @@ async function submitPasscodeLogin(username){
   errEl.classList.add('hidden');
   if(pin.length !== 4){ errEl.textContent = 'Masukkan 4 digit passcode.'; errEl.classList.remove('hidden'); return; }
 
-  const btn = $('#passcodeLoginBtn'); btn.disabled = true; btn.textContent = 'Memproses…';
+  const btn = $('#passcodeLoginBtn'); const btnLabel = btn.querySelector('.cane-btn-text');
+  btn.disabled = true; if(btnLabel) btnLabel.textContent = 'Memproses…'; else btn.textContent = 'Memproses…';
   const decrypted = await _pcDecryptPassword(username, pin);
   if(!decrypted){
-    btn.disabled = false; btn.textContent = 'Masuk dengan Passcode';
+    btn.disabled = false; if(btnLabel) btnLabel.textContent = 'Masuk dengan Passcode'; else btn.textContent = 'Masuk dengan Passcode';
     errEl.textContent = 'Passcode salah.';
     errEl.classList.remove('hidden');
     clearPinRow('passcodePinRow');
     return;
   }
   const { data, error } = await supa.auth.signInWithPassword({ email: decrypted.email, password: decrypted.password });
-  btn.disabled = false; btn.textContent = 'Masuk dengan Passcode';
+  btn.disabled = false; if(btnLabel) btnLabel.textContent = 'Masuk dengan Passcode'; else btn.textContent = 'Masuk dengan Passcode';
   if(error){
     // Password akun sudah berubah sejak passcode dibuat -> vault lokal usang.
     errEl.textContent = 'Gagal masuk: sesi passcode tidak valid lagi (kata sandi akun mungkin sudah berubah). Silakan masuk dengan kata sandi lalu buat passcode baru.';
