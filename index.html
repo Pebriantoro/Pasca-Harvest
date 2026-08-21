@@ -172,36 +172,49 @@
 
     <div class="tab-toggle">
       <div id="tabLogin" class="active" role="button" tabindex="0" onclick="setAuthTab('login')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setAuthTab('login');}">
-        <svg class="cane-plant" viewBox="0 0 44 66" aria-hidden="true">
-          <defs>
-            <linearGradient id="caneStalkGrad" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stop-color="#B8862F"/>
-              <stop offset="45%" stop-color="#D9A94A"/>
-              <stop offset="100%" stop-color="#8FBF6E"/>
-            </linearGradient>
-            <linearGradient id="caneLeafGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#7FBE6A"/>
-              <stop offset="100%" stop-color="#3E8B5C"/>
-            </linearGradient>
-          </defs>
-          <g class="cane-plant-sway">
-            <!-- batang beruas -->
-            <path d="M22 66 C21 52 23 46 21.5 38 C20.5 32 23 28 22 20 L22 4" fill="none" stroke="url(#caneStalkGrad)" stroke-width="4.2" stroke-linecap="round"/>
-            <line x1="17.5" y1="38.5" x2="26.5" y2="37.5" stroke="#7A5A22" stroke-width="1.1" stroke-linecap="round" opacity=".65"/>
-            <line x1="17.7" y1="26.5" x2="26.3" y2="25.7" stroke="#7A5A22" stroke-width="1.1" stroke-linecap="round" opacity=".55"/>
-            <!-- daun kiri -->
-            <path class="cane-leaf cane-leaf-a" d="M21 26 C10 22 3 13 2 1 C13 6 20 13 22 24Z" fill="url(#caneLeafGrad)"/>
-            <path d="M21 26 C13 20 8 13 4 4" fill="none" stroke="#2E6E48" stroke-width=".7" opacity=".5"/>
-            <!-- daun kanan -->
-            <path class="cane-leaf cane-leaf-b" d="M22 18 C33 15 40 7 42 0 C32 3 24 8 21 16Z" fill="url(#caneLeafGrad)"/>
-            <path d="M22 18 C30 13 36 8 40 2" fill="none" stroke="#2E6E48" stroke-width=".7" opacity=".5"/>
-            <!-- pucuk / tassel -->
-            <path class="cane-leaf cane-leaf-c cane-tassel" d="M22 8 C19 3 20 -2 22 -6 C24 -2 25 3 22 8Z" fill="#C9E3B0" opacity=".9"/>
-            <!-- kunang-kunang kilau naik dari sela daun -->
-            <circle class="cane-spark sp1" cx="10" cy="18" r="1.3" fill="var(--cane-spark)"/>
-            <circle class="cane-spark sp2" cx="33" cy="10" r="1.1" fill="var(--cane-spark)"/>
-            <circle class="cane-spark sp3" cx="22" cy="-3" r="1" fill="var(--cane-spark)"/>
+<span class="cane-tab-scene" aria-hidden="true">
+        <svg class="cane-tab-svg" viewBox="0 0 400 90" preserveAspectRatio="xMidYMid slice">
+          <g class="cane-tab-gust g1"><rect x="0" y="0" width="26" height="90" style="fill:var(--cane-gust)" transform="skewX(-18)"/></g>
+          <g class="cane-tab-gust g2"><rect x="0" y="0" width="16" height="90" style="fill:var(--cane-gust); opacity:.7" transform="skewX(-18)"/></g>
+          <g class="cane-tab-stalk s1" style="transform-origin:20px 90px;">
+            <path d="M 20 90 C 18 81.6 22 74.4 20 66" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-tab-leaf" d="M 20 76.8 C 10 72.8 -2 70.2 2 67.2 C 12 73.2 16 78.8 20 76.8 Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-tab-leaf" d="M 20 81.6 C 30 77.6 36 72.6 40 69.6 C 28 75.6 24 83.6 20 81.6 Z" style="fill:var(--cane-leaf-b)"/>
           </g>
+          <g class="cane-tab-stalk s2" style="transform-origin:75px 90px;">
+            <path d="M 75 90 C 73 78.8 77 69.2 75 58" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-tab-leaf" d="M 75 72.4 C 65 68.4 53 62.6 57 59.6 C 67 65.6 71 74.4 75 72.4 Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-tab-leaf" d="M 75 78.8 C 85 74.8 91 65.8 95 62.8 C 83 68.8 79 80.8 75 78.8 Z" style="fill:var(--cane-leaf-b)"/>
+          </g>
+          <g class="cane-tab-stalk s3" style="transform-origin:130px 90px;">
+            <path d="M 130 90 C 128 83 132 77 130 70" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-tab-leaf" d="M 130 79 C 120 75 108 74 112 71 C 122 77 126 81 130 79 Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-tab-leaf" d="M 130 83 C 140 79 146 76 150 73 C 138 79 134 85 130 83 Z" style="fill:var(--cane-leaf-b)"/>
+          </g>
+          <g class="cane-tab-stalk s4" style="transform-origin:195px 90px;">
+            <path d="M 195 90 C 193 79.5 197 70.5 195 60" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-tab-leaf" d="M 195 73.5 C 185 69.5 173 64.5 177 61.5 C 187 67.5 191 75.5 195 73.5 Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-tab-leaf" d="M 195 79.5 C 205 75.5 211 67.5 215 64.5 C 203 70.5 199 81.5 195 79.5 Z" style="fill:var(--cane-leaf-b)"/>
+          </g>
+          <g class="cane-tab-stalk s5" style="transform-origin:255px 90px;">
+            <path d="M 255 90 C 253 82.3 257 75.7 255 68" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-tab-leaf" d="M 255 77.9 C 245 73.9 233 72.1 237 69.1 C 247 75.1 251 79.9 255 77.9 Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-tab-leaf" d="M 255 82.3 C 265 78.3 271 74.3 275 71.3 C 263 77.3 259 84.3 255 82.3 Z" style="fill:var(--cane-leaf-b)"/>
+          </g>
+          <g class="cane-tab-stalk s6" style="transform-origin:315px 90px;">
+            <path d="M 315 90 C 313 78.1 317 67.9 315 56" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-tab-leaf" d="M 315 71.3 C 305 67.3 293 60.7 297 57.7 C 307 63.7 311 73.3 315 71.3 Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-tab-leaf" d="M 315 78.1 C 325 74.1 331 64.1 335 61.1 C 323 67.1 319 80.1 315 78.1 Z" style="fill:var(--cane-leaf-b)"/>
+          </g>
+          <g class="cane-tab-stalk s7" style="transform-origin:375px 90px;">
+            <path d="M 375 90 C 373 83.7 377 78.3 375 72" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-tab-leaf" d="M 375 80.1 C 365 76.1 353 75.9 357 72.9 C 367 78.9 371 82.1 375 80.1 Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-tab-leaf" d="M 375 83.7 C 385 79.7 391 77.7 395 74.7 C 383 80.7 379 85.7 375 83.7 Z" style="fill:var(--cane-leaf-b)"/>
+          </g>
+          <path class="cane-tab-leafdrift d1" d="M 0 66 C 4 62 10 62 12 66 C 10 70 4 70 0 66 Z" style="fill:var(--cane-leaf-a)"/>
+          <path class="cane-tab-leafdrift d2" d="M 0 62 C 3 59 8 59 10 62 C 8 65 3 65 0 62 Z" style="fill:var(--cane-fleck-gold)"/>
+          <path class="cane-tab-leafdrift d3" d="M 0 72 C 4 69 9 69 11 72 C 9 75 4 75 0 72 Z" style="fill:var(--cane-leaf-b)"/>
+          <path class="cane-tab-leafdrift d4" d="M 0 56 C 3 53 7 53 9 56 C 7 59 3 59 0 56 Z" style="fill:var(--cane-leaf-pale)"/>
         </svg>
         <span class="cane-plant-label">Masuk</span>
       </div>

@@ -586,51 +586,45 @@ svg.icon-clicked{ transform-box: view-box; transform-origin: center; }
   text-shadow: 0 1px 0 rgba(255,255,255,0.35);
 }
 .login-card .tab-toggle > div.active .cane-plant-label{ position:relative; z-index:2; }
-/* Batang tebu yang nyembul & overlap di atas pil "Masuk" -- ruas, daun
-   melengkung kiri-kanan, pucuk muda -- goyang ketiup angin. */
-.login-card .cane-plant{
-  position:absolute; left:50%; bottom:58%; width:30px; height:46px;
-  transform:translateX(-50%); z-index:1; pointer-events:none;
-  transform-origin:50% 100%;
-  animation: caneTopGrow 4.4s ease-in-out infinite, caneTopGlow 2.6s ease-in-out infinite;
+/* Ladang tebu yang overlap penuh di atas pil "Masuk" -- beberapa batang
+   goyang independen + hembusan angin lewat berkala, sama seperti kebun
+   tebu di tombol "Masuk ke Dashboard" tapi dipakai di atas pil tab. */
+.login-card .cane-tab-scene{
+  position:absolute; left:0; right:0; bottom:28%; height:64px;
+  z-index:1; pointer-events:none; overflow:visible;
 }
-.login-card .cane-plant-sway{ transform-origin:50% 100%; animation: canePlantSway 3.6s ease-in-out infinite alternate; }
-.login-card .cane-leaf{ transform-origin:22px 20px; transform-box: fill-box; }
-.login-card .cane-leaf-a{ animation: caneLeafSwayA 3.6s ease-in-out infinite alternate; }
-.login-card .cane-leaf-b{ animation: caneLeafSwayB 3.1s ease-in-out infinite alternate; animation-delay:-1.1s; }
-.login-card .cane-leaf-c{ transform-origin:22px 8px; animation: caneLeafSwayA 2.6s ease-in-out infinite alternate; animation-delay:-.6s; }
-.login-card .cane-tassel{ animation: caneLeafSwayA 2.6s ease-in-out infinite alternate, caneTasselTwinkle 1.7s ease-in-out infinite; animation-delay:-.6s, -.3s; transform-box: fill-box; transform-origin:50% 100%; }
-@keyframes canePlantSway{ from{ transform: rotate(-3.5deg); } to{ transform: rotate(3.5deg); } }
-@keyframes caneLeafSwayA{ from{ transform: rotate(-7deg) scaleY(.98); } to{ transform: rotate(4deg) scaleY(1.02); } }
-@keyframes caneLeafSwayB{ from{ transform: rotate(6deg) scaleY(1.02); } to{ transform: rotate(-5deg) scaleY(.98); } }
-/* napas tumbuh -- pil "Masuk" di atas melar-mengempis pelan, beda dari
-   ladang tebu goyang horizontal di tombol bawah */
-@keyframes caneTopGrow{
-  0%,100%{ transform: translateX(-50%) scaleY(1); }
-  50%{ transform: translateX(-50%) scaleY(1.05); }
-}
-@keyframes caneTopGlow{
-  0%,100%{ filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25)) drop-shadow(0 0 0 rgba(255,222,150,0)); }
-  50%{ filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25)) drop-shadow(0 0 6px rgba(255,222,150,0.75)); }
-}
-@keyframes caneTasselTwinkle{
-  0%,100%{ opacity:.85; }
-  50%{ opacity:1; filter: brightness(1.3); }
-}
-/* kunang-kunang kilau yang naik & memudar dari sela daun -- gerakan
-   vertikal, bukan goyang/hembusan horizontal seperti di tombol bawah */
-.login-card .cane-spark{ transform-box: fill-box; transform-origin:50% 50%; }
-.login-card .cane-spark.sp1{ animation: caneSparkRise 2.6s ease-out infinite; animation-delay:-.2s; }
-.login-card .cane-spark.sp2{ animation: caneSparkRise 3s ease-out infinite; animation-delay:-1.4s; }
-.login-card .cane-spark.sp3{ animation: caneSparkRise 2.2s ease-out infinite; animation-delay:-.8s; }
-@keyframes caneSparkRise{
-  0%{ transform: translate(0,0) scale(.4); opacity:0; }
-  18%{ opacity:1; }
-  100%{ transform: translate(3px,-16px) scale(1.1); opacity:0; }
-}
+.login-card .cane-tab-svg{ width:100%; height:100%; display:block; overflow:visible; }
+
+.login-card .cane-tab-stalk{ transform-box: fill-box; }
+.login-card .cane-tab-stalk.s1{ animation: caneBtnSway 2.3s ease-in-out infinite alternate; }
+.login-card .cane-tab-stalk.s2{ animation: caneBtnSway 2.7s ease-in-out infinite alternate; animation-delay:-.6s; }
+.login-card .cane-tab-stalk.s3{ animation: caneBtnSwayWide 2.1s ease-in-out infinite alternate; animation-delay:-1.3s; }
+.login-card .cane-tab-stalk.s4{ animation: caneBtnSway 2.9s ease-in-out infinite alternate; animation-delay:-.3s; }
+.login-card .cane-tab-stalk.s5{ animation: caneBtnSwayWide 2.4s ease-in-out infinite alternate; animation-delay:-1.8s; }
+.login-card .cane-tab-stalk.s6{ animation: caneBtnSway 2.6s ease-in-out infinite alternate; animation-delay:-1s; }
+.login-card .cane-tab-stalk.s7{ animation: caneBtnSwayWide 2.8s ease-in-out infinite alternate; animation-delay:-2.1s; }
+
+.login-card .cane-tab-leaf{ transform-box: fill-box; transform-origin: 50% 100%; }
+.login-card .cane-tab-stalk.s1 .cane-tab-leaf{ animation: caneBtnLeaf 1.9s ease-in-out infinite alternate; }
+.login-card .cane-tab-stalk.s2 .cane-tab-leaf{ animation: caneBtnLeaf 2.2s ease-in-out infinite alternate; animation-delay:-.4s; }
+.login-card .cane-tab-stalk.s3 .cane-tab-leaf{ animation: caneBtnLeaf 1.7s ease-in-out infinite alternate; animation-delay:-.9s; }
+.login-card .cane-tab-stalk.s4 .cane-tab-leaf{ animation: caneBtnLeaf 2.4s ease-in-out infinite alternate; animation-delay:-.2s; }
+.login-card .cane-tab-stalk.s5 .cane-tab-leaf{ animation: caneBtnLeaf 2s ease-in-out infinite alternate; animation-delay:-1.4s; }
+.login-card .cane-tab-stalk.s6 .cane-tab-leaf{ animation: caneBtnLeaf 2.3s ease-in-out infinite alternate; animation-delay:-.7s; }
+.login-card .cane-tab-stalk.s7 .cane-tab-leaf{ animation: caneBtnLeaf 1.8s ease-in-out infinite alternate; animation-delay:-1.6s; }
+
+.login-card .cane-tab-gust{ transform-box: fill-box; }
+.login-card .cane-tab-gust.g1{ animation: caneBtnGust 5.5s linear infinite; }
+.login-card .cane-tab-gust.g2{ animation: caneBtnGust 6.2s linear infinite; animation-delay:-3s; }
+
+.login-card .cane-tab-leafdrift{ transform-box: fill-box; }
+.login-card .cane-tab-leafdrift.d1{ animation: caneBtnDrift1 4.6s ease-in-out infinite; animation-delay:-.5s; }
+.login-card .cane-tab-leafdrift.d2{ animation: caneBtnDrift2 5.4s ease-in-out infinite; animation-delay:-2s; }
+.login-card .cane-tab-leafdrift.d3{ animation: caneBtnDrift1 6.1s ease-in-out infinite; animation-delay:-3.4s; }
+.login-card .cane-tab-leafdrift.d4{ animation: caneBtnDrift2 5s ease-in-out infinite; animation-delay:-1.1s; }
 @media (prefers-reduced-motion: reduce){
-  .login-card .cane-plant, .login-card .cane-plant-sway, .login-card .cane-leaf,
-  .login-card .cane-tassel, .login-card .cane-spark{ animation:none; }
+  .login-card .cane-tab-stalk, .login-card .cane-tab-leaf,
+  .login-card .cane-tab-gust, .login-card .cane-tab-leafdrift{ animation:none; }
 }
 
 /* ===================== KEBUN TEBU DI DALAM PIL TOMBOL LOGIN =====================
