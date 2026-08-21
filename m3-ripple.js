@@ -13,18 +13,26 @@
   document.addEventListener('pointerdown', function(e){
     var el = e.target.closest(SELECTOR);
     if (!el) return;
-    var style = getComputedStyle(el);
-    if (style.position === 'static') el.style.position = 'relative';
-    if (style.overflow !== 'hidden') el.style.overflow = 'hidden';
+    // Tombol bottom-nav sengaja overflow "keluar" box (bubble ikon aktif
+    // translateY -13px + scale 1.14 buat animasi bump). overflow:hidden
+    // di button-nya bakal motong bubble & label, dan nempel permanen krn
+    // gapernah di-reset abis ripple kelar. Ripple-nya ditaro di bubble
+    // ikonnya aja (udah bulat sendiri), bukan di seluruh tombol.
+    var rippleHost = el.classList.contains('bottom-nav-item')
+      ? (el.querySelector('.bn-icon-wrap') || el)
+      : el;
+    var style = getComputedStyle(rippleHost);
+    if (style.position === 'static') rippleHost.style.position = 'relative';
+    if (style.overflow !== 'hidden') rippleHost.style.overflow = 'hidden';
 
-    var rect = el.getBoundingClientRect();
+    var rect = rippleHost.getBoundingClientRect();
     var size = Math.max(rect.width, rect.height);
     var span = document.createElement('span');
     span.className = 'm3-ripple';
     span.style.width = span.style.height = size + 'px';
     span.style.left = (e.clientX - rect.left - size / 2) + 'px';
     span.style.top = (e.clientY - rect.top - size / 2) + 'px';
-    el.appendChild(span);
+    rippleHost.appendChild(span);
     span.addEventListener('animationend', function(){ span.remove(); });
   }, { passive: true });
 })();
