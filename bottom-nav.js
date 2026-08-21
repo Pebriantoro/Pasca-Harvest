@@ -201,6 +201,7 @@
 
   function openCustomizeModal(){
     document.getElementById('bnavCustomizeOverlay')?.remove();
+    document.getElementById('settingsPanel')?.classList.add('hidden'); // panel Pengaturan lama harus ketutup dulu, jangan numpuk sama modal ini
     var navItems = collectNavItems();
     var selected = loadCustom() || topShortcuts().map(function(i){ return i.view; });
     var overlay = document.createElement('div');
