@@ -1,8 +1,8 @@
 /* =====================================================================
    BOTTOM NAV MENGAMBANG (mode HP, gaya mirip WhatsApp)
-   Ganti hamburger topbar di layar <=880px jadi bar mengambang di bawah:
-   Menu (kiri, buka sidebar lama, isinya semua menu) + 3 shortcut menu
-   tersering dipake user (dihitung otomatis, lihat bottom-nav.js).
+   Ganti hamburger topbar di layar <=880px jadi bar mengambang di bawah,
+   isinya cuma satu tombol: Menu (buka sidebar lama, isinya semua menu).
+   Shortcut custom udah dicabut, lihat bottom-nav.js.
    ===================================================================== */
 .bottom-nav{ display:none; }
 .bottom-nav.is-hidden{ display:none !important; }
