@@ -586,14 +586,15 @@ svg.icon-clicked{ transform-box: view-box; transform-origin: center; }
   text-shadow: 0 1px 0 rgba(255,255,255,0.35);
 }
 .login-card .tab-toggle > div.active .cane-plant-label{ position:relative; z-index:2; }
-/* Ladang tebu yang overlap penuh di atas pil "Masuk" -- beberapa batang
-   goyang independen + hembusan angin lewat berkala, sama seperti kebun
-   tebu di tombol "Masuk ke Dashboard" tapi dipakai di atas pil tab. */
+/* Ladang tebu yang overlap penuh di dalam pil "Masuk" -- beberapa batang
+   goyang independen + hembusan angin lewat berkala, sama persis kayak
+   kebun tebu di tombol "Masuk ke Dashboard" (inset penuh, gak nyembul,
+   biar gak kepotong sama overflow:hidden punya .tab-toggle). */
 .login-card .cane-tab-scene{
-  position:absolute; left:0; right:0; bottom:28%; height:64px;
-  z-index:1; pointer-events:none; overflow:visible;
+  position:absolute; inset:0; z-index:0; overflow:hidden;
+  opacity:.6; pointer-events:none;
 }
-.login-card .cane-tab-svg{ width:100%; height:100%; display:block; overflow:visible; }
+.login-card .cane-tab-svg{ width:100%; height:100%; display:block; }
 
 .login-card .cane-tab-stalk{ transform-box: fill-box; }
 .login-card .cane-tab-stalk.s1{ animation: caneBtnSway 2.3s ease-in-out infinite alternate; }
