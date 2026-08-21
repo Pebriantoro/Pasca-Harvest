@@ -417,7 +417,6 @@ h1,h2,h3,h4,.font-display{ letter-spacing: -.005em; font-weight: 600; }
 .bottom-nav-item{ color: var(--m3-on-surface-variant); }
 .bottom-nav-item .bn-icon-wrap{
   border-radius: var(--m3-shape-full); transition: background var(--m3-duration-short) var(--m3-motion-standard);
-  padding: 4px 20px;
 }
 .bottom-nav-item.active .bn-icon-wrap{ background: var(--m3-secondary-container); }
 .bottom-nav-item.active{ color: var(--m3-on-surface); font-weight: 600; }
