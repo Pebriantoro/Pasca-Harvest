@@ -27,4 +27,9 @@
     background: var(--bg-card); border:1px solid var(--border-soft);
     border-radius:16px; box-shadow: var(--shadow-sm);
   }
+  .sidebar-footer:not(:empty){
+    border-top:none; margin:0; flex-shrink:0;
+    background: var(--bg-card); border:1px solid var(--border-soft);
+    border-radius:16px; box-shadow: var(--shadow-sm);
+  }
 }
