@@ -196,7 +196,11 @@
             <path class="cane-leaf cane-leaf-b" d="M22 18 C33 15 40 7 42 0 C32 3 24 8 21 16Z" fill="url(#caneLeafGrad)"/>
             <path d="M22 18 C30 13 36 8 40 2" fill="none" stroke="#2E6E48" stroke-width=".7" opacity=".5"/>
             <!-- pucuk / tassel -->
-            <path class="cane-leaf cane-leaf-c" d="M22 8 C19 3 20 -2 22 -6 C24 -2 25 3 22 8Z" fill="#C9E3B0" opacity=".9"/>
+            <path class="cane-leaf cane-leaf-c cane-tassel" d="M22 8 C19 3 20 -2 22 -6 C24 -2 25 3 22 8Z" fill="#C9E3B0" opacity=".9"/>
+            <!-- kunang-kunang kilau naik dari sela daun -->
+            <circle class="cane-spark sp1" cx="10" cy="18" r="1.3" fill="var(--cane-spark)"/>
+            <circle class="cane-spark sp2" cx="33" cy="10" r="1.1" fill="var(--cane-spark)"/>
+            <circle class="cane-spark sp3" cx="22" cy="-3" r="1" fill="var(--cane-spark)"/>
           </g>
         </svg>
         <span class="cane-plant-label">Masuk</span>
@@ -217,47 +221,47 @@
       <button class="btn btn-primary cane-btn" style="width:100%;" type="submit" id="loginBtn">
       <span class="cane-btn-scene" aria-hidden="true">
         <svg class="cane-btn-svg" viewBox="0 0 400 48" preserveAspectRatio="xMidYMid slice">
-          <g class="cane-btn-gust g1"><rect x="0" y="0" width="26" height="48" fill="rgba(255,255,255,.5)" transform="skewX(-18)"/></g>
-          <g class="cane-btn-gust g2"><rect x="0" y="0" width="16" height="48" fill="rgba(255,255,255,.35)" transform="skewX(-18)"/></g>
+          <g class="cane-btn-gust g1"><rect x="0" y="0" width="26" height="48" style="fill:var(--cane-gust)" transform="skewX(-18)"/></g>
+          <g class="cane-btn-gust g2"><rect x="0" y="0" width="16" height="48" style="fill:var(--cane-gust); opacity:.7" transform="skewX(-18)"/></g>
           <g class="cane-btn-stalk s1" style="transform-origin:20px 48px;">
-            <path d="M20 48 C 18 39.6 22 32.4 20 24" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M20 34.8 C 10 30.8 -2 28.2 2 25.2 C 12 31.2 16 36.8 20 34.8Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M20 39.6 C 30 35.6 36 30.6 40 27.6 C 28 33.6 24 41.6 20 39.6Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M20 48 C 18 39.6 22 32.4 20 24" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M20 34.8 C 10 30.8 -2 28.2 2 25.2 C 12 31.2 16 36.8 20 34.8Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M20 39.6 C 30 35.6 36 30.6 40 27.6 C 28 33.6 24 41.6 20 39.6Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s2" style="transform-origin:75px 48px;">
-            <path d="M75 48 C 73 36.8 77 27.2 75 16" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M75 30.4 C 65 26.4 53 20.6 57 17.6 C 67 23.6 71 32.4 75 30.4Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M75 36.8 C 85 32.8 91 23.8 95 20.8 C 83 26.8 79 38.8 75 36.8Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M75 48 C 73 36.8 77 27.2 75 16" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M75 30.4 C 65 26.4 53 20.6 57 17.6 C 67 23.6 71 32.4 75 30.4Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M75 36.8 C 85 32.8 91 23.8 95 20.8 C 83 26.8 79 38.8 75 36.8Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s3" style="transform-origin:130px 48px;">
-            <path d="M130 48 C 128 41.0 132 35.0 130 28" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M130 37.0 C 120 33.0 108 32.0 112 29.0 C 122 35.0 126 39.0 130 37.0Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M130 41.0 C 140 37.0 146 34.0 150 31.0 C 138 37.0 134 43.0 130 41.0Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M130 48 C 128 41.0 132 35.0 130 28" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M130 37.0 C 120 33.0 108 32.0 112 29.0 C 122 35.0 126 39.0 130 37.0Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M130 41.0 C 140 37.0 146 34.0 150 31.0 C 138 37.0 134 43.0 130 41.0Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s4" style="transform-origin:195px 48px;">
-            <path d="M195 48 C 193 37.5 197 28.5 195 18" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M195 31.5 C 185 27.5 173 22.5 177 19.5 C 187 25.5 191 33.5 195 31.5Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M195 37.5 C 205 33.5 211 25.5 215 22.5 C 203 28.5 199 39.5 195 37.5Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M195 48 C 193 37.5 197 28.5 195 18" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M195 31.5 C 185 27.5 173 22.5 177 19.5 C 187 25.5 191 33.5 195 31.5Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M195 37.5 C 205 33.5 211 25.5 215 22.5 C 203 28.5 199 39.5 195 37.5Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s5" style="transform-origin:255px 48px;">
-            <path d="M255 48 C 253 40.3 257 33.7 255 26" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M255 35.9 C 245 31.9 233 30.1 237 27.1 C 247 33.1 251 37.9 255 35.9Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M255 40.3 C 265 36.3 271 32.3 275 29.3 C 263 35.3 259 42.3 255 40.3Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M255 48 C 253 40.3 257 33.7 255 26" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M255 35.9 C 245 31.9 233 30.1 237 27.1 C 247 33.1 251 37.9 255 35.9Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M255 40.3 C 265 36.3 271 32.3 275 29.3 C 263 35.3 259 42.3 255 40.3Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s6" style="transform-origin:315px 48px;">
-            <path d="M315 48 C 313 36.1 317 25.9 315 14" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M315 29.3 C 305 25.3 293 18.7 297 15.7 C 307 21.7 311 31.3 315 29.3Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M315 36.1 C 325 32.1 331 22.1 335 19.1 C 323 25.1 319 38.1 315 36.1Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M315 48 C 313 36.1 317 25.9 315 14" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M315 29.3 C 305 25.3 293 18.7 297 15.7 C 307 21.7 311 31.3 315 29.3Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M315 36.1 C 325 32.1 331 22.1 335 19.1 C 323 25.1 319 38.1 315 36.1Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s7" style="transform-origin:375px 48px;">
-            <path d="M375 48 C 373 41.7 377 36.3 375 30" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M375 38.1 C 365 34.1 353 33.9 357 30.9 C 367 36.9 371 40.1 375 38.1Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M375 41.7 C 385 37.7 391 35.7 395 32.7 C 383 38.7 379 43.7 375 41.7Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M375 48 C 373 41.7 377 36.3 375 30" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M375 38.1 C 365 34.1 353 33.9 357 30.9 C 367 36.9 371 40.1 375 38.1Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M375 41.7 C 385 37.7 391 35.7 395 32.7 C 383 38.7 379 43.7 375 41.7Z" style="fill:var(--cane-leaf-b)"/>
           </g>
-          <path class="cane-btn-leafdrift d1" d="M0 24 C 4 20 10 20 12 24 C 10 28 4 28 0 24Z" fill="rgba(62,139,92,.75)"/>
-          <path class="cane-btn-leafdrift d2" d="M0 20 C 3 17 8 17 10 20 C 8 23 3 23 0 20Z" fill="rgba(230,196,110,.7)"/>
-          <path class="cane-btn-leafdrift d3" d="M0 30 C 4 27 9 27 11 30 C 9 33 4 33 0 30Z" fill="rgba(90,163,110,.7)"/>
-          <path class="cane-btn-leafdrift d4" d="M0 14 C 3 11 7 11 9 14 C 7 17 3 17 0 14Z" fill="rgba(201,227,176,.75)"/>
+          <path class="cane-btn-leafdrift d1" d="M0 24 C 4 20 10 20 12 24 C 10 28 4 28 0 24Z" style="fill:var(--cane-leaf-a)"/>
+          <path class="cane-btn-leafdrift d2" d="M0 20 C 3 17 8 17 10 20 C 8 23 3 23 0 20Z" style="fill:var(--cane-fleck-gold)"/>
+          <path class="cane-btn-leafdrift d3" d="M0 30 C 4 27 9 27 11 30 C 9 33 4 33 0 30Z" style="fill:var(--cane-leaf-b)"/>
+          <path class="cane-btn-leafdrift d4" d="M0 14 C 3 11 7 11 9 14 C 7 17 3 17 0 14Z" style="fill:var(--cane-leaf-pale)"/>
         </svg>
       </span>
         <span class="cane-btn-text">Masuk ke Dashboard</span>
@@ -278,47 +282,47 @@
         <button class="btn btn-primary cane-btn" style="width:100%;" type="submit" id="passcodeLoginBtn">
       <span class="cane-btn-scene" aria-hidden="true">
         <svg class="cane-btn-svg" viewBox="0 0 400 48" preserveAspectRatio="xMidYMid slice">
-          <g class="cane-btn-gust g1"><rect x="0" y="0" width="26" height="48" fill="rgba(255,255,255,.5)" transform="skewX(-18)"/></g>
-          <g class="cane-btn-gust g2"><rect x="0" y="0" width="16" height="48" fill="rgba(255,255,255,.35)" transform="skewX(-18)"/></g>
+          <g class="cane-btn-gust g1"><rect x="0" y="0" width="26" height="48" style="fill:var(--cane-gust)" transform="skewX(-18)"/></g>
+          <g class="cane-btn-gust g2"><rect x="0" y="0" width="16" height="48" style="fill:var(--cane-gust); opacity:.7" transform="skewX(-18)"/></g>
           <g class="cane-btn-stalk s1" style="transform-origin:20px 48px;">
-            <path d="M20 48 C 18 39.6 22 32.4 20 24" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M20 34.8 C 10 30.8 -2 28.2 2 25.2 C 12 31.2 16 36.8 20 34.8Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M20 39.6 C 30 35.6 36 30.6 40 27.6 C 28 33.6 24 41.6 20 39.6Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M20 48 C 18 39.6 22 32.4 20 24" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M20 34.8 C 10 30.8 -2 28.2 2 25.2 C 12 31.2 16 36.8 20 34.8Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M20 39.6 C 30 35.6 36 30.6 40 27.6 C 28 33.6 24 41.6 20 39.6Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s2" style="transform-origin:75px 48px;">
-            <path d="M75 48 C 73 36.8 77 27.2 75 16" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M75 30.4 C 65 26.4 53 20.6 57 17.6 C 67 23.6 71 32.4 75 30.4Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M75 36.8 C 85 32.8 91 23.8 95 20.8 C 83 26.8 79 38.8 75 36.8Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M75 48 C 73 36.8 77 27.2 75 16" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M75 30.4 C 65 26.4 53 20.6 57 17.6 C 67 23.6 71 32.4 75 30.4Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M75 36.8 C 85 32.8 91 23.8 95 20.8 C 83 26.8 79 38.8 75 36.8Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s3" style="transform-origin:130px 48px;">
-            <path d="M130 48 C 128 41.0 132 35.0 130 28" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M130 37.0 C 120 33.0 108 32.0 112 29.0 C 122 35.0 126 39.0 130 37.0Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M130 41.0 C 140 37.0 146 34.0 150 31.0 C 138 37.0 134 43.0 130 41.0Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M130 48 C 128 41.0 132 35.0 130 28" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M130 37.0 C 120 33.0 108 32.0 112 29.0 C 122 35.0 126 39.0 130 37.0Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M130 41.0 C 140 37.0 146 34.0 150 31.0 C 138 37.0 134 43.0 130 41.0Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s4" style="transform-origin:195px 48px;">
-            <path d="M195 48 C 193 37.5 197 28.5 195 18" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M195 31.5 C 185 27.5 173 22.5 177 19.5 C 187 25.5 191 33.5 195 31.5Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M195 37.5 C 205 33.5 211 25.5 215 22.5 C 203 28.5 199 39.5 195 37.5Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M195 48 C 193 37.5 197 28.5 195 18" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M195 31.5 C 185 27.5 173 22.5 177 19.5 C 187 25.5 191 33.5 195 31.5Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M195 37.5 C 205 33.5 211 25.5 215 22.5 C 203 28.5 199 39.5 195 37.5Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s5" style="transform-origin:255px 48px;">
-            <path d="M255 48 C 253 40.3 257 33.7 255 26" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M255 35.9 C 245 31.9 233 30.1 237 27.1 C 247 33.1 251 37.9 255 35.9Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M255 40.3 C 265 36.3 271 32.3 275 29.3 C 263 35.3 259 42.3 255 40.3Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M255 48 C 253 40.3 257 33.7 255 26" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M255 35.9 C 245 31.9 233 30.1 237 27.1 C 247 33.1 251 37.9 255 35.9Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M255 40.3 C 265 36.3 271 32.3 275 29.3 C 263 35.3 259 42.3 255 40.3Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s6" style="transform-origin:315px 48px;">
-            <path d="M315 48 C 313 36.1 317 25.9 315 14" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M315 29.3 C 305 25.3 293 18.7 297 15.7 C 307 21.7 311 31.3 315 29.3Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M315 36.1 C 325 32.1 331 22.1 335 19.1 C 323 25.1 319 38.1 315 36.1Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M315 48 C 313 36.1 317 25.9 315 14" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M315 29.3 C 305 25.3 293 18.7 297 15.7 C 307 21.7 311 31.3 315 29.3Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M315 36.1 C 325 32.1 331 22.1 335 19.1 C 323 25.1 319 38.1 315 36.1Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s7" style="transform-origin:375px 48px;">
-            <path d="M375 48 C 373 41.7 377 36.3 375 30" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M375 38.1 C 365 34.1 353 33.9 357 30.9 C 367 36.9 371 40.1 375 38.1Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M375 41.7 C 385 37.7 391 35.7 395 32.7 C 383 38.7 379 43.7 375 41.7Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M375 48 C 373 41.7 377 36.3 375 30" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M375 38.1 C 365 34.1 353 33.9 357 30.9 C 367 36.9 371 40.1 375 38.1Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M375 41.7 C 385 37.7 391 35.7 395 32.7 C 383 38.7 379 43.7 375 41.7Z" style="fill:var(--cane-leaf-b)"/>
           </g>
-          <path class="cane-btn-leafdrift d1" d="M0 24 C 4 20 10 20 12 24 C 10 28 4 28 0 24Z" fill="rgba(62,139,92,.75)"/>
-          <path class="cane-btn-leafdrift d2" d="M0 20 C 3 17 8 17 10 20 C 8 23 3 23 0 20Z" fill="rgba(230,196,110,.7)"/>
-          <path class="cane-btn-leafdrift d3" d="M0 30 C 4 27 9 27 11 30 C 9 33 4 33 0 30Z" fill="rgba(90,163,110,.7)"/>
-          <path class="cane-btn-leafdrift d4" d="M0 14 C 3 11 7 11 9 14 C 7 17 3 17 0 14Z" fill="rgba(201,227,176,.75)"/>
+          <path class="cane-btn-leafdrift d1" d="M0 24 C 4 20 10 20 12 24 C 10 28 4 28 0 24Z" style="fill:var(--cane-leaf-a)"/>
+          <path class="cane-btn-leafdrift d2" d="M0 20 C 3 17 8 17 10 20 C 8 23 3 23 0 20Z" style="fill:var(--cane-fleck-gold)"/>
+          <path class="cane-btn-leafdrift d3" d="M0 30 C 4 27 9 27 11 30 C 9 33 4 33 0 30Z" style="fill:var(--cane-leaf-b)"/>
+          <path class="cane-btn-leafdrift d4" d="M0 14 C 3 11 7 11 9 14 C 7 17 3 17 0 14Z" style="fill:var(--cane-leaf-pale)"/>
         </svg>
       </span>
           <span class="cane-btn-text">Masuk dengan Passcode</span>
@@ -345,47 +349,47 @@
         <button class="btn btn-primary cane-btn" style="width:100%;" type="submit" id="passcodeCreateBtn">
       <span class="cane-btn-scene" aria-hidden="true">
         <svg class="cane-btn-svg" viewBox="0 0 400 48" preserveAspectRatio="xMidYMid slice">
-          <g class="cane-btn-gust g1"><rect x="0" y="0" width="26" height="48" fill="rgba(255,255,255,.5)" transform="skewX(-18)"/></g>
-          <g class="cane-btn-gust g2"><rect x="0" y="0" width="16" height="48" fill="rgba(255,255,255,.35)" transform="skewX(-18)"/></g>
+          <g class="cane-btn-gust g1"><rect x="0" y="0" width="26" height="48" style="fill:var(--cane-gust)" transform="skewX(-18)"/></g>
+          <g class="cane-btn-gust g2"><rect x="0" y="0" width="16" height="48" style="fill:var(--cane-gust); opacity:.7" transform="skewX(-18)"/></g>
           <g class="cane-btn-stalk s1" style="transform-origin:20px 48px;">
-            <path d="M20 48 C 18 39.6 22 32.4 20 24" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M20 34.8 C 10 30.8 -2 28.2 2 25.2 C 12 31.2 16 36.8 20 34.8Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M20 39.6 C 30 35.6 36 30.6 40 27.6 C 28 33.6 24 41.6 20 39.6Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M20 48 C 18 39.6 22 32.4 20 24" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M20 34.8 C 10 30.8 -2 28.2 2 25.2 C 12 31.2 16 36.8 20 34.8Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M20 39.6 C 30 35.6 36 30.6 40 27.6 C 28 33.6 24 41.6 20 39.6Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s2" style="transform-origin:75px 48px;">
-            <path d="M75 48 C 73 36.8 77 27.2 75 16" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M75 30.4 C 65 26.4 53 20.6 57 17.6 C 67 23.6 71 32.4 75 30.4Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M75 36.8 C 85 32.8 91 23.8 95 20.8 C 83 26.8 79 38.8 75 36.8Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M75 48 C 73 36.8 77 27.2 75 16" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M75 30.4 C 65 26.4 53 20.6 57 17.6 C 67 23.6 71 32.4 75 30.4Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M75 36.8 C 85 32.8 91 23.8 95 20.8 C 83 26.8 79 38.8 75 36.8Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s3" style="transform-origin:130px 48px;">
-            <path d="M130 48 C 128 41.0 132 35.0 130 28" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M130 37.0 C 120 33.0 108 32.0 112 29.0 C 122 35.0 126 39.0 130 37.0Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M130 41.0 C 140 37.0 146 34.0 150 31.0 C 138 37.0 134 43.0 130 41.0Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M130 48 C 128 41.0 132 35.0 130 28" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M130 37.0 C 120 33.0 108 32.0 112 29.0 C 122 35.0 126 39.0 130 37.0Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M130 41.0 C 140 37.0 146 34.0 150 31.0 C 138 37.0 134 43.0 130 41.0Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s4" style="transform-origin:195px 48px;">
-            <path d="M195 48 C 193 37.5 197 28.5 195 18" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M195 31.5 C 185 27.5 173 22.5 177 19.5 C 187 25.5 191 33.5 195 31.5Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M195 37.5 C 205 33.5 211 25.5 215 22.5 C 203 28.5 199 39.5 195 37.5Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M195 48 C 193 37.5 197 28.5 195 18" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M195 31.5 C 185 27.5 173 22.5 177 19.5 C 187 25.5 191 33.5 195 31.5Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M195 37.5 C 205 33.5 211 25.5 215 22.5 C 203 28.5 199 39.5 195 37.5Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s5" style="transform-origin:255px 48px;">
-            <path d="M255 48 C 253 40.3 257 33.7 255 26" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M255 35.9 C 245 31.9 233 30.1 237 27.1 C 247 33.1 251 37.9 255 35.9Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M255 40.3 C 265 36.3 271 32.3 275 29.3 C 263 35.3 259 42.3 255 40.3Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M255 48 C 253 40.3 257 33.7 255 26" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M255 35.9 C 245 31.9 233 30.1 237 27.1 C 247 33.1 251 37.9 255 35.9Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M255 40.3 C 265 36.3 271 32.3 275 29.3 C 263 35.3 259 42.3 255 40.3Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s6" style="transform-origin:315px 48px;">
-            <path d="M315 48 C 313 36.1 317 25.9 315 14" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M315 29.3 C 305 25.3 293 18.7 297 15.7 C 307 21.7 311 31.3 315 29.3Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M315 36.1 C 325 32.1 331 22.1 335 19.1 C 323 25.1 319 38.1 315 36.1Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M315 48 C 313 36.1 317 25.9 315 14" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M315 29.3 C 305 25.3 293 18.7 297 15.7 C 307 21.7 311 31.3 315 29.3Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M315 36.1 C 325 32.1 331 22.1 335 19.1 C 323 25.1 319 38.1 315 36.1Z" style="fill:var(--cane-leaf-b)"/>
           </g>
           <g class="cane-btn-stalk s7" style="transform-origin:375px 48px;">
-            <path d="M375 48 C 373 41.7 377 36.3 375 30" stroke="rgba(58,39,5,.5)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <path class="cane-btn-leaf" d="M375 38.1 C 365 34.1 353 33.9 357 30.9 C 367 36.9 371 40.1 375 38.1Z" fill="rgba(62,139,92,.55)"/>
-            <path class="cane-btn-leaf" d="M375 41.7 C 385 37.7 391 35.7 395 32.7 C 383 38.7 379 43.7 375 41.7Z" fill="rgba(90,163,110,.5)"/>
+            <path d="M375 48 C 373 41.7 377 36.3 375 30" style="stroke:var(--cane-stalk-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="cane-btn-leaf" d="M375 38.1 C 365 34.1 353 33.9 357 30.9 C 367 36.9 371 40.1 375 38.1Z" style="fill:var(--cane-leaf-a)"/>
+            <path class="cane-btn-leaf" d="M375 41.7 C 385 37.7 391 35.7 395 32.7 C 383 38.7 379 43.7 375 41.7Z" style="fill:var(--cane-leaf-b)"/>
           </g>
-          <path class="cane-btn-leafdrift d1" d="M0 24 C 4 20 10 20 12 24 C 10 28 4 28 0 24Z" fill="rgba(62,139,92,.75)"/>
-          <path class="cane-btn-leafdrift d2" d="M0 20 C 3 17 8 17 10 20 C 8 23 3 23 0 20Z" fill="rgba(230,196,110,.7)"/>
-          <path class="cane-btn-leafdrift d3" d="M0 30 C 4 27 9 27 11 30 C 9 33 4 33 0 30Z" fill="rgba(90,163,110,.7)"/>
-          <path class="cane-btn-leafdrift d4" d="M0 14 C 3 11 7 11 9 14 C 7 17 3 17 0 14Z" fill="rgba(201,227,176,.75)"/>
+          <path class="cane-btn-leafdrift d1" d="M0 24 C 4 20 10 20 12 24 C 10 28 4 28 0 24Z" style="fill:var(--cane-leaf-a)"/>
+          <path class="cane-btn-leafdrift d2" d="M0 20 C 3 17 8 17 10 20 C 8 23 3 23 0 20Z" style="fill:var(--cane-fleck-gold)"/>
+          <path class="cane-btn-leafdrift d3" d="M0 30 C 4 27 9 27 11 30 C 9 33 4 33 0 30Z" style="fill:var(--cane-leaf-b)"/>
+          <path class="cane-btn-leafdrift d4" d="M0 14 C 3 11 7 11 9 14 C 7 17 3 17 0 14Z" style="fill:var(--cane-leaf-pale)"/>
         </svg>
       </span>
           <span class="cane-btn-text">Verifikasi &amp; Buat Passcode</span>
