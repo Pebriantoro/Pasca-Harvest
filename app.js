@@ -2141,6 +2141,10 @@ function toggleSidebar(){
   sidebarOpenState = !sidebarOpenState;
   $('#sidebar').classList.toggle('open', sidebarOpenState);
   const bd = $('#sidebarBackdrop'); if(bd) bd.classList.toggle('show', sidebarOpenState);
+  // Sinkron langsung (jangan cuma andelin MutationObserver di bottom-nav.js
+  // yang jalan async) -- biar pill Menu ngambang pasti ketutup SAAT itu
+  // juga, ga sempat numpuk di atas tombol Keluar pas sidebar baru kebuka.
+  const bnav = $('#bottomNav'); if(bnav) bnav.classList.toggle('menu-open', sidebarOpenState);
 }
 
 /* --- Pindahkan cluster jam/status online/tombol aksi/profil dari topbar
