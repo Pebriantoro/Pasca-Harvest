@@ -1,0 +1,26 @@
+/* =====================================================================
+   SIDEBAR MOBILE — pisah kartu profil & kartu menu (bukan 1 panel nyatu)
+   Sebelumnya .sidebar-top-utility (profil+notif) & .sidebar-nav (daftar
+   menu) numpuk jadi 1 background flat di dalam .sidebar-menu-panel,
+   cuma dipisah garis tipis. Sekarang keduanya jadi kartu ngambang
+   sendiri-sendiri (rounded, border, shadow) dengan jarak di antaranya,
+   khusus layar HP (<=880px). Desktop tidak disentuh.
+   ===================================================================== */
+@media (max-width:880px){
+  .sidebar-menu-panel{
+    background:transparent; backdrop-filter:none; -webkit-backdrop-filter:none;
+    display:flex; flex-direction:column; gap:10px;
+    padding:10px 12px 12px; overflow:visible;
+  }
+  .sidebar-top-utility:not(:empty){
+    border-bottom:none; margin:0; padding:12px 14px;
+    background: var(--bg-card); border:1px solid var(--border-soft);
+    border-radius:16px; box-shadow: var(--shadow-sm);
+    flex-shrink:0;
+  }
+  .sidebar-nav{
+    flex:1; min-height:0; overflow-y:auto;
+    background: var(--bg-card); border:1px solid var(--border-soft);
+    border-radius:16px; box-shadow: var(--shadow-sm);
+  }
+}
