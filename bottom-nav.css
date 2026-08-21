@@ -44,13 +44,20 @@
     gap:2px;
     padding:6px;
     border-radius:999px;
-    background:color-mix(in srgb, var(--bg-card) 92%, transparent);
+    background:var(--bg-card);
     border:1px solid var(--border-soft);
     box-shadow:var(--shadow-md), 0 0 0 1px rgba(217,169,74,.28), 0 0 14px rgba(217,169,74,.22);
   }
+  /* width:64px doang gak cukup buat nahan lebar tombol — sebagai flex item,
+     kalau isinya (label shortcut, yang teksnya bisa panjang kayak "Rencana
+     Kerja Harian" / "Pengecekan Pra SPA") gak dibatasi, tombol ikut melebar
+     ngikutin teks & dorong bar mengambang jadi lebar ke samping (nabrak
+     tombol kiri-kanannya / kepotong tepi layar). flex:0 0 64px + min-width:0
+     maksa tombol tetap 64px persis, teksnya yang harus menyesuaikan
+     (lihat .bn-label overflow/ellipsis di bawah). */
   .bottom-nav-item{
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:1px; width:64px; height:56px; border:none; border-radius:999px;
+    gap:1px; flex:0 0 64px; min-width:0; width:64px; height:56px; border:none; border-radius:999px;
     background:transparent; color:var(--text-muted); cursor:pointer;
     font-family:var(--font-body); font-size:9.5px; font-weight:600;
     position:relative; -webkit-tap-highlight-color:transparent;
@@ -71,7 +78,11 @@
     transition:transform .38s cubic-bezier(.34,1.56,.64,1),
                background-color .3s var(--ease-out), box-shadow .3s var(--ease-out), color .3s var(--ease-out);
   }
-  .bn-label{ transition:opacity .25s var(--ease-out), transform .3s var(--ease-out); }
+  .bn-label{
+    transition:opacity .25s var(--ease-out), transform .3s var(--ease-out);
+    display:block; max-width:100%; white-space:nowrap; overflow:hidden;
+    text-overflow:ellipsis; text-align:center;
+  }
 
   .bottom-nav-item.active{ color:var(--accent-green); }
   .bottom-nav-item.active .bn-icon-wrap{

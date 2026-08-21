@@ -369,20 +369,26 @@ h1,h2,h3,h4,.font-display{ letter-spacing: -.005em; font-weight: 600; }
    ===================================================================== */
 .sidebar{ background: var(--m3-surface-container-low); }
 
-/* sidebar = 2 card terpisah (header logo + panel menu), masing-masing card M3 sendiri */
-.sidebar{
-  border-radius: 0; border: none; box-shadow: none; background: transparent;
-  gap: 14px; overflow: visible;
-}
-.sidebar-header{
-  background: var(--m3-surface-container-low); backdrop-filter: none; -webkit-backdrop-filter: none;
-  border-radius: var(--m3-shape-xl); border: 1px solid var(--border-soft);
-  box-shadow: var(--m3-elevation-1);
-}
-.sidebar-menu-panel{
-  background: var(--m3-surface-container-low); backdrop-filter: none; -webkit-backdrop-filter: none;
-  border-radius: var(--m3-shape-xl); border: 1px solid var(--border-soft);
-  box-shadow: var(--m3-elevation-1);
+/* sidebar = 2 card terpisah (header logo + panel menu), masing-masing card M3 sendiri.
+   Khusus desktop (>880px) — di HP, sidebar-card-split.css yang mengatur (3 kartu
+   solid terpisah). Sebelumnya blok ini tidak di-scope sama sekali, jadi ".sidebar{
+   background:transparent}"-nya selalu menang di HP juga dan bikin drawer mobile
+   transparan (celah antar kartu tembus ke halaman di belakangnya). */
+@media (min-width:881px){
+  .sidebar{
+    border-radius: 0; border: none; box-shadow: none; background: transparent;
+    gap: 14px; overflow: visible;
+  }
+  .sidebar-header{
+    background: var(--m3-surface-container-low); backdrop-filter: none; -webkit-backdrop-filter: none;
+    border-radius: var(--m3-shape-xl); border: 1px solid var(--border-soft);
+    box-shadow: var(--m3-elevation-1);
+  }
+  .sidebar-menu-panel{
+    background: var(--m3-surface-container-low); backdrop-filter: none; -webkit-backdrop-filter: none;
+    border-radius: var(--m3-shape-xl); border: 1px solid var(--border-soft);
+    box-shadow: var(--m3-elevation-1);
+  }
 }
 .sidebar-footer{ border-top: 1px solid var(--border-soft); }
 .sidebar-header, .sidebar-footer{ border-color: var(--border-soft); }
