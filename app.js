@@ -4321,6 +4321,31 @@ function confirmDialog(message, okLabel){
   });
 }
 
+// BUG FIX: sebelumnya import Excel di semua modul cuma nambah baris baru
+// (kadang) dan update baris yang cocok, tapi baris yang DIHAPUS dari file
+// sumber tidak pernah ikut terhapus dari database — jadi baris lama nyangkut
+// terus meskipun sudah tidak ada lagi di Excel. Helper ini menutup celah itu:
+// dipanggil dengan daftar baris DB yang tidak lagi ketemu di file import,
+// user dimintai konfirmasi dulu (aksi hapus permanen), baru baris dihapus +
+// dicatat ke Riwayat Perubahan Data & notifikasi, biar tetap konsisten
+// dengan alur hapus manual (confirmDelete/doDelete).
+async function syncImportDeletions(table, rowsToDelete, columns){
+  if(!rowsToDelete || !rowsToDelete.length) return 0;
+  const contoh = rowsToDelete.slice(0, 5).map(r => r.petak || r.id).join(', ');
+  const confirmed = await confirmDialog(
+    `${rowsToDelete.length} baris di database sudah tidak ditemukan lagi di file yang diimpor (kemungkinan sudah dihapus dari sumber Excel):\n${contoh}${rowsToDelete.length > 5 ? ', …' : ''}\n\nHapus juga baris tersebut dari database supaya jumlah baris sama persis dengan file?`,
+    `Ya, Hapus ${rowsToDelete.length} Baris`
+  );
+  if(!confirmed) return 0;
+  const { error } = await supa.from(table).delete().in('id', rowsToDelete.map(r => r.id));
+  if(error){ toast('Gagal menghapus baris yang tidak ada di file: ' + error.message, true); return 0; }
+  const auditRows = [];
+  rowsToDelete.forEach(r => auditRows.push(...buildFieldAuditRows(table, r.id, r.petak, r, {}, columns || Object.keys(r), 'import')));
+  insertFieldAuditRows(auditRows);
+  await logNotificationGrouped(table, 'hapus', rowsToDelete);
+  return rowsToDelete.length;
+}
+
 // Preview data hasil baca file Excel SEBELUM benar-benar disimpan ke database
 // (Promise<boolean> — true kalau user klik "Lanjutkan Import"). Dipakai oleh
 // semua modul import (handleImportFile generik, Produktivitas, Kontraktor,
@@ -4625,6 +4650,22 @@ async function handleImportFile(table, input){
       const existingRowById = new Map(); // buat bandingin before/after (audit trail)
       existingRows.forEach(r => { const key = buildKey(r); if(key) existingMap.set(key, r.id); existingRowById.set(r.id, r); });
 
+      // Baris yang mau dihapus (ada di database, tapi tidak ada lagi di file):
+      // untuk tabel bertipe 'upsert' dengan matchKeys ganda (mis. Kondisi Bulanan
+      // = petak+bulan), kandidat hapus dibatasi hanya ke kombinasi dimensi sekunder
+      // (bulan) yang memang tercakup di file yang diimpor — supaya import 1 bulan
+      // tidak ikut menghapus data bulan lain yang tidak disentuh file itu sama sekali.
+      const secondaryKeys = matchKeys.filter(k => k !== 'petak');
+      const fileKeySet = new Set(payloadRows.map(buildKey));
+      const secondaryValueSets = {};
+      secondaryKeys.forEach(k => { secondaryValueSets[k] = new Set(payloadRows.map(o => normKeyPart(k, o[k]))); });
+      const rowsToDelete = existingRows.filter(r => {
+        if(zonaRestrict && (r.zona||'').toString().trim().toUpperCase() !== zonaRestrict.toString().trim().toUpperCase()) return false;
+        const key = buildKey(r);
+        if(!key || fileKeySet.has(key)) return false;
+        return secondaryKeys.every(k => secondaryValueSets[k].has(normKeyPart(k, r[k])));
+      });
+
       // Untuk tabel bertipe 'upsert' (mis. Kondisi Bulanan), validasi dulu apakah kode
       // Petak di file benar-benar terdaftar sebagai petak yang sudah ada di database.
       // Sumber daftar petak yang dipakai adalah tabel 'pasca_harvest' (385 petak yang
@@ -4653,7 +4694,7 @@ async function handleImportFile(table, input){
         else unmatchedPetak.push(o.petak);
       });
 
-      if(!matched.length && !toInsert.length){
+      if(!matched.length && !toInsert.length && !rowsToDelete.length){
         const reason = notInMaster.length
           ? `Semua ${notInMaster.length} baris berisi kode Petak yang tidak ditemukan di data master (contoh: "${notInMaster[0]}"). Pastikan kode Petak di file sama persis dengan yang ada di menu Pasca Harvest.`
           : 'Tidak ada petak yang cocok dengan data yang sudah ada. Impor dibatalkan (tidak menambah petak baru).';
@@ -4697,9 +4738,14 @@ async function handleImportFile(table, input){
       if(successUpdate) await logNotificationGrouped(table, 'import', matched.filter((_,i)=>!updateResults[i].error).map(m=>m.payload));
       if(successInsert) await logNotificationGrouped(table, 'import', toInsert);
 
+      // Baris yang sudah tidak ada lagi di file: minta konfirmasi lalu hapus,
+      // supaya pengurangan baris di Excel ikut tersinkron ke database.
+      const deletedCount = await syncImportDeletions(table, rowsToDelete, cfg.columns);
+
       let msg = '';
       if(successUpdate) msg += `${successUpdate} baris diperbarui`;
       if(successInsert) msg += (msg ? ', ' : '') + `${successInsert} baris baru ditambahkan`;
+      if(deletedCount) msg += (msg ? ', ' : '') + `${deletedCount} baris dihapus (tidak ada lagi di file)`;
       if(unmatchedPetak.length) msg += (msg ? ', ' : '') + `${unmatchedPetak.length} baris dilewati (petak tidak ditemukan)`;
       if(notInMaster.length) msg += (msg ? ', ' : '') + `${notInMaster.length} baris dilewati (kode Petak tidak dikenali)`;
       if(failedUpdate.length) msg += (msg ? ', ' : '') + `${failedUpdate.length} gagal diperbarui`;
@@ -5372,6 +5418,19 @@ async function handleImportProduktivitas(input){
         else { toInsert.push(p); }
       });
 
+      // Baris log harian yang dihapus dari sumber Excel harus ikut terhapus dari
+      // database — tapi dibatasi hanya ke rentang TANGGAL yang tercakup di file
+      // ini (min–max tanggal yang diimpor), supaya import satu periode tidak
+      // ikut menghapus data hari/periode lain yang tidak disentuh file ini sama sekali.
+      const fileDates = rowsToInsert.map(r => r.tanggal).filter(Boolean).sort();
+      const minDate = fileDates[0], maxDate = fileDates[fileDates.length - 1];
+      const fileKeySet = new Set(rowsToInsert.map(rowKey));
+      const rowsToDelete = state[PRODUKTIVITAS_TABLE].data.filter(r => {
+        if(!r.tanggal || r.tanggal < minDate || r.tanggal > maxDate) return false;
+        if(zonaRestrict && (r.zona||'').toString().trim().toUpperCase() !== zonaRestrict.toString().trim().toUpperCase()) return false;
+        return !fileKeySet.has(rowKey(r));
+      });
+
       const results = await Promise.all([
         ...toInsert.map(p => supa.from(PRODUKTIVITAS_TABLE).insert(p)),
         ...toUpdate.map(u => supa.from(PRODUKTIVITAS_TABLE).update(u.payload).eq('id', u.id)),
@@ -5379,7 +5438,12 @@ async function handleImportProduktivitas(input){
       const failed = results.filter(r=>r.error);
       const success = rowsToInsert.length - failed.length;
       if(success) await logNotificationGrouped(PRODUKTIVITAS_TABLE, 'import', rowsToInsert.slice(0, success));
+
+      hideImportProgress(true);
+      const deletedCount = await syncImportDeletions(PRODUKTIVITAS_TABLE, rowsToDelete, PRODUKTIVITAS_COLUMNS);
+
       let msg = `${toInsert.length} baris ditambahkan, ${toUpdate.length} baris diperbarui`;
+      if(deletedCount) msg += `, ${deletedCount} baris dihapus (tidak ada lagi di file)`;
       if(failed.length) msg += `, ${failed.length} gagal${failed[0].error ? ' — ' + failed[0].error.message : ''}`;
       hideImportProgress(true);
       toast(msg, failed.length === rowsToInsert.length);
@@ -8920,6 +8984,14 @@ async function handleImportMaintenance(input){
         else toInsert.push(o);
       });
 
+      // Baris di database yang petak-nya sudah tidak ada lagi di file (dihapus
+      // dari sumber Excel) — sinkronkan dengan menghapusnya juga (minta konfirmasi dulu).
+      const filePetakSet = new Set(payloadRows.map(o => normPetak(o.petak)));
+      const rowsToDelete = existingRows.filter(r => {
+        if(zonaRestrict && (r.zona||'').toString().trim().toUpperCase() !== zonaRestrict.toString().trim().toUpperCase()) return false;
+        return !filePetakSet.has(normPetak(r.petak));
+      });
+
       const updateResults = matched.length ? await Promise.all(matched.map(m => supa.from(MAINTENANCE_TABLE).update(m.payload).eq('id', m.id))) : [];
       const failedUpdate = updateResults.filter(r => r.error);
       const successUpdate = matched.length - failedUpdate.length;
@@ -8937,9 +9009,14 @@ async function handleImportMaintenance(input){
       if(successUpdate) await logNotificationGrouped(MAINTENANCE_TABLE, 'import', matched.filter((_,i)=>!updateResults[i].error).map(m=>m.payload));
       if(successInsert) await logNotificationGrouped(MAINTENANCE_TABLE, 'import', toInsert);
 
+      hideImportProgress(true);
+      const deletedCount = await syncImportDeletions(MAINTENANCE_TABLE, rowsToDelete, MAINTENANCE_COLUMNS);
+      showImportProgress(); setImportProgress(95,'Menyelesaikan…');
+
       let msg = '';
       if(successUpdate) msg += `${successUpdate} baris diperbarui`;
       if(successInsert) msg += (msg ? ', ' : '') + `${successInsert} baris baru ditambahkan`;
+      if(deletedCount) msg += (msg ? ', ' : '') + `${deletedCount} baris dihapus (tidak ada lagi di file)`;
       if(failedUpdate.length) msg += (msg ? ', ' : '') + `${failedUpdate.length} gagal diperbarui`;
       if(failedInsert) msg += (msg ? ', ' : '') + `${failedInsert} gagal ditambahkan${insertErrorMsg ? ' — ' + insertErrorMsg : ''}`;
       if(!msg) msg = 'Tidak ada data yang diproses';
@@ -9493,6 +9570,14 @@ async function handleImportPcRpc(input){
         else toInsert.push(o);
       });
 
+      // Baris di database yang petak-nya sudah tidak ada lagi di file (dihapus
+      // dari sumber Excel) — sinkronkan dengan menghapusnya juga (minta konfirmasi dulu).
+      const filePetakSet = new Set(payloadRows.map(o => normPetak(o.petak)));
+      const rowsToDelete = existingRows.filter(r => {
+        if(zonaRestrict && (r.zona||'').toString().trim().toUpperCase() !== zonaRestrict.toString().trim().toUpperCase()) return false;
+        return !filePetakSet.has(normPetak(r.petak));
+      });
+
       const updateResults = matched.length ? await Promise.all(matched.map(m => supa.from(PC_RPC_TABLE).update(m.payload).eq('id', m.id))) : [];
       const failedUpdate = updateResults.filter(r => r.error);
       const successUpdate = matched.length - failedUpdate.length;
@@ -9510,9 +9595,13 @@ async function handleImportPcRpc(input){
       if(successUpdate) await logNotificationGrouped(PC_RPC_TABLE, 'import', matched.filter((_,i)=>!updateResults[i].error).map(m=>m.payload));
       if(successInsert) await logNotificationGrouped(PC_RPC_TABLE, 'import', toInsert);
 
+      hideImportProgress(true);
+      const deletedCount = await syncImportDeletions(PC_RPC_TABLE, rowsToDelete, PR_COLUMNS);
+
       let msg = '';
       if(successUpdate) msg += `${successUpdate} baris diperbarui`;
       if(successInsert) msg += (msg ? ', ' : '') + `${successInsert} baris baru ditambahkan`;
+      if(deletedCount) msg += (msg ? ', ' : '') + `${deletedCount} baris dihapus (tidak ada lagi di file)`;
       if(failedUpdate.length) msg += (msg ? ', ' : '') + `${failedUpdate.length} gagal diperbarui`;
       if(failedInsert) msg += (msg ? ', ' : '') + `${failedInsert} gagal ditambahkan${insertErrorMsg ? ' — ' + insertErrorMsg : ''}`;
       if(!msg) msg = 'Tidak ada data yang diproses';
