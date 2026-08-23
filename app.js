@@ -249,18 +249,25 @@ const TABLES = {
     areaField: 'size_rkt',
     columns: ['petak','size_rkt','varietas','status_petak','action_plan_current_crop_2026','phasing_2026','status_progress','bapp','bulan_tebang','tch_nett_bapp_2026','zona','superitendent','supervisor','staff','status_pengecekan_pasca_hvt','kategori_kondisi_juringan','kategori_tunggul','kategori_kondisi_gulma','kategori_pasca_harvest'],
     listColumns: ['petak','zona','status_progress','estimasi_tch_2026','kategori_kondisi_juringan','kategori_tunggul','kategori_kondisi_gulma','kategori_pasca_harvest'],
+    // BUG FIX: dulu default 'update_only' (import cuma boleh update petak yang
+    // sudah ada, petak baru di file diam2 di-skip) — jadi kalau file sumber
+    // nambah petak baru, Total Petak/Luas/grafik/list gak pernah ikut nambah.
+    // Sekarang import boleh menambah petak baru juga (dicocokkan per Petak).
+    importMode: 'upsert',
   },
   rpc_after_giling: {
     label: 'RPC After Giling', eyebrow: 'MODUL 02',
     areaField: 'luas_rpc',
     columns: ['petak','size_rkt','luas_rpc','varietas','status_petak','action_plan_current_crop_2026','phasing_2026','status_progress','bapp','bulan_tebang','tch_nett_bapp_2026','zona','superitendent','supervisor','staff','action_plan','action_plan_2026','msw','status_msw','furrowing','status_furrowing','pps1','status_pps1','pps2','status_pps2','phasing_planting','status_planting'],
     listColumns: ['petak','size_rkt','luas_rpc','varietas','zona','status_progress','staff','status_planting'],
+    importMode: 'upsert',
   },
   extra_planting_after_giling: {
     label: 'Extra Planting After Giling', eyebrow: 'MODUL 03',
     areaField: 'luas_rpc',
     columns: ['petak','size_rkt','luas_rpc','varietas','status_petak','action_plan_current_crop_2026','phasing_2026','status_progress','bapp','bulan_tebang','tch_nett_bapp_2026','zona','superitendent','supervisor','staff','action_plan','action_plan_2026','msw','status_msw','furrowing','status_furrowing','pps1','status_pps1','pps2','status_pps2','phasing_planting','status_planting'],
     listColumns: ['petak','size_rkt','luas_rpc','varietas','zona','status_progress','staff','status_planting'],
+    importMode: 'upsert',
   },
   blanking: {
     label: 'Blanking', eyebrow: 'MODUL 04',
@@ -271,23 +278,23 @@ const TABLES = {
     // hanya mencakup 3 tahapan ini (menggantikan grafik "Luas per Zona").
     landPrepKeys: ['status_msw','status_furrowing','status_planting'],
     landPrepLabels: ['MSW','Furrowing','Planting'],
+    importMode: 'upsert',
   },
   ratoon: {
     label: 'Ratoon', eyebrow: 'MODUL 05',
     areaField: 'size_rkt',
     columns: ['petak','size_rkt','varietas','status_petak','action_plan_current_crop_2026','phasing_2026','status_progress','bapp','bulan_tebang','tch_nett_bapp_2026','zona','superitendent','supervisor','staff','action_plan_2026'],
     listColumns: ['petak','size_rkt','varietas','zona','status_progress','staff','action_plan_2026'],
+    importMode: 'upsert',
   },
   kondisi_bulanan: {
     label: 'Kondisi Bulanan', eyebrow: 'MODUL 06',
     areaField: null,
     columns: ['petak','bulan','zona','superitendent','supervisor','staff','kategori_lalang','kategori_perumpungan','kategori_rayutan','kategori_intensitas_hama','kategori_drainage','kategori_tanggul_berem','status_bulan'],
     listColumns: ['petak','bulan','zona','staff','status_bulan','kategori_lalang','kategori_perumpungan','kategori_rayutan'],
-    // Berbeda dari tabel master petak (Pasca Harvest, RPC, dst) yang import-nya HANYA
-    // memperbarui data yang sudah ada: Kondisi Bulanan adalah log bulanan yang kosong
-    // di awal dan satu petak bisa punya banyak baris (satu per bulan). Jadi import di
-    // tabel ini BOLEH menambah baris baru, dicocokkan berdasarkan kombinasi Petak + Bulan
-    // (bukan Petak saja), supaya data bulan 1 tidak tertimpa saat mengimpor bulan 2, dst.
+    // Kondisi Bulanan: satu petak bisa punya banyak baris (satu per bulan),
+    // dicocokkan Petak + Bulan (bukan Petak saja) supaya data bulan 1 tidak
+    // tertimpa saat mengimpor bulan 2, dst.
     importMode: 'upsert',
     importMatchKeys: ['petak','bulan'],
     validateAgainstMaster: true,
