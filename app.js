@@ -2720,7 +2720,13 @@ function paintTablePage(table, allRows){
 
   const statusAgg = aggregateCount(filteredRows, hasPlantingFields ? 'status_planting' : 'status_progress');
   const zonaAgg = aggregateSum(filteredRows, 'zona', cfg.areaField);
-  const monthAgg = aggregateSum(filteredRows, hasPlantingFields ? 'phasing_planting' : 'phasing_2026', cfg.areaField);
+  // BUG FIX: dulu pakai aggregateSum (group by nilai mentah kolom bulan), tapi
+  // drawBar mencocokkan key ke daftar MONTHS ('JAN'..'DEC') — kalau isi kolom
+  // formatnya beda (mis. "Apr-26", huruf kecil, dll) gak pernah match, jadi
+  // grafik "Luas per Bulan Phasing Planting/2026" tampil kosong. Pakai
+  // aggregateSumByMonthToken yang menormalkan format bulan dulu (sama seperti
+  // dipakai untuk grafik Phasing 2026 vs Bulan Tebang di Pasca Harvest).
+  const monthAgg = aggregateSumByMonthToken(filteredRows, hasPlantingFields ? 'phasing_planting' : 'phasing_2026', cfg.areaField);
 
   const isPascaHarvest = table === 'pasca_harvest';
   // Kondisi Bulanan tidak punya field luas/zona/varietas/status_progress seperti modul lain
