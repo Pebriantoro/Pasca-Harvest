@@ -9,9 +9,17 @@
    (`tvChart*`) biar gak numpuk toolbar di tempat yang gak muat/gak
    perlu diedit.
 
-   Simpan pilihan warna ke localStorage (per canvasId + label), jadi
-   nempel lagi otomatis tiap grafik itu digambar ulang (ganti tema,
-   ganti filter, reload halaman).
+   Toolbar (kemampuan UBAH warna) cuma muncul buat role admin
+   (isAdminRole(), reuse dari app.js). Warna hasil pilihan admin tetap
+   kebaca semua orang (disimpan localStorage per canvasId+label, di-
+   bake ke config SEBELUM chart dibuat -- lihat ccPrepareConfig).
+
+   CATATAN PENTING soal repaint: ganti warna lewat chart.update() ada
+   kalanya gak langsung kegambar ulang di canvas sampai ada interaksi
+   mouse (bug render Chart.js/Animator versi ini). Makanya tiap ganti
+   warna, chart LAMA di-destroy() lalu dibikin instance BARU dari
+   config yang sama (udah kemutasi warnanya) -- dijamin full repaint,
+   gak nunggu hover.
    ===================================================================== */
 (function(){
   if(typeof window.Chart === 'undefined' || window.Chart.__ccPatched) return;
@@ -42,7 +50,18 @@
   }
 
   /* ---------------------------------------------------------------
-     1. WARNA -> HEX (buat isi <input type="color">, yang cuma nerima
+     1. AKSES -- toolbar cuma buat admin (reuse isAdminRole() app.js)
+     --------------------------------------------------------------- */
+  function ccIsAdmin(){
+    try {
+      if(typeof isAdminRole === 'function') return !!isAdminRole();
+      if(typeof currentProfile !== 'undefined' && currentProfile) return currentProfile.role === 'admin';
+    } catch(_e){}
+    return false;
+  }
+
+  /* ---------------------------------------------------------------
+     2. WARNA -> HEX (buat isi <input type="color">, yang cuma nerima
      #rrggbb). Dataset warna di app ini kadang berupa token CSS var
      yang udah di-resolve (biasanya udah hex), tapi jaga-jaga kalau
      rgba/nama warna, pakai canvas 1x1 supaya browser sendiri yang
@@ -65,19 +84,20 @@
   }
 
   /* ---------------------------------------------------------------
-     2. ENTRIES -- daftar "isi grafik" yang bisa dipilih warnanya.
-     Generik buat semua tipe grafik di app ini:
+     3. ENTRIES -- daftar "isi grafik" yang bisa dipilih warnanya.
+     Terima objek apapun yang punya `.data.datasets` (chart instance
+     ATAU config mentah sebelum instance dibuat -- makanya generik).
      - 1 dataset & backgroundColor berupa array (donut/pie/bar/hbar
        per-label) -> 1 entry per label (per potongan/batang).
      - beberapa dataset (grouped/stacked bar, line multi, progress
        bar bertumpuk) -> 1 entry per dataset (per seri/status).
      --------------------------------------------------------------- */
-  function ccGetEntries(chart){
-    const datasets = (chart.data && chart.data.datasets) || [];
+  function ccGetEntries(source){
+    const datasets = (source.data && source.data.datasets) || [];
     if(!datasets.length) return [];
 
     if(datasets.length === 1 && Array.isArray(datasets[0].backgroundColor)){
-      const labels = chart.data.labels || [];
+      const labels = source.data.labels || [];
       const bg = datasets[0].backgroundColor;
       return labels.map((l, i) => ({
         label: String(l ?? ('Item ' + (i + 1))),
@@ -98,10 +118,26 @@
   }
 
   /* ---------------------------------------------------------------
-     3. TOOLBAR -- ditaruh di baris paling atas .card-body (di atas
-     .chart-box), jadi keliatan "di bagian atas" kartu grafiknya.
+     4. BAKE OVERRIDE TERSIMPAN KE CONFIG -- dipanggil SEBELUM chart
+     dibuat, jadi paint pertama udah langsung bener (gak perlu update()
+     sama sekali buat kasus load ulang / ganti tema / ganti filter).
      --------------------------------------------------------------- */
-  function ccAttachToolbar(canvas, chart, canvasId){
+  function ccPrepareConfig(config, canvasId){
+    const entries = ccGetEntries({ data: config.data });
+    const defaults = {};
+    entries.forEach(e => { defaults[e.label] = e.getColor(); });
+    ccDefaultsByCanvas[canvasId] = defaults;
+    const stored = ccGetStore()[canvasId];
+    if(stored) entries.forEach(e => { if(stored[e.label]) e.setColor(stored[e.label]); });
+  }
+
+  /* ---------------------------------------------------------------
+     5. TOOLBAR -- ditaruh di baris paling atas .card-body (di atas
+     .chart-box), jadi keliatan "di bagian atas" kartu grafiknya.
+     Cuma dipasang kalau ccIsAdmin() true (dicek sebelum manggil ini).
+     --------------------------------------------------------------- */
+  function ccAttachToolbar(canvas, chartInstance, canvasId, config){
+    let chart = chartInstance;
     const entries = ccGetEntries(chart);
     if(!entries.length) return;
     const container = canvas.closest('.card-body');
@@ -127,15 +163,24 @@
     select.innerHTML = entries.map(e => `<option value="${ccEsc(e.label)}">${ccEsc(e.label)}</option>`).join('');
     if(entries.some(e => e.label === prevSelected)) select.value = prevSelected;
 
-    function findEntry(){ return entries.find(e => e.label === select.value) || entries[0]; }
-    function syncColorInput(){ colorInput.value = ccToHex(findEntry().getColor()); }
+    function findEntry(){ const es = ccGetEntries(chart); return es.find(e => e.label === select.value) || es[0]; }
+    function syncColorInput(){ const e = findEntry(); if(e) colorInput.value = ccToHex(e.getColor()); }
     syncColorInput();
+
+    // Destroy + bikin instance baru dari config yang sama (udah kemutasi
+    // warnanya) -- dijamin full repaint, gak nunggu hover buat kegambar.
+    function repaint(){
+      chart.destroy();
+      chart = new OrigChart(canvas, config);
+      if(typeof chartInstances !== 'undefined') chartInstances[canvasId] = chart;
+    }
 
     select.onchange = syncColorInput;
     colorInput.oninput = () => {
       const entry = findEntry();
+      if(!entry) return;
       entry.setColor(colorInput.value);
-      chart.clear(); chart.update('none');
+      repaint();
       ccSaveOverride(canvasId, entry.label, colorInput.value);
     };
     resetBtn.onclick = () => {
@@ -143,41 +188,29 @@
       const original = (ccDefaultsByCanvas[canvasId] || {})[entry.label];
       if(original == null) return;
       entry.setColor(original);
-      chart.clear(); chart.update('none');
+      repaint();
       ccClearOverride(canvasId, entry.label);
       syncColorInput();
     };
   }
 
-  function ccApplyStoredOverrides(chart, canvasId){
-    const stored = ccGetStore()[canvasId];
-    if(!stored) return;
-    let changed = false;
-    ccGetEntries(chart).forEach(e => {
-      if(stored[e.label] && stored[e.label] !== e.getColor()){ e.setColor(stored[e.label]); changed = true; }
-    });
-    if(changed){ chart.clear(); chart.update('none'); }
-  }
-
   /* ---------------------------------------------------------------
-     4. PATCH KONSTRUKTOR GLOBAL -- satu titik reuse buat semua
+     6. PATCH KONSTRUKTOR GLOBAL -- satu titik reuse buat semua
      draw*() yang udah ada (app.js & tv-mode.js), tanpa ubah fungsi2
      itu satu-satu. Semua static member (Chart.register, Chart.defaults,
      dst) tetap jalan lewat prototype chain ke Chart asli.
      --------------------------------------------------------------- */
   const OrigChart = window.Chart;
   function PatchedChart(ctx, config){
+    const canvasId = ctx && ctx.id;
+    const eligible = !!canvasId && !CC_SKIP_PREFIX.some(p => canvasId.indexOf(p) === 0);
+    if(eligible){
+      try { ccPrepareConfig(config, canvasId); } catch(e){ console.error('chart-color-customizer:', e); }
+    }
     const inst = new OrigChart(ctx, config);
-    try {
-      const canvasId = ctx && ctx.id;
-      if(canvasId && !CC_SKIP_PREFIX.some(p => canvasId.indexOf(p) === 0)){
-        const defaults = {};
-        ccGetEntries(inst).forEach(e => { defaults[e.label] = e.getColor(); });
-        ccDefaultsByCanvas[canvasId] = defaults;
-        ccApplyStoredOverrides(inst, canvasId);
-        ccAttachToolbar(ctx, inst, canvasId);
-      }
-    } catch(e){ console.error('chart-color-customizer:', e); }
+    if(eligible && ccIsAdmin()){
+      try { ccAttachToolbar(ctx, inst, canvasId, config); } catch(e){ console.error('chart-color-customizer:', e); }
+    }
     return inst;
   }
   Object.setPrototypeOf(PatchedChart, OrigChart);
