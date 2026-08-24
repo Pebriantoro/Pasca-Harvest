@@ -135,7 +135,7 @@
     colorInput.oninput = () => {
       const entry = findEntry();
       entry.setColor(colorInput.value);
-      chart.update('none');
+      chart.clear(); chart.update('none');
       ccSaveOverride(canvasId, entry.label, colorInput.value);
     };
     resetBtn.onclick = () => {
@@ -143,7 +143,7 @@
       const original = (ccDefaultsByCanvas[canvasId] || {})[entry.label];
       if(original == null) return;
       entry.setColor(original);
-      chart.update('none');
+      chart.clear(); chart.update('none');
       ccClearOverride(canvasId, entry.label);
       syncColorInput();
     };
@@ -156,7 +156,7 @@
     ccGetEntries(chart).forEach(e => {
       if(stored[e.label] && stored[e.label] !== e.getColor()){ e.setColor(stored[e.label]); changed = true; }
     });
-    if(changed) chart.update('none');
+    if(changed){ chart.clear(); chart.update('none'); }
   }
 
   /* ---------------------------------------------------------------
