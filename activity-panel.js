@@ -29,6 +29,8 @@
     lastLocSentAt: 0,
     dmThreadUserId: null,  // percakapan DM yang sedang dibuka inline di panel (null = tampil daftar)
     fullMapOpen: false,    // modal peta live location (full) lagi terbuka?
+    chatModalOpen: false,  // modal "Lihat semua" percakapan (terpisah dari modal peta) lagi terbuka?
+    chatModalTab: 'dm',    // tab aktif DI DALAM modal -- independen dari tab panel utama
   };
   let apHideTimer = null;
   let apRefreshTimer = null;
@@ -115,6 +117,9 @@
           <button type="button" class="ap-tab active" data-tab="dm">Chat Langsung <span class="count-badge hidden" id="apDmCount">0</span></button>
           <button type="button" class="ap-tab" data-tab="team">Chat Tim <span class="count-badge hidden" id="apTeamCount">0</span></button>
         </div>
+        <div class="ap-chat-viewall-row">
+          <span class="ap-chat-viewall" id="apChatViewAll">Lihat semua</span>
+        </div>
 
         <div class="ap-list" id="apList"></div>
 
@@ -147,6 +152,7 @@
     document.getElementById('apCloseBtn').addEventListener('click', () => apHide(true));
     document.getElementById('apPinBtn').addEventListener('click', apTogglePin);
     document.getElementById('apLocViewAll').addEventListener('click', apOpenFullMap);
+    document.getElementById('apChatViewAll').addEventListener('click', apOpenChatModal);
     document.getElementById('apOnlineBadge').addEventListener('click', (e) => { e.stopPropagation(); apToggleOnlinePanel(); });
     document.addEventListener('click', (e) => {
       const badge = document.getElementById('apOnlineBadge');
@@ -417,6 +423,138 @@
   window.apOpenTeamChat = function(){
     if(typeof navigate === 'function') navigate('chat');
     apHide(true);
+  };
+
+  /* ---------------------------------------------------------------
+     3a-2. MODAL "LIHAT SEMUA" PERCAKAPAN -- terpisah dari modal peta
+     Live Location (lihat 4b). Nampilin daftar percakapan lengkap
+     (tanpa batas AP_MAX_ROWS), punya tab sendiri Chat Langsung/Chat
+     Tim, klik baris -> buka halaman penuh & modal tertutup.
+     --------------------------------------------------------------- */
+  function apBuildChatModalDOM(){
+    if(document.getElementById('apChatModal')) return;
+    const modal = document.createElement('div');
+    modal.id = 'apChatModal';
+    modal.className = 'ap-fullchat-modal';
+    modal.innerHTML = `
+      <div class="ap-fullchat-backdrop" id="apChatModalBackdrop"></div>
+      <div class="ap-fullchat-panel">
+        <div class="ap-fullchat-header">
+          <span>Semua Percakapan</span>
+          <button type="button" class="ap-icon-btn" id="apChatModalClose" title="Tutup">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+        <div class="ap-tabs ap-fullchat-tabs">
+          <button type="button" class="ap-tab active" data-modal-tab="dm">Chat Langsung</button>
+          <button type="button" class="ap-tab" data-modal-tab="team">Chat Tim</button>
+        </div>
+        <div class="ap-fullchat-list" id="apChatModalList"></div>
+      </div>`;
+    document.body.appendChild(modal);
+    document.getElementById('apChatModalClose').addEventListener('click', apCloseChatModal);
+    document.getElementById('apChatModalBackdrop').addEventListener('click', apCloseChatModal);
+    modal.querySelectorAll('.ap-fullchat-tabs .ap-tab').forEach(btn => {
+      btn.addEventListener('click', () => apSetChatModalTab(btn.dataset.modalTab));
+    });
+  }
+
+  function apOpenChatModal(){
+    apBuildChatModalDOM();
+    apState.chatModalOpen = true;
+    apState.chatModalTab = apState.tab; // buka di tab yang lagi aktif di panel
+    document.getElementById('apChatModal')?.classList.add('ap-open');
+    apSyncChatModalTabUI();
+    apRenderChatModalList();
+  }
+
+  function apCloseChatModal(){
+    apState.chatModalOpen = false;
+    document.getElementById('apChatModal')?.classList.remove('ap-open');
+  }
+
+  function apSetChatModalTab(tab){
+    apState.chatModalTab = tab;
+    apSyncChatModalTabUI();
+    apRenderChatModalList();
+  }
+
+  function apSyncChatModalTabUI(){
+    document.querySelectorAll('#apChatModal .ap-fullchat-tabs .ap-tab')
+      .forEach(b => b.classList.toggle('active', b.dataset.modalTab === apState.chatModalTab));
+  }
+
+  // Daftar lengkap (tanpa batas AP_MAX_ROWS) -- reuse markup .ap-row yang
+  // sama kayak panel, tapi klik baris langsung ke halaman penuh + tutup modal.
+  function apRenderChatModalList(){
+    const wrap = document.getElementById('apChatModalList');
+    if(!wrap) return;
+
+    if(apState.chatModalTab === 'dm'){
+      const dir = (typeof dmDirectory !== 'undefined' && dmDirectory) || [];
+      if(!dir.length){ wrap.innerHTML = `<div class="ap-empty">Belum ada rekan kerja terdaftar.</div>`; return; }
+      const cache = (typeof dmMessagesCache !== 'undefined' && dmMessagesCache) || {};
+      const unread = (typeof dmUnreadByUser !== 'undefined' && dmUnreadByUser) || {};
+      const list = dir.map(u => {
+        const msgs = cache[u.id] || [];
+        const last = msgs[msgs.length - 1];
+        return { ...u, lastMsg: last, lastTime: last ? new Date(last.created_at).getTime() : 0, unread: unread[u.id] || 0 };
+      }).sort((a,b) => b.lastTime - a.lastTime || (a.full_name||'').localeCompare(b.full_name||''));
+
+      wrap.innerHTML = list.map(u => {
+        const online = typeof isUserOnline === 'function' ? isUserOnline(u.id) : false;
+        const prefix = u.lastMsg ? (u.lastMsg.sender_id === (typeof currentUser !== 'undefined' && currentUser?.id) ? 'Anda: ' : '') : '';
+        const preview = u.lastMsg ? apEsc(prefix + u.lastMsg.message) : 'Belum ada pesan';
+        const time = u.lastMsg ? apTimeAgo(u.lastMsg.created_at) : '';
+        return `
+          <div class="ap-row" onclick="apModalOpenDM('${u.id}')">
+            <div class="ap-avatar-wrap">
+              <div class="ap-avatar" style="${apAvatarStyle(u.avatar_url)}"></div>
+              <span class="ap-online-dot ${online ? 'live' : ''}"></span>
+            </div>
+            <div class="ap-row-body">
+              <div class="ap-row-name">${apEsc(u.full_name || u.email || 'Pengguna')}</div>
+              <div class="ap-row-preview">${preview}</div>
+            </div>
+            <div class="ap-row-meta">
+              <span class="ap-row-time">${time}</span>
+              ${u.unread ? `<span class="ap-row-badge">${u.unread > 99 ? '99+' : u.unread}</span>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+    } else {
+      const msgs = (typeof chatMessagesCache !== 'undefined' && chatMessagesCache) || [];
+      if(!msgs.length){ wrap.innerHTML = `<div class="ap-empty">Belum ada obrolan tim.</div>`; return; }
+      const bySender = new Map();
+      msgs.forEach(m => bySender.set(m.sender_id, m));
+      const list = Array.from(bySender.values()).sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+      wrap.innerHTML = list.map(m => {
+        const online = typeof isUserOnline === 'function' ? isUserOnline(m.sender_id) : false;
+        const mine = m.sender_id === (typeof currentUser !== 'undefined' && currentUser?.id);
+        return `
+          <div class="ap-row" onclick="apModalOpenTeam()">
+            <div class="ap-avatar-wrap">
+              <div class="ap-avatar" style="${apAvatarStyle(m.sender_avatar_url)}"></div>
+              <span class="ap-online-dot ${online ? 'live' : ''}"></span>
+            </div>
+            <div class="ap-row-body">
+              <div class="ap-row-name">${apEsc(m.sender_name || 'Pengguna')}</div>
+              <div class="ap-row-preview">${mine ? 'Anda: ' : ''}${apEsc(m.message || '')}</div>
+            </div>
+            <div class="ap-row-meta"><span class="ap-row-time">${apTimeAgo(m.created_at)}</span></div>
+          </div>`;
+      }).join('');
+    }
+  }
+
+  window.apModalOpenDM = function(userId){
+    apCloseChatModal();
+    apOpenDM(userId);
+  };
+  window.apModalOpenTeam = function(){
+    apCloseChatModal();
+    apOpenTeamChat();
   };
 
   /* ---------------------------------------------------------------
