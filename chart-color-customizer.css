@@ -1,8 +1,20 @@
-/* Toolbar "Warna" di bagian atas tiap kartu grafik -- lihat chart-color-customizer.js */
-.cc-toolbar{
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-  padding: 0 0 10px; margin-bottom: 4px; border-bottom: 1px dashed var(--border-soft);
+/* Widget "Warna" di bagian atas tiap kartu grafik -- tersembunyi
+   default, dibuka lewat tombol kecil. Lihat chart-color-customizer.js */
+.cc-widget{ margin-bottom: 4px; }
+.cc-toggle-btn{
+  width: 24px; height: 24px; border-radius: 7px; border: 1px solid var(--border-soft);
+  background: var(--bg-elevated); color: var(--text-muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s ease, color .15s ease;
 }
+.cc-toggle-btn:hover{ background: var(--bg-card-hover); color: var(--text-primary); }
+.cc-toggle-btn svg{ width: 13px; height: 13px; }
+
+.cc-toolbar{
+  display: none; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 8px 0 10px; margin-top: 6px; border-bottom: 1px dashed var(--border-soft);
+}
+.cc-toolbar.cc-open{ display: flex; }
 .cc-toolbar-label{ font-size: 11px; font-weight: 600; color: var(--text-muted); flex-shrink: 0; }
 .cc-select{
   flex: 1 1 auto; min-width: 90px; max-width: 220px; font-size: 11.5px; padding: 4px 6px;

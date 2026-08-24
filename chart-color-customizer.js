@@ -143,19 +143,28 @@
     const container = canvas.closest('.card-body');
     if(!container) return;
 
-    let bar = container.querySelector(':scope > .cc-toolbar');
-    if(!bar){
-      bar = document.createElement('div');
-      bar.className = 'cc-toolbar';
-      bar.innerHTML = `
-        <span class="cc-toolbar-label">Warna</span>
-        <select class="cc-select"></select>
-        <input type="color" class="cc-color" title="Pilih warna">
-        <button type="button" class="cc-reset" title="Kembalikan ke warna default">↺</button>
+    let wrap = container.querySelector(':scope > .cc-widget');
+    if(!wrap){
+      wrap = document.createElement('div');
+      wrap.className = 'cc-widget';
+      wrap.innerHTML = `
+        <button type="button" class="cc-toggle-btn" title="Kustomisasi warna grafik">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+        </button>
+        <div class="cc-toolbar">
+          <span class="cc-toolbar-label">Warna</span>
+          <select class="cc-select"></select>
+          <input type="color" class="cc-color" title="Pilih warna">
+          <button type="button" class="cc-reset" title="Kembalikan ke warna default">↺</button>
+        </div>
       `;
-      container.insertBefore(bar, container.firstChild);
+      container.insertBefore(wrap, container.firstChild);
+      wrap.querySelector('.cc-toggle-btn').addEventListener('click', () => {
+        wrap.querySelector('.cc-toolbar').classList.toggle('cc-open');
+      });
     }
 
+    const bar = wrap.querySelector('.cc-toolbar');
     const select = bar.querySelector('.cc-select');
     const colorInput = bar.querySelector('.cc-color');
     const resetBtn = bar.querySelector('.cc-reset');
