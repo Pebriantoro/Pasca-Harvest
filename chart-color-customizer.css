@@ -1,0 +1,23 @@
+/* Toolbar "Warna" di bagian atas tiap kartu grafik -- lihat chart-color-customizer.js */
+.cc-toolbar{
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 0 0 10px; margin-bottom: 4px; border-bottom: 1px dashed var(--border-soft);
+}
+.cc-toolbar-label{ font-size: 11px; font-weight: 600; color: var(--text-muted); flex-shrink: 0; }
+.cc-select{
+  flex: 1 1 auto; min-width: 90px; max-width: 220px; font-size: 11.5px; padding: 4px 6px;
+  border-radius: 7px; border: 1px solid var(--border-soft); background: var(--bg-elevated);
+  color: var(--text-primary); font-family: inherit;
+}
+.cc-color{
+  width: 26px; height: 26px; padding: 0; border-radius: 7px; border: 1px solid var(--border-soft);
+  background: var(--bg-elevated); cursor: pointer; flex-shrink: 0;
+}
+.cc-color::-webkit-color-swatch-wrapper{ padding: 2px; }
+.cc-color::-webkit-color-swatch{ border-radius: 4px; border: none; }
+.cc-reset{
+  width: 26px; height: 26px; border-radius: 7px; border: 1px solid var(--border-soft); background: transparent;
+  color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0; transition: background .15s ease, color .15s ease;
+}
+.cc-reset:hover{ background: var(--bg-card-hover); color: var(--text-primary); }
