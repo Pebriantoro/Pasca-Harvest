@@ -90,6 +90,44 @@ let tsbState = {
     .tsb-detail-table{ width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
     .tsb-detail-table th, .tsb-detail-table td{ border:1px solid var(--border-soft, rgba(255,255,255,.12)); padding:6px 8px; text-align:center; }
     .tsb-remove-row{ position:absolute; top:10px; right:12px; }
+
+    /* --- Tampilan mirip kertas FM-BS-ADM-05 --- */
+    .tsb-paper{ background:#fff; color:#1a1a1a; border:1px solid #999; border-radius:4px; overflow:hidden; font-family:Arial, Helvetica, sans-serif; }
+    .tsb-paper-head{ display:grid; grid-template-columns:1.4fr 1fr; border-bottom:2px solid #1a1a1a; }
+    .tsb-paper-head-left{ display:flex; align-items:center; gap:10px; padding:10px 14px; border-right:2px solid #1a1a1a; }
+    .tsb-paper-head-left img{ width:38px; height:38px; object-fit:contain; }
+    .tsb-paper-head-left .tsb-ph-title{ font-weight:800; font-size:14px; line-height:1.3; }
+    .tsb-paper-head-left .tsb-ph-sub{ font-size:10.5px; color:#555; }
+    .tsb-paper-head-right table{ width:100%; border-collapse:collapse; font-size:10.5px; }
+    .tsb-paper-head-right td{ border-bottom:1px solid #ccc; padding:3px 8px; }
+    .tsb-paper-head-right td:first-child{ width:42%; color:#555; }
+    .tsb-paper-meta{ display:grid; grid-template-columns:1fr 1fr; gap:0; border-bottom:2px solid #1a1a1a; font-size:11.5px; }
+    .tsb-paper-meta > div{ padding:8px 14px; }
+    .tsb-paper-meta > div:first-child{ border-right:1px solid #ccc; }
+    .tsb-paper-meta b{ display:inline-block; min-width:105px; color:#555; font-weight:600; }
+    .tsb-paper-table{ width:100%; border-collapse:collapse; font-size:10.5px; color:#1a1a1a; }
+    .tsb-paper-table th, .tsb-paper-table td{ border:1px solid #1a1a1a; padding:5px 6px; text-align:center; }
+    .tsb-paper-table thead th{ background:#eee; font-weight:700; }
+    .tsb-paper-table .tsb-pt-total td{ background:#f7f7f7; font-weight:700; }
+    .tsb-paper-foot{ display:grid; grid-template-columns:1fr 1fr; border-top:2px solid #1a1a1a; font-size:11.5px; }
+    .tsb-paper-foot > div{ padding:8px 14px; }
+    .tsb-paper-foot > div:first-child{ border-right:1px solid #ccc; }
+    .tsb-paper-ttd{ display:grid; grid-template-columns:repeat(4,1fr); border-top:2px solid #1a1a1a; text-align:center; font-size:11px; }
+    .tsb-paper-ttd > div{ padding:12px 8px; border-right:1px solid #ccc; }
+    .tsb-paper-ttd > div:last-child{ border-right:none; }
+    .tsb-ttd-role{ font-weight:700; margin-bottom:26px; }
+    .tsb-ttd-name{ border-top:1px solid #1a1a1a; padding-top:5px; font-weight:700; }
+    .tsb-ttd-empty{ color:#aaa; font-style:italic; }
+    .tsb-ttd-stamp{ display:inline-block; margin-top:4px; padding:2px 8px; border-radius:3px; font-size:9.5px; font-weight:700; }
+    @media (max-width:760px){
+      .tsb-paper-head{ grid-template-columns:1fr; }
+      .tsb-paper-head-left{ border-right:none; border-bottom:1px solid #ccc; }
+      .tsb-paper-meta{ grid-template-columns:1fr; }
+      .tsb-paper-meta > div:first-child{ border-right:none; border-bottom:1px solid #ccc; }
+      .tsb-paper-foot{ grid-template-columns:1fr; }
+      .tsb-paper-foot > div:first-child{ border-right:none; border-bottom:1px solid #ccc; }
+      .tsb-paper-ttd{ grid-template-columns:1fr 1fr; }
+    }
   `;
   const el = document.createElement('style');
   el.setAttribute('data-tsb', '1');
@@ -701,30 +739,33 @@ function tsbCanAct(row, role){
   return false;
 }
 function tsbDetailRowsTableHTML(rows){
-  if(!Array.isArray(rows) || !rows.length) return `<div class="empty-state">Belum ada baris kegiatan.</div>`;
-  return `
-    <div class="table-scroll">
-      <table class="tsb-detail-table">
-        <thead><tr>
-          <th>Mulai</th><th>Selesai</th><th>Total Jam</th>
-          <th>HM Awal</th><th>Foto</th><th>HM Akhir</th><th>Foto</th><th>Total HM</th>
-          <th>BBM</th><th>Lokasi</th><th>Kegiatan</th><th>Meter</th><th>M³</th><th>Ha</th>
-        </tr></thead>
-        <tbody>
-          ${rows.map(r => `
-            <tr>
-              <td>${esc(r.mulai||'-')}</td><td>${esc(r.selesai||'-')}</td><td><b>${r.total_jam ?? '-'}</b></td>
-              <td>${r.hm_awal ?? '-'}</td><td>${r.hm_awal_foto ? `<img class="tsb-foto-thumb" src="${esc(r.hm_awal_foto)}" onclick="window.open('${esc(r.hm_awal_foto)}','_blank')">` : '–'}</td>
-              <td>${r.hm_akhir ?? '-'}</td><td>${r.hm_akhir_foto ? `<img class="tsb-foto-thumb" src="${esc(r.hm_akhir_foto)}" onclick="window.open('${esc(r.hm_akhir_foto)}','_blank')">` : '–'}</td>
-              <td><b>${r.total_hm ?? '-'}</b></td>
-              <td>${r.bbm_terpakai ?? '-'}</td><td>${esc(r.lokasi||'-')}</td><td>${esc(r.kegiatan||'-')}</td>
-              <td>${r.meter ?? '-'}</td><td>${r.m3 ?? '-'}</td><td>${r.ha ?? '-'}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
+  if(!Array.isArray(rows) || !rows.length) return `<tr><td colspan="14" style="color:#999;">Belum ada baris kegiatan.</td></tr>`;
+  const totals = tsbGrandTotals(rows);
+  const body = rows.map(r => `
+    <tr>
+      <td>${esc(r.mulai||'-')}</td><td>${esc(r.selesai||'-')}</td><td>${r.total_jam ?? '-'}</td>
+      <td>${r.hm_awal ?? '-'}</td><td>${r.hm_akhir ?? '-'}</td><td>${r.total_hm ?? '-'}</td>
+      <td>${r.bbm_terpakai ?? '-'}</td>
+      <td>${esc(r.lokasi||'-')}</td>
+      <td>${esc(r.kegiatan||'-')}</td>
+      <td>${r.meter ?? '-'}</td><td>${r.m3 ?? '-'}</td><td>${r.ha ?? '-'}</td>
+      <td>${r.hm_awal_foto ? `<img class="tsb-foto-thumb" src="${esc(r.hm_awal_foto)}" onclick="window.open('${esc(r.hm_awal_foto)}','_blank')">` : '–'}</td>
+      <td>${r.hm_akhir_foto ? `<img class="tsb-foto-thumb" src="${esc(r.hm_akhir_foto)}" onclick="window.open('${esc(r.hm_akhir_foto)}','_blank')">` : '–'}</td>
+    </tr>
+  `).join('');
+  return body + `
+    <tr class="tsb-pt-total">
+      <td colspan="2">Total</td><td>${fmtNum(totals.jam,1)}</td>
+      <td colspan="2"></td><td>${fmtNum(totals.hm,1)}</td>
+      <td colspan="8"></td>
+    </tr>
   `;
+}
+function tsbTtdCellHTML(role, name, at, empty){
+  if(!name) return `<div class="tsb-ttd-empty">${empty}</div><div class="tsb-ttd-name">( ………………… )</div>`;
+  return `<div class="tsb-ttd-stamp" style="background:var(--accent-green-soft,#e5f3ea); color:var(--accent-green,#3E8B5C);">✓ Digital</div>
+    <div class="tsb-ttd-name">${esc(name)}</div>
+    ${at ? `<div style="font-size:9.5px; color:#777; margin-top:2px;">${esc(fmtTanggalRKH(at.slice(0,10)))}</div>` : ''}`;
 }
 function openTsbDetailModal(id){
   const row = tsbState.rows.find(r => r.id === id);
@@ -735,38 +776,94 @@ function openTsbDetailModal(id){
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay'; overlay.id = 'modalOverlay';
   overlay.innerHTML = `
-    <div class="modal-box" style="max-width:920px;">
+    <div class="modal-box" style="max-width:980px;">
       <div class="modal-header">
         <div class="card-title">Detail Timesheet Alat Berat</div>
         <button class="btn btn-outline btn-icon" onclick="closeModal()">✕</button>
       </div>
-      <div class="modal-body">
-        <div style="font-size:12.5px; color:var(--text-muted); display:flex; gap:16px; flex-wrap:wrap; margin-bottom:8px;">
-          <span>Tanggal: <b>${esc(fmtTanggalRKH(row.tanggal))}</b></span>
-          <span>Zona: <b>${esc(row.zona||'-')}</b></span>
-          <span>Pengawas: <b>${esc(row.nama_pengawas||'-')}</b></span>
-          <span>Kontraktor: <b>${esc(row.kontraktor||'-')}</b></span>
-          <span>Status: ${tsbBadge(row.status_approval)}</span>
-        </div>
-        <div style="font-size:12.5px; color:var(--text-muted); display:flex; gap:16px; flex-wrap:wrap; margin-bottom:14px;">
-          <span>Operator: <b>${esc(row.nama_operator||'-')}</b></span>
-          <span>Kode Unit: <b>${esc(row.kode_unit_alat||'-')}</b></span>
-          <span>Jenis Alat: <b>${esc(row.jenis_alat||'-')}</b></span>
-          <span>Spv: <b>${esc(row.supervisor_name||'-')}</b></span>
-          <span>Superintendent: <b>${esc(row.approved_by_name||'-')}</b></span>
+      <div class="modal-body" style="background:var(--panel-soft, rgba(255,255,255,.03)); padding:18px;">
+
+        <div class="tsb-paper">
+          <div class="tsb-paper-head">
+            <div class="tsb-paper-head-left">
+              <img src="logo.png" alt="">
+              <div>
+                <div class="tsb-ph-title">LAPORAN PEMAKAIAN ALAT<br>(TIME SHEET)</div>
+                <div class="tsb-ph-sub">FORMULIR — FM-BS-ADM-05</div>
+              </div>
+            </div>
+            <div class="tsb-paper-head-right">
+              <table>
+                <tr><td>Status Approval</td><td><b>${esc(row.status_approval||'-')}</b></td></tr>
+                <tr><td>Zona</td><td>${esc(row.zona||'-')}</td></tr>
+                <tr><td>Dibuat oleh (Staff)</td><td>${esc(row.staff_name||'-')}</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="tsb-paper-meta">
+            <div>
+              <div><b>Hari &amp; Tanggal</b>: ${esc(fmtTanggalRKH(row.tanggal))}</div>
+              <div><b>Nama Pengawas</b>: ${esc(row.nama_pengawas||'-')}</div>
+              <div><b>Kontraktor</b>: ${esc(row.kontraktor||'-')}</div>
+            </div>
+            <div>
+              <div><b>Nama Operator</b>: ${esc(row.nama_operator||'-')}</div>
+              <div><b>Kode Unit Alat</b>: ${esc(row.kode_unit_alat||'-')}</div>
+              <div><b>Jenis Alat</b>: ${esc(row.jenis_alat||'-')}</div>
+            </div>
+          </div>
+
+          <div class="table-scroll">
+            <table class="tsb-paper-table">
+              <thead>
+                <tr>
+                  <th colspan="3">Jam Operator</th>
+                  <th colspan="3">Jam Alat / Hours Meter (HM)</th>
+                  <th rowspan="2">BBM<br>Terpakai</th>
+                  <th rowspan="2">Lokasi</th>
+                  <th rowspan="2">Kegiatan /<br>Activity</th>
+                  <th colspan="3">Produksi</th>
+                  <th rowspan="2">Foto<br>HM Awal</th>
+                  <th rowspan="2">Foto<br>HM Akhir</th>
+                </tr>
+                <tr>
+                  <th>Mulai</th><th>Selesai</th><th>Total Jam</th>
+                  <th>HM Awal</th><th>HM Akhir</th><th>Total HM</th>
+                  <th>Meter</th><th>M³</th><th>Ha</th>
+                </tr>
+              </thead>
+              <tbody>${tsbDetailRowsTableHTML(row.rows)}</tbody>
+            </table>
+          </div>
+
+          <div class="tsb-paper-foot">
+            <div><b>BBM dikirim hari ini</b>: ${row.bbm_dikirim ?? '-'} Ltr</div>
+            <div><b>Oli</b>: ${row.oli ?? '-'} Ltr</div>
+          </div>
+          ${row.keterangan ? `<div style="padding:8px 14px; border-top:1px solid #ccc; font-size:11px;"><b>Keterangan</b>: ${esc(row.keterangan)}</div>` : ''}
+          ${row.status_approval===TSB_STATUS.REJECTED && row.rejected_reason ? `<div style="padding:8px 14px; border-top:1px solid #ccc; font-size:11px; color:#a33;"><b>Alasan Ditolak</b> (${esc(row.rejected_by_stage||'-')}): ${esc(row.rejected_reason)}</div>` : ''}
+
+          <div class="tsb-paper-ttd">
+            <div>
+              <div class="tsb-ttd-role">Operator</div>
+              <div class="tsb-ttd-name">${esc(row.nama_operator||'( ………………… )')}</div>
+            </div>
+            <div>
+              <div class="tsb-ttd-role">Pengawas</div>
+              <div class="tsb-ttd-name">${esc(row.nama_pengawas||'( ………………… )')}</div>
+            </div>
+            <div>
+              <div class="tsb-ttd-role">Supervisor</div>
+              ${tsbTtdCellHTML('supervisor', row.verified_by_name, row.verified_at, 'Belum diverifikasi')}
+            </div>
+            <div>
+              <div class="tsb-ttd-role">Superintendent</div>
+              ${tsbTtdCellHTML('superintendent', row.approved_by_name, row.approved_at, 'Belum disetujui')}
+            </div>
+          </div>
         </div>
 
-        ${tsbDetailRowsTableHTML(row.rows)}
-
-        <div class="tsb-grand-total">
-          <span>Total Jam: <b>${row.total_jam ?? '-'}</b></span>
-          <span>Total HM: <b>${row.total_hm ?? '-'}</b></span>
-          <span>BBM Dikirim: <b>${row.bbm_dikirim ?? '-'}</b></span>
-          <span>Oli: <b>${row.oli ?? '-'}</b></span>
-        </div>
-        ${row.keterangan ? `<div style="margin-top:10px; font-size:12.5px;">Keterangan: ${esc(row.keterangan)}</div>` : ''}
-
-        ${row.status_approval===TSB_STATUS.REJECTED && row.rejected_reason ? `<div style="background:var(--accent-red-soft); color:var(--accent-red-text); padding:9px 12px; border-radius:8px; font-size:12.5px; margin-top:14px;">Alasan ditolak (${esc(row.rejected_by_stage||'-')}): ${esc(row.rejected_reason)}</div>` : ''}
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="closeModal()">Tutup</button>
