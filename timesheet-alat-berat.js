@@ -260,8 +260,8 @@ function tsbRowCardHTML(row, idx){
       ${tsbState.formRows.length > 1 ? `<button type="button" class="btn btn-danger btn-sm tsb-remove-row" onclick="tsbRemoveRow(${idx})">✕</button>` : ''}
       <div class="tsb-row-card-title">Baris Kegiatan #${idx+1}</div>
       <div class="tsb-row-grid">
-        <div><label>Jam Mulai</label><input class="input" type="time" value="${esc(row.mulai)}" onchange="tsbUpdateField(${idx},'mulai',this.value)"></div>
-        <div><label>Jam Selesai</label><input class="input" type="time" value="${esc(row.selesai)}" onchange="tsbUpdateField(${idx},'selesai',this.value)"></div>
+        <div><label>Jam Mulai</label><input class="input" type="time" lang="en-GB" value="${esc(row.mulai)}" onchange="tsbUpdateField(${idx},'mulai',this.value)"></div>
+        <div><label>Jam Selesai</label><input class="input" type="time" lang="en-GB" value="${esc(row.selesai)}" onchange="tsbUpdateField(${idx},'selesai',this.value)"></div>
         <div><label>Total Jam</label><div class="tsb-row-total" id="tsbTotalJam_${idx}">${row.total_jam ?? '–'}</div></div>
 
         <div>
@@ -670,11 +670,21 @@ async function openTsbFormModal(id){
       <div class="modal-body">
         <form id="tsbForm" class="tsb-header-grid">
           <div><label class="field-label">Tanggal</label><input class="input" type="date" name="tanggal" value="${esc(existing ? existing.tanggal : todayISO())}" required></div>
-          <div><label class="field-label">Nama Pengawas</label><input class="input" name="nama_pengawas" value="${esc(existing?.nama_pengawas||'')}" required></div>
-          <div><label class="field-label">Kontraktor</label><input class="input" name="kontraktor" value="${esc(existing?.kontraktor||'')}"></div>
+          <div><label class="field-label">Nama Pengawas</label><input class="input" name="nama_pengawas" value="${esc(existing?.nama_pengawas || currentProfile.full_name || '')}" readonly style="opacity:.75; cursor:not-allowed;" required></div>
+          <div><label class="field-label">Kontraktor</label>
+            <select class="input" name="kontraktor">
+              <option value="">— Pilih —</option>
+              ${['Internal','Rental'].map(k => `<option value="${k}" ${existing?.kontraktor===k?'selected':''}>${k}</option>`).join('')}
+            </select>
+          </div>
           <div><label class="field-label">Nama Operator</label><input class="input" name="nama_operator" value="${esc(existing?.nama_operator||'')}" required></div>
           <div><label class="field-label">Kode Unit Alat</label><input class="input" name="kode_unit_alat" value="${esc(existing?.kode_unit_alat||'')}" required></div>
-          <div><label class="field-label">Jenis Alat</label><input class="input" name="jenis_alat" value="${esc(existing?.jenis_alat||'')}" required></div>
+          <div><label class="field-label">Jenis Alat</label>
+            <select class="input" name="jenis_alat" required>
+              <option value="">— Pilih —</option>
+              ${['Dozer','CD','CT','Exc-130','Exc-75','WT'].map(j => `<option value="${j}" ${existing?.jenis_alat===j?'selected':''}>${j}</option>`).join('')}
+            </select>
+          </div>
           <div><label class="field-label">BBM Dikirim Hari Ini (Ltr)</label><input class="input" type="number" step="0.01" name="bbm_dikirim" value="${esc(existing?.bbm_dikirim??'')}"></div>
           <div><label class="field-label">Oli (Ltr)</label><input class="input" type="number" step="0.01" name="oli" value="${esc(existing?.oli??'')}"></div>
           <div>
