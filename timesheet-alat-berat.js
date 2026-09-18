@@ -115,10 +115,12 @@ let tsbState = {
     .tsb-paper-ttd{ display:grid; grid-template-columns:repeat(4,1fr); border-top:2px solid #1a1a1a; text-align:center; font-size:11px; }
     .tsb-paper-ttd > div{ padding:12px 8px; border-right:1px solid #ccc; }
     .tsb-paper-ttd > div:last-child{ border-right:none; }
-    .tsb-ttd-role{ font-weight:700; margin-bottom:26px; }
+    .tsb-ttd-role{ font-weight:700; margin-bottom:6px; }
+    .tsb-ttd-status{ min-height:15px; margin-bottom:6px; font-size:9.5px; line-height:15px; }
     .tsb-ttd-name{ border-top:1px solid #1a1a1a; padding-top:5px; font-weight:700; }
+    .tsb-ttd-date{ min-height:13px; margin-top:2px; font-size:9.5px; color:#777; line-height:13px; }
     .tsb-ttd-empty{ color:#aaa; font-style:italic; }
-    .tsb-ttd-stamp{ display:inline-block; margin-top:4px; padding:2px 8px; border-radius:3px; font-size:9.5px; font-weight:700; }
+    .tsb-ttd-stamp{ display:inline-block; padding:1px 8px; border-radius:3px; font-size:9.5px; font-weight:700; }
     @media (max-width:760px){
       .tsb-paper-head{ grid-template-columns:1fr; }
       .tsb-paper-head-left{ border-right:none; border-bottom:1px solid #ccc; }
@@ -826,10 +828,10 @@ function tsbDetailRowsTableHTML(rows){
   `;
 }
 function tsbTtdCellHTML(role, name, at, empty){
-  if(!name) return `<div class="tsb-ttd-empty">${empty}</div><div class="tsb-ttd-name">( ………………… )</div>`;
-  return `<div class="tsb-ttd-stamp" style="background:var(--accent-green-soft,#e5f3ea); color:var(--accent-green,#3E8B5C);">✓ Digital</div>
+  if(!name) return `<div class="tsb-ttd-status tsb-ttd-empty">${empty}</div><div class="tsb-ttd-name">( ………………… )</div><div class="tsb-ttd-date">&nbsp;</div>`;
+  return `<div class="tsb-ttd-status"><span class="tsb-ttd-stamp" style="background:var(--accent-green-soft,#e5f3ea); color:var(--accent-green,#3E8B5C);">✓ Digital</span></div>
     <div class="tsb-ttd-name">${esc(name)}</div>
-    ${at ? `<div style="font-size:9.5px; color:#777; margin-top:2px;">${esc(fmtTanggalRKH(at.slice(0,10)))}</div>` : ''}`;
+    <div class="tsb-ttd-date">${at ? esc(fmtTanggalRKH(at.slice(0,10))) : '\u00A0'}</div>`;
 }
 function openTsbDetailModal(id){
   const row = tsbState.rows.find(r => r.id === id);
@@ -911,11 +913,15 @@ function openTsbDetailModal(id){
           <div class="tsb-paper-ttd">
             <div>
               <div class="tsb-ttd-role">Operator</div>
+              <div class="tsb-ttd-status">&nbsp;</div>
               <div class="tsb-ttd-name">${esc(row.nama_operator||'( ………………… )')}</div>
+              <div class="tsb-ttd-date">&nbsp;</div>
             </div>
             <div>
               <div class="tsb-ttd-role">Pengawas</div>
+              <div class="tsb-ttd-status">&nbsp;</div>
               <div class="tsb-ttd-name">${esc(row.nama_pengawas||'( ………………… )')}</div>
+              <div class="tsb-ttd-date">&nbsp;</div>
             </div>
             <div>
               <div class="tsb-ttd-role">Supervisor</div>
