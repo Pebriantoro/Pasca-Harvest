@@ -51,7 +51,7 @@ const TSB_STATUS = {
 let tsbState = {
   tab: 'aksi', // 'aksi' | 'tim' (supervisor/superintendent)
   rows: [],
-  filters: { tanggal: '', kode_unit_alat: '', kontraktor: '', operator: '' },
+  filters: { tanggal: '', kode_unit_alat: '', kontraktor: '', operator: '', zona: '' },
   exportRows: [],
   formRows: [],     // baris kegiatan sedang diedit di form modal
   fotoUploadCtx: null, // { idx, field } saat menunggu pilih file
@@ -352,18 +352,20 @@ function tsbApplyFilters(rows){
     if(f.kode_unit_alat && !(r.kode_unit_alat||'').toLowerCase().includes(f.kode_unit_alat.toLowerCase())) return false;
     if(f.kontraktor && !(r.kontraktor||'').toLowerCase().includes(f.kontraktor.toLowerCase())) return false;
     if(f.operator && !(r.nama_operator||'').toLowerCase().includes(f.operator.toLowerCase())) return false;
+    if(f.zona && (r.zona||'').toLowerCase() !== f.zona.toLowerCase()) return false;
     return true;
   });
 }
-function tsbFilterBarHTML(rerenderFn){
+function tsbFilterBarHTML(rerenderFn, showZona){
   const f = tsbState.filters;
   return `
     <div class="card tsb-filter-bar">
       <div class="tsb-f"><label>Tanggal</label><input class="input" type="date" value="${esc(f.tanggal)}" onchange="tsbState.filters.tanggal=this.value; ${rerenderFn}"></div>
+      ${showZona ? `<div class="tsb-f"><label>Zona</label><input class="input" placeholder="Cari zona…" value="${esc(f.zona)}" oninput="tsbState.filters.zona=this.value; ${rerenderFn}"></div>` : ''}
       <div class="tsb-f"><label>Kode Unit Alat</label><input class="input" placeholder="Cari kode unit…" value="${esc(f.kode_unit_alat)}" oninput="tsbState.filters.kode_unit_alat=this.value; ${rerenderFn}"></div>
       <div class="tsb-f"><label>Kontraktor</label><input class="input" placeholder="Cari kontraktor…" value="${esc(f.kontraktor)}" oninput="tsbState.filters.kontraktor=this.value; ${rerenderFn}"></div>
       <div class="tsb-f"><label>Operator</label><input class="input" placeholder="Cari operator…" value="${esc(f.operator)}" oninput="tsbState.filters.operator=this.value; ${rerenderFn}"></div>
-      <div class="tsb-f tsb-f-reset"><button class="btn btn-outline btn-sm" onclick="tsbState.filters={tanggal:'',kode_unit_alat:'',kontraktor:'',operator:''}; ${rerenderFn}">Reset Filter</button></div>
+      <div class="tsb-f tsb-f-reset"><button class="btn btn-outline btn-sm" onclick="tsbState.filters={tanggal:'',kode_unit_alat:'',kontraktor:'',operator:'',zona:''}; ${rerenderFn}">Reset Filter</button></div>
     </div>
   `;
 }
@@ -392,6 +394,50 @@ function tsbSummarize(rows){
   });
   return s;
 }
+function tsbRecapByUnit(rows){
+  const map = {};
+  rows.forEach(r => {
+    const key = r.kode_unit_alat || '–';
+    if(!map[key]) map[key] = { kode_unit_alat:key, jenis_alat:r.jenis_alat||'-', jumlah:0, totalJam:0, totalHm:0, pendingSupervisor:0, pendingSuperintendent:0, approved:0, rejected:0 };
+    const b = map[key];
+    b.jumlah++;
+    b.totalJam += (parseFloat(r.total_jam)||0);
+    b.totalHm += (parseFloat(r.total_hm)||0);
+    if(r.status_approval===TSB_STATUS.PENDING_SUPERVISOR) b.pendingSupervisor++;
+    else if(r.status_approval===TSB_STATUS.PENDING_SUPERINTENDENT) b.pendingSuperintendent++;
+    else if(r.status_approval===TSB_STATUS.APPROVED) b.approved++;
+    else if(r.status_approval===TSB_STATUS.REJECTED) b.rejected++;
+  });
+  return Object.values(map).sort((a,b) => a.kode_unit_alat.localeCompare(b.kode_unit_alat));
+}
+function tsbRecapTableHTML(rows, title){
+  const recap = tsbRecapByUnit(rows);
+  return `
+    <div class="card" style="margin-top:16px;">
+      <div class="card-header"><span class="card-title">${esc(title)}</span></div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Kode Unit</th><th>Jenis Alat</th><th style="text-align:right;">Jumlah Lembar</th><th style="text-align:right;">Total Jam</th><th style="text-align:right;">Total HM</th><th style="text-align:right;">Menunggu Verifikasi</th><th style="text-align:right;">Menunggu Approval</th><th style="text-align:right;">Disetujui</th><th style="text-align:right;">Ditolak</th></tr></thead>
+          <tbody>
+            ${recap.length ? recap.map(b => `
+              <tr>
+                <td><span class="petak-tag">${esc(b.kode_unit_alat)}</span></td>
+                <td>${esc(b.jenis_alat)}</td>
+                <td style="text-align:right;">${b.jumlah}</td>
+                <td style="text-align:right;"><b>${fmtNum(b.totalJam,1)}</b></td>
+                <td style="text-align:right;"><b>${fmtNum(b.totalHm,1)}</b></td>
+                <td style="text-align:right;">${b.pendingSupervisor}</td>
+                <td style="text-align:right;">${b.pendingSuperintendent}</td>
+                <td style="text-align:right;">${b.approved}</td>
+                <td style="text-align:right;">${b.rejected}</td>
+              </tr>
+            `).join('') : `<tr><td colspan="9" style="text-align:center; color:var(--text-faint); padding:24px;">Belum ada data sesuai filter.</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
 function tsbSummaryCards(s){
   return `<div class="kpi-grid">
     ${kpiCard('Total Timesheet', s.total, 'lembar', 'var(--accent-gold)')}
@@ -418,7 +464,7 @@ async function renderTimesheetAlatBerat(){
   if(role === 'staff') return renderTsbStaff();
   if(role === 'supervisor') return renderTsbAtasan('supervisor');
   if(role === 'superintendent') return renderTsbAtasan('superintendent');
-  return renderTsbSummaryOnly(); // admin & manager
+  return renderTsbAdminManager(); // admin & manager — lihat SEMUA timesheet semua zona
 }
 
 /* --- 7a. STAFF ---------------------------------------------------------- */
@@ -529,34 +575,16 @@ async function renderTsbAtasan(role){
     ` : `
       ${tsbFilterBarHTML(`renderTsbAtasan('${role}')`)}
       <div class="card">
-        <div class="card-header"><span class="card-title">Semua Timesheet Zona Saya (${filteredTim.length})</span><button class="btn btn-outline btn-sm" style="height:34px; box-sizing:border-box;" onclick="tsbExportJPEG(tsbState.exportRows)">Export JPEG</button></div>
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead><tr><th>Tanggal</th><th>Staff</th><th>Kode Unit</th><th>Operator</th><th>Total Jam</th><th>Total HM</th><th>Status</th><th>Aksi</th></tr></thead>
-            <tbody>
-              ${filteredTim.length ? filteredTim.map(r => `
-                <tr>
-                  <td>${esc(fmtTanggalRKH(r.tanggal))}</td>
-                  <td>${esc(r.staff_name)}</td>
-                  <td><span class="petak-tag">${esc(r.kode_unit_alat||'-')}</span></td>
-                  <td>${esc(r.nama_operator||'-')}</td>
-                  <td>${r.total_jam ?? '-'}</td>
-                  <td>${r.total_hm ?? '-'}</td>
-                  <td>${tsbBadge(r.status_approval)}</td>
-                  <td><button class="btn btn-outline btn-sm" onclick="openTsbDetailModal(${r.id})">Detail</button></td>
-                </tr>
-              `).join('') : `<tr><td colspan="8" style="text-align:center; color:var(--text-faint); padding:24px;">Tidak ada data sesuai filter.</td></tr>`}
-            </tbody>
-          </table>
-        </div>
+        <div class="card-header"><span class="card-title">Rekap Timesheet Zona ${esc(currentProfile.zona||'-')} (${filteredTim.length} lembar)</span><button class="btn btn-outline btn-sm" style="height:34px; box-sizing:border-box;" onclick="tsbExportJPEG(tsbState.exportRows)">Export JPEG</button></div>
       </div>
+      ${tsbRecapTableHTML(filteredTim, 'Rekap per Kode Unit Alat — Zona Saya')}
     `}
   `;
 }
 
-/* --- 7c. ADMIN / MANAGER (ringkasan SEMUA zona) ------------------------- */
-async function renderTsbSummaryOnly(){
-  const allRows = await tsbFetchRows();
+/* --- 7c. ADMIN / MANAGER (SEMUA timesheet, SEMUA zona) ------------------ */
+async function renderTsbAdminManager(){
+  const allRows = await tsbFetchRows(); // admin/manager: tsbScopedQuery tidak membatasi zona -> otomatis SEMUA
   tsbState.rows = allRows;
   const rows = tsbApplyFilters(allRows);
   tsbState.exportRows = rows;
@@ -567,8 +595,8 @@ async function renderTsbSummaryOnly(){
 
   $('#pageContent').innerHTML = `
     ${tsbSummaryCards(s)}
-    <div class="card" style="margin-bottom:16px;"><div class="card-header"><span class="card-title">Ringkasan Timesheet Alat Berat — Semua Zona</span><button class="btn btn-outline btn-sm" onclick="tsbExportJPEG(tsbState.exportRows)">Export JPEG</button></div></div>
-    ${tsbFilterBarHTML('renderTsbSummaryOnly()')}
+    <div class="card" style="margin-bottom:16px;"><div class="card-header"><span class="card-title">Timesheet Alat Berat — Semua Zona</span><button class="btn btn-outline btn-sm" onclick="tsbExportJPEG(tsbState.exportRows)">Export JPEG</button></div></div>
+    ${tsbFilterBarHTML('renderTsbAdminManager()', true)}
     <div class="card" style="margin-top:16px;">
       <div class="card-header"><span class="card-title">Ringkasan per Zona</span></div>
       <div class="table-scroll">
@@ -587,6 +615,32 @@ async function renderTsbSummaryOnly(){
                 <td style="text-align:right;"><b>${fmtNum(perZona[z].totalHm,1)}</b></td>
               </tr>
             `).join('') : `<tr><td colspan="8" style="text-align:center; color:var(--text-faint); padding:24px;">Belum ada data sesuai filter.</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="card-header"><span class="card-title">Semua Timesheet — Daftar Lengkap (${rows.length})</span></div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Tanggal</th><th>Zona</th><th>Staff</th><th>Kode Unit</th><th>Jenis Alat</th><th>Operator</th><th>Kontraktor</th><th>Total Jam</th><th>Total HM</th><th>Status</th><th>Aksi</th></tr></thead>
+          <tbody>
+            ${rows.length ? rows.map(r => `
+              <tr>
+                <td>${esc(fmtTanggalRKH(r.tanggal))}</td>
+                <td><b>${esc(r.zona||'-')}</b></td>
+                <td>${esc(r.staff_name||'-')}</td>
+                <td><span class="petak-tag">${esc(r.kode_unit_alat||'-')}</span></td>
+                <td>${esc(r.jenis_alat||'-')}</td>
+                <td>${esc(r.nama_operator||'-')}</td>
+                <td>${esc(r.kontraktor||'-')}</td>
+                <td>${r.total_jam ?? '-'}</td>
+                <td>${r.total_hm ?? '-'}</td>
+                <td>${tsbBadge(r.status_approval)}</td>
+                <td><button class="btn btn-outline btn-sm" onclick="openTsbDetailModal(${r.id})">Detail</button></td>
+              </tr>
+            `).join('') : `<tr><td colspan="11" style="text-align:center; color:var(--text-faint); padding:24px;">Tidak ada data sesuai filter.</td></tr>`}
           </tbody>
         </table>
       </div>
