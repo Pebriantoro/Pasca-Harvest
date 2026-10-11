@@ -297,9 +297,9 @@ function paintTebangBibit(allRows){
         <div style="margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;">
           ${typeof petaEmbedButtonHTML === 'function' ? petaEmbedButtonHTML('tebang_bibit') : ''}
           ${isAdminRole() ? `
-          <button class="btn btn-outline btn-sm" onclick="triggerImportTebangBibit()" title="Baris dengan Petak yang sudah ada akan diperbarui, yang belum ada akan ditambahkan.">
+          <button class="btn btn-outline btn-sm" onclick="triggerImportTebangBibit()" title="Petak di file diperbarui/ditambahkan. Petak lama yang tidak ada di file akan dihapus.">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg>
-            Import XLSX (Tambah/Update)
+            Import XLSX (Ganti Data)
           </button>
           <input type="file" id="importFileTebangBibit" accept=".xlsx,.xls" class="hidden" onchange="handleImportTebangBibit(this)">
           ${renderExportMenu('tebangbibit')}` : ''}
@@ -563,6 +563,18 @@ async function handleImportTebangBibit(input){
       const existingMap = new Map();
       existingRows.forEach(r => { const key = normPetak(r.petak); if(key) existingMap.set(key, r.id); });
 
+      // Data di database yang petaknya TIDAK ada di file dianggap sudah tidak
+      // berlaku -> dihapus setelah upsert sukses, supaya jumlah petak = isi file.
+      const filePetakSet = new Set(payloadRows.map(o => normPetak(o.petak)));
+      const orphanRows = existingRows.filter(r => { const k = normPetak(r.petak); return k && !filePetakSet.has(k); });
+
+      hideImportProgress(true);
+      const confirmedTB = await showExcelImportPreview(payloadRows, TB_COLUMNS, {
+        label: `Tebang Bibit (${filePetakSet.size} petak)` + (orphanRows.length ? ` — ${orphanRows.length} petak lama di luar file akan DIHAPUS: ${orphanRows.map(r=>r.petak).join(', ')}` : '')
+      });
+      if(!confirmedTB){ toast('Import dibatalkan', 'info'); return; }
+      showImportProgress();
+
       const matched = [];
       const toInsert = [];
       payloadRows.forEach(o=>{
@@ -586,12 +598,23 @@ async function handleImportTebangBibit(input){
         });
       }
 
+      let deletedOrphan = 0, failedDeleteOrphan = 0;
+      if(orphanRows.length && !failedUpdate.length && !failedInsert){
+        const delResults = await Promise.all(orphanRows.map(r => supa.from(TB_TABLE).delete().eq('id', r.id)));
+        delResults.forEach((r,i)=>{
+          if(r.error) failedDeleteOrphan++;
+          else { deletedOrphan++; logAudit(TB_TABLE, orphanRows[i].id, orphanRows[i].petak, orphanRows[i], {}, 'hapus'); }
+        });
+      }
+
       if(successUpdate) await logNotificationGrouped(TB_TABLE, 'import', matched.filter((_,i)=>!updateResults[i].error).map(m=>m.payload));
       if(successInsert) await logNotificationGrouped(TB_TABLE, 'import', toInsert);
 
       let msg = '';
       if(successUpdate) msg += `${successUpdate} baris diperbarui`;
       if(successInsert) msg += (msg ? ', ' : '') + `${successInsert} baris baru ditambahkan`;
+      if(deletedOrphan) msg += (msg ? ', ' : '') + `${deletedOrphan} petak lama di luar file dihapus`;
+      if(failedDeleteOrphan) msg += (msg ? ', ' : '') + `${failedDeleteOrphan} petak lama gagal dihapus`;
       if(failedUpdate.length) msg += (msg ? ', ' : '') + `${failedUpdate.length} gagal diperbarui`;
       if(failedInsert) msg += (msg ? ', ' : '') + `${failedInsert} gagal ditambahkan${insertErrorMsg ? ' — ' + insertErrorMsg : ''}`;
       if(!msg) msg = 'Tidak ada data yang diproses';
