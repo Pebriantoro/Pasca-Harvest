@@ -3243,6 +3243,21 @@ function dlPercentPlugin(){
     } };
 }
 
+// Warna legend HARUS dibaca dari dataset chart yang hidup (bukan dari array
+// warna yang ditangkap saat chart dibuat), supaya ikut berubah saat warna
+// dikustomisasi lewat toolbar Warna (chart-color-customizer.js).
+// - dataset per-seri (progress bar bertumpuk): cari dataset berlabel sama
+// - 1 dataset dengan backgroundColor array (status bar): ambil per-index
+function legendColorFromChart(chart, label, fallback, index){
+  try{
+    const dss = (chart && chart.data && chart.data.datasets) || [];
+    const byLabel = dss.find(d => d && d.label === label);
+    let c;
+    if(byLabel) c = Array.isArray(byLabel.backgroundColor) ? byLabel.backgroundColor[0] : byLabel.backgroundColor;
+    else if(index !== undefined && dss.length === 1 && Array.isArray(dss[0].backgroundColor)) c = dss[0].backgroundColor[index];
+    return (typeof c === 'string' && c) ? c : fallback;
+  }catch(_e){ return fallback; }
+}
 function drawDonut(canvasId, dataMap, semantic, customColors){
   try{
   destroyChart(canvasId);
@@ -3291,7 +3306,7 @@ function drawStatusProgressBar(canvasId, dataMap){
       scales:{ x:{ stacked:true, display:false, max: total || 1 }, y:{ stacked:true, display:false } },
       plugins:{
         legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:9, font:{size:11},
-          generateLabels: chart => orderedLabels.map((l,i)=>({ text:l, fillStyle:colors[i], strokeStyle:colors[i], fontColor:CHART_TEXT })) } },
+          generateLabels: chart => orderedLabels.map((l,i)=>{ const c = legendColorFromChart(chart, l, colors[i]); return { text:l, fillStyle:c, strokeStyle:c, fontColor:CHART_TEXT }; }) } },
         datalabels:{ ...DL_STYLE, anchor:'center', align:'center', color:'#fff',
           font:{ weight:'800', size:12 }, textStrokeColor:'#000', textStrokeWidth:1,
           formatter:(value)=>{ if(!total || !value) return ''; return Math.round(value/total*100) + '%'; } }
@@ -3327,7 +3342,7 @@ function drawCategoryProgressBar(canvasId, dataMap, orderKeys){
       scales:{ x:{ stacked:true, display:false, max: total || 1 }, y:{ stacked:true, display:false } },
       plugins:{
         legend:{ position:'bottom', labels:{ color:CHART_TEXT, boxWidth:9, font:{size:11},
-          generateLabels: chart => orderedLabels.map((l,i)=>({ text:l, fillStyle:colors[i], strokeStyle:colors[i], fontColor:CHART_TEXT })) } },
+          generateLabels: chart => orderedLabels.map((l,i)=>{ const c = legendColorFromChart(chart, l, colors[i]); return { text:l, fillStyle:c, strokeStyle:c, fontColor:CHART_TEXT }; }) } },
         tooltip:{ callbacks:{ label:(ctx)=> `${ctx.dataset.label}: ${ctx.raw}` } },
         datalabels:{ ...DL_STYLE, anchor:'center', align:'center', color:'#fff',
           font:{ weight:'800', size:12 }, textStrokeColor:'#000', textStrokeWidth:1,
@@ -3365,7 +3380,7 @@ function drawStatusBar(canvasId, dataMap){
     data:{ labels, datasets:[{ data:values, backgroundColor:colors, borderRadius:10, maxBarThickness:70 }] },
     options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ top:22 } }, plugins:{
         legend:{ display:true, position:'bottom', labels:{ color:CHART_TEXT, boxWidth:9, font:{size:11},
-          generateLabels: chart => labels.map((l,i)=>({ text:l, fillStyle:colors[i], strokeStyle:colors[i], fontColor:CHART_TEXT })) } },
+          generateLabels: chart => labels.map((l,i)=>{ const c = legendColorFromChart(chart, l, colors[i], i); return { text:l, fillStyle:c, strokeStyle:c, fontColor:CHART_TEXT }; }) } },
         datalabels:{ ...DL_STYLE, anchor:'end', align:'top', offset:2, formatter:dlValue } },
       scales:{ x:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} }, y:{ ticks:{color:CHART_TEXT, font:{size:10.5}}, grid:{display:false} } } }
   });
