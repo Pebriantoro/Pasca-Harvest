@@ -2298,15 +2298,33 @@ function refreshCurrentView(){
 // tidak perlu lagi masuk daftar ini — filter zona langsung lewat query biasa.)
 const TABLES_WITHOUT_ZONA_COLUMN = [];
 
+// PostgREST (Supabase) membatasi SELECT maksimal 1000 baris per request.
+// Helper ini menarik semua baris dengan paging .range() sampai habis.
+// buildQuery: fungsi yang mengembalikan query BARU tiap dipanggil (sudah
+// termasuk .order() yang stabil supaya halaman tidak tumpang-tindih).
+async function fetchAllRows(buildQuery, pageSize = 1000){
+  const all = [];
+  for(let from = 0; ; from += pageSize){
+    const { data, error } = await buildQuery().range(from, from + pageSize - 1);
+    if(error) return { data: null, error };
+    const chunk = data || [];
+    all.push(...chunk);
+    if(chunk.length < pageSize) break;
+  }
+  return { data: all, error: null };
+}
 async function ensureData(table){
   if(state[table].loaded) return state[table].data;
   const zonaRestrict = getUserZonaRestriction();
   const personRestrict = getUserPersonRestriction();
   const noZonaColumn = TABLES_WITHOUT_ZONA_COLUMN.includes(table);
-  let query = supa.from(table).select('*').order('id', { ascending:false });
-  if(zonaRestrict && !noZonaColumn) query = query.ilike('zona', zonaRestrict); // tanpa wildcard = pencocokan persis, tidak peka huruf besar/kecil
-  if(personRestrict && TABLES[table]?.columns.includes(personRestrict.column)) query = query.ilike(personRestrict.column, personRestrict.name);
-  const { data, error } = await query;
+  const buildQuery = () => {
+    let query = supa.from(table).select('*').order('id', { ascending:false });
+    if(zonaRestrict && !noZonaColumn) query = query.ilike('zona', zonaRestrict); // tanpa wildcard = pencocokan persis, tidak peka huruf besar/kecil
+    if(personRestrict && TABLES[table]?.columns.includes(personRestrict.column)) query = query.ilike(personRestrict.column, personRestrict.name);
+    return query;
+  };
+  const { data, error } = await fetchAllRows(buildQuery);
   if(error){ toast('Gagal memuat ' + table + ': ' + error.message, true); return []; }
   let rows = data || [];
   if(zonaRestrict && noZonaColumn){
@@ -7270,7 +7288,7 @@ state[PK_TABLE] = {
 async function ensureProduktivitasKontraktorData(){
   const st = state[PK_TABLE];
   if(st.loaded) return st.data;
-  const { data, error } = await supa.from(PK_TABLE).select('*').order('id', { ascending:true });
+  const { data, error } = await fetchAllRows(() => supa.from(PK_TABLE).select('*').order('id', { ascending:true }));
   if(error){ toast('Gagal memuat Produktivitas Kontraktor: ' + error.message, true); return []; }
   st.data = data || [];
   st.loaded = true;
