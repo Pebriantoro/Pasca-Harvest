@@ -16,7 +16,7 @@ window.SUPABASE_CONFIG = {
 window.APP_NAME = 'Sistem Informasi Terpadu Estate 2';
 
 // Versi aplikasi & changelog (tampil di footer halaman login)
-window.APP_VERSION = '1.3.17';
+window.APP_VERSION = '1.3.18';
 window.APP_CHANGELOG = [
   { version: '1.3.9', date: '23 Jul 2026', notes: [
     'Pasca Harvest: kolom Estimasi TCH 2026 (H) sekarang ikut ke-update saat admin import Excel — sebelumnya diabaikan total. Kolom Q–U (pengecekan staff) tetap tidak disentuh.',

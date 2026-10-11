@@ -1,43 +1,41 @@
-/* ===================== M3 EXPRESSIVE WAVY PROGRESS — addon =====================
+/* ===================== PROGRESS IMPORT (bar datar) — addon =====================
    Override .import-progress-bar/.import-progress-fill (toast "Membaca file...").
    Dipakai bareng SATU fungsi showImportProgress()/setImportProgress() di app.js,
    jadi otomatis kepakai di SEMUA modul import (RKH, Pasca Harvest, Produktivitas HE,
    Tebang Bibit, QC, dst) tanpa nyentuh app.js.
-   Ref bentuk: Material 3 Expressive linear wavy progress indicator (m3.material.io).
+   Bentuk: bar datar biasa (TANPA gelombang) + kilau tipis yang bergerak
+   supaya tetap kelihatan sedang proses.
+   Nama file dipertahankan (m3-wavy-progress.css) agar index.html tidak perlu diubah.
    Additive, load PALING TERAKHIR (setelah m3-theme.css). */
 
 .import-progress-bar{
-  position: relative; height: 14px; border-radius: var(--m3-shape-full);
+  position: relative; height: 8px; border-radius: var(--m3-shape-full);
   background: var(--m3-surface-container-highest);
-  overflow: visible;
+  overflow: hidden;
 }
 
 .import-progress-fill{
   position: relative; height: 100%; border-radius: var(--m3-shape-full);
   background: var(--m3-primary);
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12'%3E%3Cpath d='M0 6 C 2.5 1 7.5 1 10 6 C 12.5 11 17.5 11 20 6' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12'%3E%3Cpath d='M0 6 C 2.5 1 7.5 1 10 6 C 12.5 11 17.5 11 20 6' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
-  -webkit-mask-repeat: repeat-x; mask-repeat: repeat-x;
-  -webkit-mask-size: 20px 12px; mask-size: 20px 12px;
-  animation: m3WavyMove .85s linear infinite;
+  -webkit-mask-image: none; mask-image: none;
+  overflow: hidden;
   transition: width .25s cubic-bezier(.4,0,.2,1);
   box-shadow: none;
+  animation: none;
 }
 
-/* titik target di ujung kanan track, ciri khas M3 wavy indicator */
-.import-progress-bar::after{
-  content:''; position:absolute; top:50%; right:0; width:4px; height:4px;
-  border-radius:999px; background: var(--m3-outline); transform: translateY(-50%);
+/* kilau halus bergerak ke kanan di dalam bar yang terisi */
+.import-progress-fill::after{
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.35) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: importShimmer 1.2s ease-in-out infinite;
 }
 
-@keyframes m3WavyMove{
-  from{ -webkit-mask-position-x:0; mask-position-x:0; }
-  to{ -webkit-mask-position-x:-20px; mask-position-x:-20px; }
+@keyframes importShimmer{
+  to{ transform: translateX(100%); }
 }
 
 @media (prefers-reduced-motion: reduce){
-  .import-progress-fill{
-    animation:none;
-    -webkit-mask-image:none; mask-image:none; /* balik jadi bar flat biasa */
-  }
+  .import-progress-fill::after{ animation:none; display:none; }
 }
