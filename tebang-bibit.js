@@ -225,9 +225,13 @@ function paintTebangBibit(allRows){
   const varietasAgg = aggregateSum(filteredRows, 'tb_varietas', 'tb_size_rkt');
   const phasingAgg = aggregateSumByMonthToken(filteredRows, 'tb_phasing', 'tb_size_rkt');
   const zonaOrder = zonaOptions.length ? zonaOptions : ['-'];
+  const avgPopPerZona = (field) => zonaOrder.map(z => {
+    const zr = filteredRows.filter(r=>(r.zona??'').toString().trim()===z);
+    return zr.length ? +(zr.reduce((s,r)=>s+(parseFloat(r[field])||0),0)/zr.length).toFixed(0) : 0;
+  });
   const populasiSeries = {
-    'Populasi 2025': zonaOrder.map(z => +filteredRows.filter(r=>(r.zona??'').toString().trim()===z).reduce((s,r)=>s+(parseFloat(r.tb_populasi_2025)||0),0).toFixed(0)),
-    'Populasi 2026': zonaOrder.map(z => +filteredRows.filter(r=>(r.zona??'').toString().trim()===z).reduce((s,r)=>s+(parseFloat(r.tb_populasi_2026)||0),0).toFixed(0)),
+    'Populasi 2025': avgPopPerZona('tb_populasi_2025'),
+    'Populasi 2026': avgPopPerZona('tb_populasi_2026'),
   };
 
   const activityGroupData = TB_ACTIVITY_GROUPS.map(g => ({
@@ -270,7 +274,7 @@ function paintTebangBibit(allRows){
     <div class="chart-grid">
       <div class="card"><div class="card-header"><span class="card-title">Phasing 2026 per Bulan (Ha)</span></div>
         <div class="card-body"><div class="chart-box"><canvas id="chart_tb_phasing"></canvas></div></div></div>
-      <div class="card"><div class="card-header"><span class="card-title">Populasi 2025 vs 2026 per Zona</span></div>
+      <div class="card"><div class="card-header"><span class="card-title">Rata-rata Populasi per Petak 2025 vs 2026 per Zona</span></div>
         <div class="card-body"><div class="chart-box"><canvas id="chart_tb_populasi"></canvas></div></div></div>
     </div>
     <div class="card" style="margin-bottom:16px;">
