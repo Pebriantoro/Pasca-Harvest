@@ -1,0 +1,62 @@
+/* Toast / notifikasi pojok kanan bawah: kartu kaca gelap, ikon bulat, chip angka,
+   tombol tutup, dan bar timer. Dimuat paling akhir supaya menang atas styles.css & m3-theme.css. */
+.toast-wrap{ gap:10px; bottom:24px; right:24px; max-width:min(380px, calc(100vw - 32px)); }
+.toast{
+  --tone: var(--accent-green);
+  display:flex; align-items:flex-start; gap:12px;
+  padding:14px 14px 16px 14px; min-width:290px; max-width:100%;
+  color:var(--text, #f3ece0); font-size:13px; line-height:1.4;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--tone) 18%, transparent), transparent 55%),
+    color-mix(in srgb, var(--bg-card, #1d1a15) 92%, #000);
+  border:1px solid color-mix(in srgb, var(--tone) 38%, transparent);
+  border-radius:16px; overflow:hidden;
+  box-shadow:0 14px 34px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.03) inset, 0 0 26px color-mix(in srgb, var(--tone) 16%, transparent);
+  -webkit-backdrop-filter:blur(14px) saturate(1.2); backdrop-filter:blur(14px) saturate(1.2);
+  transition:opacity .25s ease, transform .25s ease;
+}
+.toast::before, .toast::after{ display:none; }
+.toast.error{ --tone: var(--accent-red); }
+.toast.warning{ --tone: var(--accent-gold); }
+.toast.info{ --tone: var(--accent-blue, #5B9BD5); }
+
+.toast-icon{
+  flex:none; width:34px; height:34px; border-radius:50%;
+  display:grid; place-items:center; color:var(--tone);
+  background:color-mix(in srgb, var(--tone) 18%, transparent);
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--tone) 9%, transparent);
+}
+.toast-body{ flex:1; min-width:0; }
+.toast-title{ font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--tone); margin-bottom:3px; }
+.toast-msg{ color:var(--text, #f3ece0); word-break:break-word; }
+.toast-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+.toast-chip{
+  padding:4px 10px; border-radius:999px; font-size:12px; font-weight:500; white-space:nowrap;
+  color:var(--chip, var(--accent-green));
+  background:color-mix(in srgb, var(--chip, var(--accent-green)) 15%, transparent);
+  border:1px solid color-mix(in srgb, var(--chip, var(--accent-green)) 30%, transparent);
+}
+.toast-chip b{ font-size:14px; font-weight:800; margin-right:3px; }
+.toast-chip.warn{ --chip: var(--accent-gold); }
+.toast-chip.bad{ --chip: var(--accent-red); }
+
+.toast-close{
+  flex:none; width:24px; height:24px; border:0; border-radius:50%; cursor:pointer;
+  background:transparent; color:var(--text-muted, #a89f8d); font-size:11px; line-height:1;
+  transition:background .15s, color .15s;
+}
+.toast-close:hover{ background:rgba(255,255,255,.1); color:var(--text, #fff); }
+
+.toast-timer{
+  position:absolute; left:0; bottom:0; height:3px; width:100%;
+  background:linear-gradient(90deg, var(--tone), color-mix(in srgb, var(--tone) 40%, transparent));
+  transform-origin:left; animation:toastTimer 5s linear forwards;
+}
+.toast:hover .toast-timer{ animation-play-state:paused; }
+@keyframes toastTimer{ from{ transform:scaleX(1); } to{ transform:scaleX(0); } }
+
+@media (max-width:600px){
+  .toast-wrap{ left:16px; right:16px; bottom:84px; max-width:none; } /* di atas bottom-nav */
+  .toast{ min-width:0; }
+}
+@media (prefers-reduced-motion:reduce){ .toast-timer{ animation-duration:5s; } }

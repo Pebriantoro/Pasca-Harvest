@@ -404,9 +404,34 @@ function toast(msg, type='success'){
   const wrap = $('#toastWrap');
   const el = document.createElement('div');
   el.className = 'toast anim-fade-up' + (variant !== 'success' ? ' ' + variant : '');
-  el.textContent = msg;
+  const ICONS = {
+    success:'<path d="M5 13l4 4L19 7"/>',
+    error:'<path d="M12 8v5M12 16h.01M10.3 3.9L2.7 17a2 2 0 001.7 3h15.2a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/>',
+    info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+  };
+  ICONS.warning = ICONS.error;
+  const TITLES = { success:'Berhasil', error:'Gagal', warning:'Perhatian', info:'Info' };
+  // Pesan ringkasan import ("385 baris diperbarui, 4 baris baru ditambahkan")
+  // ditampilkan sebagai chip per angka; pesan biasa tetap teks.
+  const text = (msg ?? '').toString();
+  const parts = text.split(/,\s+/);
+  const asChips = parts.length >= 2 && parts.every(p => /^\d/.test(p));
+  const body = asChips
+    ? '<div class="toast-chips">' + parts.map(p => {
+        const tone = /gagal|hapus/i.test(p) ? 'bad' : /lewati/i.test(p) ? 'warn' : 'ok';
+        return `<span class="toast-chip ${tone}">${esc(p).replace(/^(\d[\d.,]*)/, '<b>$1</b>')}</span>`;
+      }).join('') + '</div>'
+    : `<div class="toast-msg">${esc(text)}</div>`;
+  el.innerHTML = `
+    <span class="toast-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS[variant] || ICONS.success}</svg></span>
+    <div class="toast-body"><div class="toast-title">${TITLES[variant] || TITLES.success}</div>${body}</div>
+    <button type="button" class="toast-close" aria-label="Tutup">✕</button>
+    <span class="toast-timer"></span>`;
+  const dismiss = ()=>{ if(!el.isConnected) return; el.style.opacity='0'; el.style.transform='translateX(16px)'; setTimeout(()=>el.remove(), 250); };
+  el.querySelector('.toast-close').onclick = dismiss;
+  // Timer = animasi CSS bar bawah; berhenti saat di-hover, habis -> tutup sendiri.
+  el.querySelector('.toast-timer').addEventListener('animationend', dismiss);
   wrap.appendChild(el);
-  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(), 300); }, 3400);
 }
 function badgeForStatus(val){
   const v = (val||'').toString().trim().toLowerCase();

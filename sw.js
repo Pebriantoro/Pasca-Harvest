@@ -17,7 +17,7 @@
      terutama utk aset cache-first di atas).
    ===================================================================== */
 
-const CACHE_NAME = 'estate2-shell-v23';
+const CACHE_NAME = 'estate2-shell-v24';
 const STATIC_ASSETS = [
   './manifest.json',
   './logo.png',
