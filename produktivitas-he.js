@@ -699,6 +699,15 @@ async function handleImportProduktivitasHE(input){
         else { toInsert.push({ ...p, created_by: currentUser.id }); }
       });
 
+      // Baris yang sudah tidak ada di file ikut dihapus, tapi dibatasi ke menu ini
+      // (Rental / Internal) dan rentang TANGGAL yang tercakup file — import 1 periode
+      // tidak menyentuh periode lain maupun menu sebelahnya.
+      const fileDates = payloadRows.map(r => r.tanggal).filter(Boolean).sort();
+      const minDate = fileDates[0], maxDate = fileDates[fileDates.length - 1];
+      const fileKeySet = new Set(payloadRows.map(rowKey));
+      const rowsToDelete = pheRowsForMode(state[PHE_TABLE].data, mode).filter(r =>
+        r.tanggal && r.tanggal >= minDate && r.tanggal <= maxDate && !fileKeySet.has(rowKey(r)));
+
       const results = await Promise.all([
         ...toInsert.map(p => supa.from(PHE_TABLE).insert(p)),
         ...toUpdate.map(u => supa.from(PHE_TABLE).update(u.payload).eq('id', u.id)),
@@ -707,7 +716,11 @@ async function handleImportProduktivitasHE(input){
       const success = payloadRows.length - failed.length;
       if(success) await logNotificationGrouped(PHE_TABLE, 'import', payloadRows.slice(0, success));
 
+      hideImportProgress(true);
+      const deletedCount = failed.length ? 0 : await syncImportDeletions(PHE_TABLE, rowsToDelete, PHE_COLUMNS);
+
       let msg = `${toInsert.length} baris ditambahkan, ${toUpdate.length} baris diperbarui`;
+      if(deletedCount) msg += `, ${deletedCount} baris dihapus (tidak ada lagi di file)`;
       const skippedTotal = skippedUnit + skippedHm;
       if(skippedTotal) msg += `, ${skippedTotal} baris dilewati (Unit/HM Hari Ini kosong)`;
       if(failed.length) msg += `, ${failed.length} gagal${failed[0].error ? ' — ' + failed[0].error.message : ''}`;

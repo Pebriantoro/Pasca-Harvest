@@ -322,28 +322,53 @@ handleImportFile = async function (table, input) {
       const existingRowById = new Map();
       existingRows.forEach(r => { const key = buildKey(r); if (key) existingMap.set(key, r.id); existingRowById.set(r.id, r); });
 
-      const matched = [];
-      const unmatchedPetak = [];
-      payloadRows.forEach(o => {
-        const key = buildKey(o);
-        const id = existingMap.get(key);
-        if (id) matched.push({ id, payload: o });
-        else unmatchedPetak.push(o.petak);
+      // Jumlah baris DB harus mengikuti file: petak baru di file -> INSERT,
+      // petak di DB yang sudah tidak ada di file -> DIHAPUS (setelah konfirmasi).
+      // Petak dobel di file hanya diproses sekali (kemunculan terakhir menang).
+      const uniqueRows = new Map();
+      payloadRows.forEach(o => uniqueRows.set(buildKey(o), o));
+      const fileKeySet = new Set(uniqueRows.keys());
+      const rowsToDelete = existingRows.filter(r => {
+        if (zonaRestrict && (r.zona || '').toString().trim().toUpperCase() !== zonaRestrict.toString().trim().toUpperCase()) return false;
+        const key = buildKey(r);
+        return key && !fileKeySet.has(key);
       });
 
-      if (!matched.length) {
+      const matched = [];
+      const toInsert = [];
+      uniqueRows.forEach((o, key) => {
+        const id = existingMap.get(key);
+        if (id) matched.push({ id, payload: o });
+        else toInsert.push({
+          ...o,
+          // kolom staff (P..T) tidak dibawa file; petak baru mulai dari 'belum dicek'
+          kategori_pasca_harvest: computeKategoriPascaHarvest({}),
+          status_pengecekan_pasca_hvt: computeStatusPengecekanPascaHVT({}),
+          ...(cfg.hasAuditColumns !== false ? { created_by: currentUser.id } : {}),
+        });
+      });
+
+      if (!matched.length && !toInsert.length && !rowsToDelete.length) {
         hideImportProgress(false);
-        toast('Tidak ada petak yang cocok dengan data yang sudah ada. Impor dibatalkan (tidak menambah petak baru).', true);
+        toast('Tidak ada data yang bisa diproses dari file ini.', true);
         return;
       }
 
       setImportProgress(45, 'Menyimpan data…');
+      const totalOps = matched.length + toInsert.length;
       let doneOps = 0;
-      const bumpProgress = () => { doneOps++; setImportProgress(45 + (doneOps / matched.length) * 50, 'Menyimpan data…'); };
+      const bumpProgress = () => { doneOps++; setImportProgress(45 + (doneOps / totalOps) * 50, 'Menyimpan data…'); };
 
       const updateResults = await Promise.all(matched.map(m => supa.from(table).update(m.payload).eq('id', m.id).then(r => { bumpProgress(); return r; })));
       const failedUpdate = updateResults.filter(r => r.error);
       const successUpdate = matched.length - failedUpdate.length;
+
+      let successInsert = 0, failedInsert = 0, insertErrorMsg = '';
+      const insertResults = await Promise.all(toInsert.map(p => supa.from(table).insert(p).then(r => { bumpProgress(); return r; })));
+      insertResults.forEach(r => {
+        if (r.error) { failedInsert++; if (!insertErrorMsg) insertErrorMsg = r.error.message; }
+        else successInsert++;
+      });
       hideImportProgress(true);
 
       const auditRows = [];
@@ -355,13 +380,20 @@ handleImportFile = async function (table, input) {
       insertFieldAuditRows(auditRows);
 
       if (successUpdate) await logNotificationGrouped(table, 'import', matched.filter((_, i) => !updateResults[i].error).map(m => m.payload));
+      if (successInsert) await logNotificationGrouped(table, 'import', toInsert);
+
+      // Hapus petak yang tidak ada lagi di file (konfirmasi dulu, lalu tercatat di audit).
+      // Dilewati kalau ada insert/update yang gagal, supaya data tidak hilang setengah jalan.
+      const deletedCount = (failedUpdate.length || failedInsert) ? 0 : await syncImportDeletions(table, rowsToDelete, cfg.columns);
 
       let msg = '';
       if (successUpdate) msg += `${successUpdate} baris diperbarui (kolom B–P saja, kolom staff Q–U tidak disentuh)`;
-      if (unmatchedPetak.length) msg += (msg ? ', ' : '') + `${unmatchedPetak.length} baris dilewati (petak tidak ditemukan)`;
+      if (successInsert) msg += (msg ? ', ' : '') + `${successInsert} petak baru ditambahkan`;
+      if (deletedCount) msg += (msg ? ', ' : '') + `${deletedCount} baris dihapus (tidak ada lagi di file)`;
       if (failedUpdate.length) msg += (msg ? ', ' : '') + `${failedUpdate.length} gagal diperbarui`;
+      if (failedInsert) msg += (msg ? ', ' : '') + `${failedInsert} gagal ditambahkan${insertErrorMsg ? ' — ' + insertErrorMsg : ''}`;
       if (!msg) msg = 'Tidak ada data yang diproses';
-      toast(msg, successUpdate === 0);
+      toast(msg, (successUpdate + successInsert + deletedCount) === 0);
 
       state[table].loaded = false;
       await ensureData(table);
