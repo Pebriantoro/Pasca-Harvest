@@ -152,10 +152,19 @@
   </defs>
 </svg>
 
-<div id="loadingOverlay" class="loading-overlay">
-  <img src="logo.png" alt="" class="brand-logo-lg" style="pointer-events:none; margin-bottom:2px;">
-  <div class="spinner"></div>
-  <div style="color:var(--text-muted); font-size:13px;">Memuat aplikasi…</div>
+<div id="loadingOverlay" class="loading-overlay" role="status" aria-live="polite">
+  <div class="ld-stage">
+    <svg class="ld-ring" viewBox="0 0 120 120" aria-hidden="true">
+      <circle class="ld-track" cx="60" cy="60" r="54"/>
+      <circle class="ld-arc" cx="60" cy="60" r="54"/>
+    </svg>
+    <img src="logo.png" alt="" class="ld-logo" draggable="false">
+  </div>
+  <div class="ld-status" aria-hidden="true">
+    <span>Memuat aplikasi…</span>
+    <span>Menyiapkan data petak…</span>
+    <span>Hampir siap…</span>
+  </div>
 </div>
 
 <!-- ===================== LOGIN VIEW ===================== -->
